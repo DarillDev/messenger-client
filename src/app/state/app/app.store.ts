@@ -18,7 +18,7 @@ const initialState: TAppState = {
 
 export const AppStore = signalStore(
   { providedIn: 'root' },
-  
+
   withDevtools('app'),
   withState(initialState),
   withMethods(store => ({

@@ -27,7 +27,10 @@
     </div>
 
     <div class="form-field-subscript">
-      @if (control.isErrorState && (control.ngControl?.errors | errorText: errorMessages()); as text) {
+      @if (
+        control.isErrorState && (control.ngControl?.errors | errorText: errorMessages());
+        as text
+      ) {
         <div class="form-field-error">
           <span class="material-icons-round">error_outline</span>
           <span>{{ text }}</span>

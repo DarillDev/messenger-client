@@ -9,9 +9,9 @@ import {
   signal,
 } from '@angular/core';
 
+import { ErrorTextPipe } from '../../../cdk/error-text/error-text.pipe';
 import { UiKitPrefixDirective } from '../../directives/prefix/prefix.directive';
 import { UiKitSuffixDirective } from '../../directives/suffix/suffix.directive';
-import { ErrorTextPipe } from '../../../cdk/error-text/error-text.pipe';
 import { FORM_FIELD } from '../../tokens/form-field.token';
 
 import type { IFormFieldControl } from '../../tokens/form-field-control.token';

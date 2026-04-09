@@ -7,11 +7,7 @@ import { TokenStorageService } from '@core/auth/services/token-storage/token-sto
 import { AuthStore } from './auth.store';
 import { UserStore } from '../user/user.store';
 
-function makeMockJwt(
-  userId = 'u1',
-  userName = 'Stepan',
-  expOffsetSec = 3600,
-): string {
+function makeMockJwt(userId = 'u1', userName = 'Stepan', expOffsetSec = 3600): string {
   const payload = {
     userId,
     userName,

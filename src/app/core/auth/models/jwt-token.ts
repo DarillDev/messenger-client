@@ -11,7 +11,7 @@ export class JwtToken {
 
   private constructor(accessToken: string, refreshToken: string) {
     const base64Payload = accessToken.split('.')[1];
-    
+
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
     this.payload = JSON.parse(atob(base64Payload)) as IJwtPayload;

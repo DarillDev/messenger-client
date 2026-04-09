@@ -1,4 +1,9 @@
-import { HttpClient, HttpErrorResponse, provideHttpClient, withInterceptors } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  provideHttpClient,
+  withInterceptors,
+} from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
@@ -6,11 +11,7 @@ import { AuthStore } from '@state/auth/auth.store';
 
 import { authInterceptor } from './auth.interceptor';
 
-function makeMockJwt(
-  userId = 'u1',
-  userName = 'Stepan',
-  expOffsetSec = 3600,
-): string {
+function makeMockJwt(userId = 'u1', userName = 'Stepan', expOffsetSec = 3600): string {
   const payload = {
     userId,
     userName,
@@ -106,7 +107,7 @@ describe('authInterceptor', () => {
     localStorage.setItem('refresh_token', 'old-refresh');
     let responseData: unknown = null;
 
-    http.get('/api/users').subscribe((data) => {
+    http.get('/api/users').subscribe(data => {
       responseData = data;
     });
 
@@ -224,10 +225,10 @@ describe('authInterceptor', () => {
     let chatsData: unknown = null;
     let messagesData: unknown = null;
 
-    http.get('/api/chats').subscribe((data) => {
+    http.get('/api/chats').subscribe(data => {
       chatsData = data;
     });
-    http.get('/api/messages').subscribe((data) => {
+    http.get('/api/messages').subscribe(data => {
       messagesData = data;
     });
 

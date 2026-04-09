@@ -62,7 +62,7 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
       //  ровно один раз, даже если рефреш ждут несколько параллельных запросов.
       if (!refreshInProgress$) {
         refreshInProgress$ = authStore.refreshTokens().pipe(
-          catchError((refreshError) => {
+          catchError(refreshError => {
             authStore.logout();
             return throwError(() => refreshError);
           }),

@@ -43,7 +43,7 @@ export const AuthStore = signalStore(
             const jwtToken = JwtToken.decode(response.accessToken, response.refreshToken);
 
             patchState(store, { token: jwtToken });
-            
+
             tokenStorage.setTokens(response.accessToken, response.refreshToken);
             userStore.setUser(response.user);
           }),
@@ -51,7 +51,8 @@ export const AuthStore = signalStore(
       },
 
       refreshTokens(): Observable<IRefreshResponse> {
-        const currentRefreshToken = store.token()?.refreshToken ?? tokenStorage.getRefreshToken() ?? '';
+        const currentRefreshToken =
+          store.token()?.refreshToken ?? tokenStorage.getRefreshToken() ?? '';
 
         return authService.refresh(currentRefreshToken).pipe(
           tap(response => {

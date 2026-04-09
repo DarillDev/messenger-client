@@ -1,4 +1,9 @@
-import { EnvironmentProviders, inject, makeEnvironmentProviders, provideAppInitializer } from '@angular/core';
+import {
+  EnvironmentProviders,
+  inject,
+  makeEnvironmentProviders,
+  provideAppInitializer,
+} from '@angular/core';
 import { JwtToken } from '@core/auth/models/jwt-token';
 import { AppStore } from '@state/app/app.store';
 import { AuthStore } from '@state/auth/auth.store';
@@ -47,7 +52,7 @@ export function provideAuth(config?: Partial<IAuthConfig>): EnvironmentProviders
       if (!jwtToken) {
         tokenStorage.removeTokens();
         appStore.setInitialized();
-        
+
         return;
       }
 
@@ -59,7 +64,7 @@ export function provideAuth(config?: Partial<IAuthConfig>): EnvironmentProviders
           isOnline: true,
         });
         appStore.setInitialized();
-        
+
         return;
       }
 
