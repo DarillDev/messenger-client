@@ -1,0 +1,36 @@
+:host {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  padding: 8px 10px;
+}
+
+.chat-viewport {
+  flex: 1;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 2px;
+  }
+}
+
+.chat-item-wrapper {
+  padding-bottom: 8px;
+}
+
+.no-results {
+  text-align: center;
+  padding: 24px 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
