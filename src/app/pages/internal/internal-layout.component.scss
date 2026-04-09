@@ -1,27 +1,7 @@
-@use 'styles/mixins' as m;
-
 :host {
   display: flex;
   height: 100vh;
   padding: 16px;
   gap: 12px;
-}
-
-.sidebar {
-  @include m.panel-card;
-  @include m.scrollbar-thin;
-  display: flex;
-  flex-direction: column;
-  width: 340px;
-  min-width: 340px;
-  padding: 20px;
-  color: var(--text-secondary);
-}
-
-.main {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-width: 0;
-  color: var(--text-secondary);
+  box-sizing: border-box;
 }

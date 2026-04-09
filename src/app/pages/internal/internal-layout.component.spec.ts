@@ -1,41 +1,72 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterOutlet, provideRouter } from '@angular/router';
+import { SocketService } from '@core/socket/services/socket/socket.service';
+import { ChatStore } from '@state/chat/chat.store';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
 
 import { InternalLayoutComponent } from './internal-layout.component';
 
+// Stub for SidebarComponent to avoid needing all its dependencies
+@Component({ selector: 'app-sidebar', standalone: true, template: '' })
+class SidebarStubComponent {}
+
 describe('InternalLayoutComponent', () => {
   let fixture: ComponentFixture<InternalLayoutComponent>;
-  let component: InternalLayoutComponent;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
+  const mockSocketService = {
+    connect: jest.fn(),
+    disconnect: jest.fn(),
+    emit: jest.fn(),
+  };
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [InternalLayoutComponent],
-    });
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        ChatStore,
+        { provide: SocketService, useValue: mockSocketService },
+      ],
+    })
+      .overrideComponent(InternalLayoutComponent, {
+        remove: { imports: [SidebarComponent] },
+        add: { imports: [SidebarStubComponent, RouterOutlet] },
+      })
+      .compileComponents();
 
+    jest.clearAllMocks();
     fixture = TestBed.createComponent(InternalLayoutComponent);
-    component = fixture.componentInstance;
-  });
-
-  describe('Model', () => {
-    it('should create', () => {
-      expect(component).toBeTruthy();
-    });
   });
 
   describe('View', () => {
     it('should render sidebar', () => {
       fixture.detectChanges();
-
-      const sidebar = fixture.nativeElement.querySelector('[data-testid="sidebar"]');
-
+      const sidebar = fixture.nativeElement.querySelector('app-sidebar');
       expect(sidebar).toBeTruthy();
     });
 
-    it('should render main area', () => {
+    it('should render router-outlet', () => {
       fixture.detectChanges();
+      const outlet = fixture.nativeElement.querySelector('router-outlet');
+      expect(outlet).toBeTruthy();
+    });
+  });
 
-      const main = fixture.nativeElement.querySelector('[data-testid="main"]');
+  describe('Events', () => {
+    it('should call socketService.connect on init', () => {
+      fixture.detectChanges();
+      expect(mockSocketService.connect).toHaveBeenCalled();
+    });
 
-      expect(main).toBeTruthy();
+    it('should call socketService.disconnect on destroy', () => {
+      fixture.detectChanges();
+      fixture.destroy();
+      expect(mockSocketService.disconnect).toHaveBeenCalled();
     });
   });
 });
