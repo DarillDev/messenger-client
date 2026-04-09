@@ -1,0 +1,58 @@
+// src/styles/_mixins.scss
+
+@mixin liquid-glass {
+  background: var(--liquid-bg);
+  backdrop-filter: var(--liquid-blur);
+  -webkit-backdrop-filter: var(--liquid-blur);
+  border: 1px solid var(--liquid-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--liquid-shadow);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--liquid-shine);
+    pointer-events: none;
+    border-radius: inherit;
+  }
+}
+
+@mixin panel-card {
+  background: var(--bg-panel);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition:
+    background-color 0.4s,
+    border-color 0.4s;
+}
+
+@mixin scrollbar-thin {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+
+    &:hover {
+      background: var(--border-hover);
+    }
+  }
+}
+
+@mixin responsive($min, $max) {
+  @media (min-width: $min) and (max-width: $max) {
+    @content;
+  }
+}
