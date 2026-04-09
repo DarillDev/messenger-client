@@ -4,8 +4,8 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { TokenStorageService } from '@core/auth/services/token-storage/token-storage.service';
 import { IMessageDto } from '@shared/dtos/message-dto.interface';
-import { ChatStore } from '@state/chat/chat.store';
-import { MessageStore } from '@state/message/message.store';
+import { ChatStore } from '@store/chat/chat.store';
+import { MessageStore } from '@store/message/message.store';
 import * as socketIoClient from 'socket.io-client';
 
 import { SocketService } from './socket.service';

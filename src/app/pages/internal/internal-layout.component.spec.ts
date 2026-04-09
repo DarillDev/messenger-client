@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, RouterOutlet } from '@angular/router';
 import { SocketService } from '@core/socket/services/socket/socket.service';
-import { ChatStore } from '@state/chat/chat.store';
+import { ChatStore } from '@store/chat/chat.store';
 
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { InternalLayoutComponent } from './internal-layout.component';

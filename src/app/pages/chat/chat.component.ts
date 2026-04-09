@@ -2,9 +2,9 @@ import { Component, computed, effect, ElementRef, inject, signal, viewChild } fr
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { SocketService } from '@core/socket/services/socket/socket.service';
-import { ChatStore } from '@state/chat/chat.store';
-import { MessageStore } from '@state/message/message.store';
-import { UserStore } from '@state/user/user.store';
+import { ChatStore } from '@store/chat/chat.store';
+import { MessageStore } from '@store/message/message.store';
+import { UserStore } from '@store/user/user.store';
 import { map } from 'rxjs';
 
 import { DateDividerComponent } from './components/date-divider/date-divider.component';

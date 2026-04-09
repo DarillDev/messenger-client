@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { ChatStore } from '@state/chat/chat.store';
+import { ChatStore } from '@store/chat/chat.store';
 
 import { ChatItemComponent } from '../chat-item/chat-item.component';
 

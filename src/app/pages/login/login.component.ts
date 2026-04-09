@@ -10,7 +10,7 @@ import {
 import { GlassCardComponent } from '@shared/ui-kit/glass-card';
 import { UiKitInputDirective } from '@shared/ui-kit/input';
 import { createDestroyer } from '@shared/utils/create-destroyer';
-import { AuthStore } from '@state/auth/auth.store';
+import { AuthStore } from '@store/auth/auth.store';
 
 import { LOGIN_FORM_ERRORS_TEXT } from './constants/login-form-errors-text.const';
 import { ELoginFormErrorKey } from './enums/login-form-error-key.enum';

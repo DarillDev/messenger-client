@@ -7,7 +7,7 @@ import {
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { AuthStore } from '@state/auth/auth.store';
+import { AuthStore } from '@store/auth/auth.store';
 
 import { authInterceptor } from './auth.interceptor';
 

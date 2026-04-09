@@ -4,9 +4,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { SocketService } from '@core/socket/services/socket/socket.service';
 import { IMessageDto } from '@shared/dtos/message-dto.interface';
-import { ChatStore } from '@state/chat/chat.store';
-import { MessageStore } from '@state/message/message.store';
-import { UserStore } from '@state/user/user.store';
+import { ChatStore } from '@store/chat/chat.store';
+import { MessageStore } from '@store/message/message.store';
+import { UserStore } from '@store/user/user.store';
 import { of } from 'rxjs';
 
 import { ChatComponent } from './chat.component';

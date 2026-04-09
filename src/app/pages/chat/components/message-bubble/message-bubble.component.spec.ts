@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { IMessageDto } from '@shared/dtos/message-dto.interface';
-import { UserStore } from '@state/user/user.store';
+import { UserStore } from '@store/user/user.store';
 
 import { MessageBubbleComponent } from './message-bubble.component';
 

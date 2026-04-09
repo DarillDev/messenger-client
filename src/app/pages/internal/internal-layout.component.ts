@@ -1,7 +1,7 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SocketService } from '@core/socket/services/socket/socket.service';
-import { ChatStore } from '@state/chat/chat.store';
+import { ChatStore } from '@store/chat/chat.store';
 
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 

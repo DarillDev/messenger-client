@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { IChatDto } from '@shared/dtos/chat-dto.interface';
-import { ChatStore } from '@state/chat/chat.store';
+import { ChatStore } from '@store/chat/chat.store';
 
 import { SidebarComponent } from './sidebar.component';
 

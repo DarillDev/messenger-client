@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { TokenStorageService } from '@core/auth/services/token-storage/token-storage.service';
 import { IMessageDto } from '@shared/dtos/message-dto.interface';
-import { ChatStore } from '@state/chat/chat.store';
-import { MessageStore } from '@state/message/message.store';
+import { ChatStore } from '@store/chat/chat.store';
+import { MessageStore } from '@store/message/message.store';
 import { io, Socket } from 'socket.io-client';
 
 @Injectable({ providedIn: 'root' })
