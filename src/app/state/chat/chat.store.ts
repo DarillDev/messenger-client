@@ -1,10 +1,10 @@
 import { inject } from '@angular/core';
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import { ChatService } from '@core/chat/services/chat/chat.service';
+import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { IChatDto } from '@shared/dtos/chat-dto.interface';
 import { IMessageDto } from '@shared/dtos/message-dto.interface';
 import { createDestroyer } from '@shared/utils/create-destroyer';
-import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 
 type TChatState = {
   chats: IChatDto[];
