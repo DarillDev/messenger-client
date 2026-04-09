@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   HttpCode,
   Module,
   Param,
@@ -175,28 +176,50 @@ class AuthController {
 
 @Controller('api/chats')
 class ChatsController {
-  @Get()
-  public getChats(): object[] {
-    return chats.map(chat => {
-      const otherUserId = chat.participantIds.find(id => id !== 'u1')!;
-      const participant = users.find(u => u.userId === otherUserId)!;
+  constructor(private readonly jwtService: JwtService) {}
 
-      return {
-        id: chat.id,
-        participant: {
-          userId: participant.userId,
-          userName: participant.userName,
-          isOnline: participant.isOnline,
-        },
-        lastMessage: chat.lastMessage,
-        updatedAt: chat.updatedAt,
-        unreadCount: chat.unreadCount,
-      };
+  @Get()
+  public getChats(@Headers('authorization') authHeader: string): object[] {
+    const token = authHeader?.replace('Bearer ', '');
+    const { userId } = this.jwtService.verify<{ userId: string }>(token, {
+      secret: JWT_SECRET,
     });
+
+    return chats
+      .filter(chat => chat.participantIds.includes(userId))
+      .map(chat => {
+        const otherUserId = chat.participantIds.find(id => id !== userId)!;
+        const participant = users.find(u => u.userId === otherUserId)!;
+
+        return {
+          id: chat.id,
+          participant: {
+            userId: participant.userId,
+            userName: participant.userName,
+            isOnline: participant.isOnline,
+          },
+          lastMessage: chat.lastMessage,
+          updatedAt: chat.updatedAt,
+          unreadCount: chat.unreadCount,
+        };
+      });
   }
 
   @Get(':id/messages')
-  public getMessages(@Param('id') chatId: string): IMessage[] {
+  public getMessages(
+    @Headers('authorization') authHeader: string,
+    @Param('id') chatId: string,
+  ): IMessage[] {
+    const token = authHeader?.replace('Bearer ', '');
+    const { userId } = this.jwtService.verify<{ userId: string }>(token, {
+      secret: JWT_SECRET,
+    });
+
+    const chat = chats.find(c => c.id === chatId);
+    if (!chat?.participantIds.includes(userId)) {
+      return [];
+    }
+
     return messagesByChat[chatId] ?? [];
   }
 }
