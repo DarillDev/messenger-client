@@ -1,18 +1,39 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter, Router } from '@angular/router';
+import { AuthStore } from '@state/auth/auth.store';
 
 import { LoginComponent } from './login.component';
 
 describe('LoginComponent', () => {
   let fixture: ComponentFixture<LoginComponent>;
   let component: LoginComponent;
+  let httpTesting: HttpTestingController;
+  let router: Router;
 
   beforeEach(() => {
+    localStorage.clear();
+
     TestBed.configureTestingModule({
       imports: [LoginComponent],
+      providers: [
+        AuthStore,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([{ path: '', component: class {} as never }]),
+      ],
     });
 
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
+    httpTesting = TestBed.inject(HttpTestingController);
+    router = TestBed.inject(Router);
+  });
+
+  afterEach(() => {
+    httpTesting.verify();
+    localStorage.clear();
   });
 
   describe('Model', () => {
@@ -54,7 +75,7 @@ describe('LoginComponent', () => {
   });
 
   describe('Events', () => {
-    it('should show errors when submitted with empty fields', fakeAsync(() => {
+    it('should show errors when submitted with empty fields', () => {
       fixture.detectChanges();
 
       (component as unknown as { onSubmit(): void }).onSubmit();
@@ -70,11 +91,9 @@ describe('LoginComponent', () => {
       const errors = fixture.nativeElement.querySelectorAll('.form-field-error');
 
       expect(errors.length).toBeGreaterThan(0);
+    });
 
-      tick(1000);
-    }));
-
-    it('should show custom error text from DI', fakeAsync(() => {
+    it('should show custom error text from DI', () => {
       fixture.detectChanges();
 
       (component as unknown as { onSubmit(): void }).onSubmit();
@@ -90,11 +109,9 @@ describe('LoginComponent', () => {
       const error = fixture.nativeElement.querySelector('.form-field-error');
 
       expect(error.textContent).toContain('Enter your username');
+    });
 
-      tick(1000);
-    }));
-
-    it('should set isSubmitting when form is valid', fakeAsync(() => {
+    it('should set isSubmitting and call AuthStore.login on valid submit', () => {
       fixture.detectChanges();
 
       const form = (
@@ -107,16 +124,75 @@ describe('LoginComponent', () => {
           };
         }
       ).loginForm;
-      form.controls.username.setValue('admin');
-      form.controls.password.setValue('123');
+      form.controls.username.setValue('Stepan');
+      form.controls.password.setValue('pass123');
 
       (component as unknown as { onSubmit(): void }).onSubmit();
 
       expect((component as unknown as { isSubmitting: () => boolean }).isSubmitting()).toBe(true);
 
-      tick(1000);
+      const request = httpTesting.expectOne('/api/auth/login');
+
+      expect(request.request.body).toEqual({ userName: 'Stepan', password: 'pass123' });
+
+      request.flush({
+        accessToken: 'access-123',
+        refreshToken: 'refresh-456',
+        user: { userId: 'u1', userName: 'Stepan', isOnline: true },
+      });
+    });
+
+    it('should navigate to / on successful login', () => {
+      fixture.detectChanges();
+      const navigateSpy = jest.spyOn(router, 'navigate');
+
+      const form = (
+        component as unknown as {
+          loginForm: {
+            controls: {
+              username: { setValue(v: string): void };
+              password: { setValue(v: string): void };
+            };
+          };
+        }
+      ).loginForm;
+      form.controls.username.setValue('Stepan');
+      form.controls.password.setValue('pass123');
+
+      (component as unknown as { onSubmit(): void }).onSubmit();
+
+      const request = httpTesting.expectOne('/api/auth/login');
+      request.flush({
+        accessToken: 'access-123',
+        refreshToken: 'refresh-456',
+        user: { userId: 'u1', userName: 'Stepan', isOnline: true },
+      });
+
+      expect(navigateSpy).toHaveBeenCalledWith(['/']);
+    });
+
+    it('should show server error on login failure', () => {
+      fixture.detectChanges();
+
+      const form = (
+        component as unknown as {
+          loginForm: {
+            controls: {
+              username: { setValue(v: string): void };
+              password: { setValue(v: string): void };
+            };
+          };
+        }
+      ).loginForm;
+      form.controls.username.setValue('wrong');
+      form.controls.password.setValue('wrong');
+
+      (component as unknown as { onSubmit(): void }).onSubmit();
+
+      const request = httpTesting.expectOne('/api/auth/login');
+      request.flush({ error: 'Invalid credentials' }, { status: 401, statusText: 'Unauthorized' });
 
       expect((component as unknown as { isSubmitting: () => boolean }).isSubmitting()).toBe(false);
-    }));
+    });
   });
 });

@@ -45,9 +45,9 @@ describe('ButtonComponent', () => {
     it('should render primary variant by default', () => {
       fixture.detectChanges();
 
-      const btn = fixture.nativeElement.querySelector('button');
+      const button = fixture.nativeElement.querySelector('button');
 
-      expect(btn.classList).toContain('btn-primary');
+      expect(button.classList).toContain('btn-primary');
     });
 
     it('should render secondary variant', () => {
@@ -55,17 +55,17 @@ describe('ButtonComponent', () => {
 
       fixture.detectChanges();
 
-      const btn = fixture.nativeElement.querySelector('button');
+      const button = fixture.nativeElement.querySelector('button');
 
-      expect(btn.classList).toContain('btn-secondary');
+      expect(button.classList).toContain('btn-secondary');
     });
 
     it('should project content', () => {
       fixture.detectChanges();
 
-      const btn = fixture.nativeElement.querySelector('button');
+      const button = fixture.nativeElement.querySelector('button');
 
-      expect(btn.textContent.trim()).toContain('Click me');
+      expect(button.textContent.trim()).toContain('Click me');
     });
 
     it('should set type attribute', () => {
@@ -73,9 +73,9 @@ describe('ButtonComponent', () => {
 
       fixture.detectChanges();
 
-      const btn = fixture.nativeElement.querySelector('button');
+      const button = fixture.nativeElement.querySelector('button');
 
-      expect(btn.type).toBe('submit');
+      expect(button.type).toBe('submit');
     });
 
     it('should set disabled attribute', () => {
@@ -83,9 +83,9 @@ describe('ButtonComponent', () => {
 
       fixture.detectChanges();
 
-      const btn = fixture.nativeElement.querySelector('button');
+      const button = fixture.nativeElement.querySelector('button');
 
-      expect(btn.disabled).toBe(true);
+      expect(button.disabled).toBe(true);
     });
 
     it('should apply full-width class on host', () => {

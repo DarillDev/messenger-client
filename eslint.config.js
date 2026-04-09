@@ -8,7 +8,7 @@ const prettierConfig = require('eslint-config-prettier');
 
 module.exports = tseslint.config(
   {
-    ignores: ['dist/', 'node_modules/', '.angular/', 'coverage/', 'out-tsc/', 'jest.config.ts', 'setup-jest.ts'],
+    ignores: ['dist/', 'node_modules/', '.angular/', 'coverage/', 'out-tsc/', 'jest.config.ts', 'setup-jest.ts', 'src/mock-api/'],
   },
 
   // TypeScript files

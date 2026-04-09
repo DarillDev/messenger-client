@@ -1,29 +1,29 @@
 :host {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   min-height: 100vh;
   padding: 20px;
 }
 
 .login-logo {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
   margin-bottom: 8px;
-  position: relative;
+  gap: 12px;
 }
 
 .login-logo-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 44px;
   height: 44px;
+  color: var(--text-inverse);
   background: linear-gradient(135deg, var(--accent), #00b4d8);
   border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-inverse);
-  box-shadow: 0 4px 20px rgba(0, 229, 199, 0.25);
+  box-shadow: 0 4px 20px rgba(0, 229, 199, .25);
 
   .material-icons-round {
     font-size: 24px;
@@ -33,16 +33,16 @@
 .login-logo-text {
   font-size: 22px;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -.02em;
 }
 
 .login-subtitle {
-  color: var(--text-secondary);
-  font-size: 14px;
+  position: relative;
   margin-top: 6px;
   margin-bottom: 36px;
+  font-size: 14px;
   line-height: 1.5;
-  position: relative;
+  color: var(--text-secondary);
 }
 
 .login-form {
@@ -52,15 +52,15 @@
 }
 
 .login-footer {
-  text-align: center;
+  position: relative;
   margin-top: 28px;
   font-size: 13px;
+  text-align: center;
   color: var(--text-muted);
-  position: relative;
 
   a {
+    font-weight: 500;
     color: var(--accent);
     text-decoration: none;
-    font-weight: 500;
   }
 }

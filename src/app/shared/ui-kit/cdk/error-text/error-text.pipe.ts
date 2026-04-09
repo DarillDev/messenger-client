@@ -1,7 +1,7 @@
 import { inject, Pipe, PipeTransform } from '@angular/core';
 import { ValidationErrors } from '@angular/forms';
 
-import { UI_KIT_ERROR_MESSAGES } from '../../tokens/error-messages.token';
+import { UI_KIT_ERROR_MESSAGES } from '../../form-field/tokens/error-messages.token';
 
 @Pipe({
   name: 'errorText',

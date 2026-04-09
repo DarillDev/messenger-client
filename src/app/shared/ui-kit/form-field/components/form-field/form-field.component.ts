@@ -9,10 +9,10 @@ import {
   signal,
 } from '@angular/core';
 
+import { ErrorTextPipe } from '../../../cdk/error-text/error-text.pipe';
 import { UiKitPrefixDirective } from '../../directives/prefix/prefix.directive';
 import { UiKitSuffixDirective } from '../../directives/suffix/suffix.directive';
 import { FORM_FIELD } from '../../tokens/form-field.token';
-import { ErrorTextPipe } from '../../pipes/error-text/error-text.pipe';
 
 import type { IFormFieldControl } from '../../tokens/form-field-control.token';
 import type { IFormField } from '../../tokens/form-field.token';
@@ -41,15 +41,15 @@ export class FormFieldComponent implements IFormField {
 
   constructor() {
     effect(onCleanup => {
-      const ctrl = this.control();
+      const control = this.control();
 
-      if (!ctrl) {
+      if (!control) {
         return;
       }
 
-      const sub = ctrl.stateChanges.subscribe(() => this.cdr.markForCheck());
+      const subscription = control.stateChanges.subscribe(() => this.cdr.markForCheck());
 
-      onCleanup(() => sub.unsubscribe());
+      onCleanup(() => subscription.unsubscribe());
     });
   }
 

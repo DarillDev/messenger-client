@@ -1,11 +1,11 @@
-@if (control(); as ctrl) {
+@if (control(); as control) {
   <div
     class="form-field"
     [class.floating]="isFloatingLabel()"
-    [class.focused]="ctrl.isFocused"
-    [class.filled]="!ctrl.isEmpty"
-    [class.error]="ctrl.isErrorState"
-    [class.disabled]="ctrl.isDisabled"
+    [class.focused]="control.isFocused"
+    [class.filled]="!control.isEmpty"
+    [class.error]="control.isErrorState"
+    [class.disabled]="control.isDisabled"
   >
     <div class="form-field-wrapper">
       @if (hasPrefix()) {
@@ -27,7 +27,10 @@
     </div>
 
     <div class="form-field-subscript">
-      @if (ctrl.isErrorState && (ctrl.ngControl?.errors | errorText: errorMessages()); as text) {
+      @if (
+        control.isErrorState && (control.ngControl?.errors | errorText: errorMessages());
+        as text
+      ) {
         <div class="form-field-error">
           <span class="material-icons-round">error_outline</span>
           <span>{{ text }}</span>

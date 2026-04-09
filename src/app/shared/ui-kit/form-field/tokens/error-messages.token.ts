@@ -2,8 +2,8 @@ import { InjectionToken, Optional, Provider, SkipSelf } from '@angular/core';
 
 const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
   required: 'Required field',
-  minlength: 'Too short',
-  maxlength: 'Too long',
+  minLength: 'Too short',
+  maxLength: 'Too long',
   email: 'Invalid email',
 };
 

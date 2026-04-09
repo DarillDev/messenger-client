@@ -73,12 +73,7 @@
                 }
               ],
               "outputHashing": "all",
-              "fileReplacements": [
-                {
-                  "replace": "src/main.ts",
-                  "with": "src/main.prod.ts"
-                }
-              ]
+              "fileReplacements": []
             },
             "development": {
               "optimization": false,
@@ -95,7 +90,8 @@
               "buildTarget": "messenger-client:build:production"
             },
             "development": {
-              "buildTarget": "messenger-client:build:development"
+              "buildTarget": "messenger-client:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"
