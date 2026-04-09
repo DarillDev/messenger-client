@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { ErrorTextPipe } from './error-text.pipe';
-import { provideUiKitErrorMessages } from '../../tokens/error-messages.token';
+import { provideUiKitErrorMessages } from '../../form-field/tokens/error-messages.token';
 
 describe('ErrorTextPipe', () => {
   let pipe: ErrorTextPipe;
