@@ -320,8 +320,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
 # Unit Testing Guidelines
 
-Фреймворк: **Vitest** + **jsdom** (для messenger-client).
-Паттерны основаны на практиках из **mono-shared** (Jest) и **Angular Material** (Jasmine).
+Фреймворк: **Jest** + **jest-preset-angular** + **jsdom**.
+Паттерны основаны на практиках из **mono-shared** и **Angular Material**.
 
 ---
 
@@ -396,7 +396,7 @@ it('should truncate text longer than maxLength', () => {
 // Async — fakeAsync
 it('should update search results after debounce', fakeAsync(() => {
   // Arrange
-  const searchSpy = vi.spyOn(searchService, 'search').mockReturnValue(of(mockResults));
+  const searchSpy = jest.spyOn(searchService, 'search').mockReturnValue(of(mockResults));
 
   // Act
   component.onSearchInput('angular');
@@ -502,8 +502,8 @@ beforeEach(() => {
       {
         provide: ChatService,
         useValue: {
-          getChats: vi.fn().mockReturnValue(of(mockChats)),
-          sendMessage: vi.fn().mockReturnValue(of(mockMessage)),
+          getChats: jest.fn().mockReturnValue(of(mockChats)),
+          sendMessage: jest.fn().mockReturnValue(of(mockMessage)),
         },
       },
     ],
@@ -524,7 +524,7 @@ beforeEach(() => {
 })
 class TestHostComponent {
   public message = mockMessage;
-  public onDeleted = vi.fn();
+  public onDeleted = jest.fn();
 }
 
 beforeEach(() => {
@@ -558,25 +558,25 @@ describe('TruncatePipe', () => {
 
 ## 4. Мокирование
 
-### Сервисы — через `useValue` с `vi.fn()`
+### Сервисы — через `useValue` с `jest.fn()`
 
 ```typescript
 {
   provide: AuthService,
   useValue: {
-    login: vi.fn().mockReturnValue(of(mockUser)),
-    logout: vi.fn(),
-    isAuthenticated: vi.fn().mockReturnValue(true),
+    login: jest.fn().mockReturnValue(of(mockUser)),
+    logout: jest.fn(),
+    isAuthenticated: jest.fn().mockReturnValue(true),
   },
 }
 ```
 
-### Модули/функции — через `vi.mock()`
+### Модули/функции — через `jest.mock()`
 
 ```typescript
-vi.mock('../services/api.service', () => ({
-  ApiService: vi.fn().mockImplementation(() => ({
-    get: vi.fn().mockReturnValue(of([])),
+jest.mock('../services/api.service', () => ({
+  ApiService: jest.fn().mockImplementation(() => ({
+    get: jest.fn().mockReturnValue(of([])),
   })),
 }));
 ```
@@ -671,7 +671,7 @@ it('should emit current user', async () => {
 
 ```typescript
 const click$ = new Subject<MouseEvent>();
-vi.spyOn(service, 'onClick$', 'get').mockReturnValue(click$);
+jest.spyOn(service, 'onClick$', 'get').mockReturnValue(click$);
 
 click$.next(new MouseEvent('click'));
 fixture.detectChanges();
@@ -712,7 +712,7 @@ it('default state', () => {
 | Computed signals | `expect(component.fullName()).toBe(...)` |
 | Условный рендеринг | `@if` / `@for` — проверить наличие/отсутствие элементов |
 | Events | `element.click(); fixture.detectChanges()` |
-| Output emissions | `vi.spyOn(component.clicked, 'emit')` |
+| Output emissions | `jest.spyOn(component.clicked, 'emit')` |
 | Form control integration | `writeValue`, `validate`, `setDisabledState` |
 
 ### Сервисы

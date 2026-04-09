@@ -27,7 +27,7 @@ Angular 21 single-page application — текстовый мессенджер (
 - **Formatter**: Prettier (100 chars, single quotes, angular HTML parser)
 - **Package manager**: npm
 - **No SSR** — client-only SPA
-- **Mock API**: dev-only через `MockApiInterceptor` в `main.ts`, prod uses `main.prod.ts` via `fileReplacements`
+- **Mock API**: dev-only — `src/mock-api/`, подключается через `MockApiInterceptor` в `main.ts`
 
 ## Code Style Rules
 
@@ -38,7 +38,9 @@ Angular 21 single-page application — текстовый мессенджер (
 - External templateUrl/styleUrl
 - host: {} для bindings, prefix `app-` или `ui-kit-` для ui-kit компонентов, Emulated encapsulation (None только для overlay)
 - inject() всегда, constructor injection запрещён
-- createDestroyer() для cleanup подписок
+- `private readonly destroyer = createDestroyer()` — универсальный паттерн cleanup для любых подписок (импорт из `@shared/utils/create-destroyer`)
+- Использование: `.pipe(this.destroyer())` — работает для долгоживущих подписок и one-shot HTTP
+- Флаги `isLoading`/`isSubmitting` сбрасываются явно в **обоих** ветках — `next:` и `error:`
 
 ### Signals
 - input(), output(), model(), computed(), signal(), linkedSignal(), toSignal()
@@ -62,6 +64,7 @@ Angular 21 single-page application — текстовый мессенджер (
 
 ### Маршрутизация
 - loadComponent lazy loading, функциональные guards/interceptors, wildcard route
+- В interceptor для пропуска URL использовать `startsWith`, не `includes` (includes ложно срабатывает на query params)
 
 ### SCSS
 - CSS custom properties, :host, host-классы для размеров, max 3 уровня nesting, @use mixins
@@ -73,10 +76,12 @@ Angular 21 single-page application — текстовый мессенджер (
 - Boolean: isLoading, isEmpty, hasPrefix (is/has prefix)
 - Типы компонента в *.types.ts рядом
 - File suffixes: *.component.ts, *.service.ts, *.directive.ts, *.pipe.ts, *.token.ts
-- Path aliases: @app/*, @core/*, @shared/*, @state/*, @pages/*, @mock/*
+- Path aliases: @app/*, @core/*, @shared/*, @state/*, @pages/*, @mock-api/*
+- **Без сокращений в именах переменных**: `request` не `req`, `response` не `res`, `error` не `err`, `control` не `ctrl`, `subscription` не `sub`, `button` не `btn`. CSS-классы (`btn-primary`) — исключение.
 
 ### Тестирование
 - Jest + jsdom, паттерн AAA (Arrange-Act-Assert) с пустыми строками-разделителями
+- Coverage threshold: 80% (statements/branches/functions/lines) — обязательно
 - Структура: Model / View / Events / Integration
 - jest.fn() моки, provideHttpClientTesting, fakeAsync+tick, data-testid селекторы
 - Snapshots только для default state presentational-компонентов
@@ -84,6 +89,13 @@ Angular 21 single-page application — текстовый мессенджер (
 
 ## Conventions
 
+### Структура файлов
+- Если у сущности есть `.spec.ts` — оба файла заворачиваются в папку с именем сущности:
+  `services/auth/auth.service.ts` + `services/auth/auth.service.spec.ts`
+- Файлы без спеков (interfaces, tokens, models) лежат напрямую в своей директории
+- Правило: сущности разных модулей не должны лежать вперемешку в одной папке
+
+### TypeScript / Angular
 - Standalone components only (no NgModules)
 - Strict TypeScript: strict, noImplicitOverride, noImplicitReturns, noFallthroughCasesInSwitch
 - Strict Angular templates: strictTemplates, strictInjectionParameters, strictInputAccessModifiers
@@ -118,8 +130,8 @@ Angular 21 single-page application — текстовый мессенджер (
 │       ├── specs/
 │       └── plans/
 └── src/
-    ├── main.ts                        # Dev точка входа (с MockApiInterceptor)
-    ├── main.prod.ts                   # Prod точка входа (чистый)
+    ├── main.ts                        # Точка входа
+    ├── mock-api/                      # Фейковый REST API (dev-only, подключается в main.ts)
     ├── index.html                     # Корневой HTML (data-theme="dark", Google Fonts)
     ├── styles.scss                    # Глобальные стили (reset, ambient bg, ui-kit-input)
     ├── styles/                        # SCSS-утилиты
@@ -130,7 +142,15 @@ Angular 21 single-page application — текстовый мессенджер (
         ├── app.config.ts              # Провайдеры (router, httpClient)
         ├── app.routes.ts              # Маршруты (/login, /, **)
         │
-        ├── core/                      # Синглтоны: сервисы, guards, interceptors, модели
+        ├── core/                      # Синглтоны: сервисы, guards, interceptors
+        │   └── auth/                  # Auth модуль
+        │       ├── guards/            # authGuard, guestGuard
+        │       ├── interceptors/      # authInterceptor
+        │       ├── interfaces/        # ILoginRequest, ILoginResponse, IRefreshResponse
+        │       ├── models/            # JwtToken
+        │       ├── providers/         # provideAuth(config?)
+        │       ├── services/          # AuthService, TokenStorageService
+        │       └── tokens/            # AUTH_CONFIG + IAuthConfig
         │
         ├── state/                     # Управление состоянием (state management)
         │
@@ -143,6 +163,7 @@ Angular 21 single-page application — текстовый мессенджер (
         │       └── internal-layout.component.ts/html/scss/spec.ts
         │
         ├── shared/
+        │   ├── dtos/                  # DTO-интерфейсы (IUserDto и др.)
         │   └── ui-kit/                # Переиспользуемые UI-компоненты
         │       ├── button/            # ButtonComponent (primary/secondary, fullWidth)
         │       │   └── index.ts
@@ -165,10 +186,6 @@ Angular 21 single-page application — текстовый мессенджер (
         │           ├── form-field.token.ts         # FORM_FIELD + IFormField
         │           ├── form-field-control.token.ts  # FORM_FIELD_CONTROL + IFormFieldControl
         │           └── index.ts
-        │
-        └── mock/                      # Фейковый REST API (dev-only)
-            ├── db.json
-            └── mock-api.interceptor.ts
 ```
 
 ## UI-Kit Architecture
@@ -183,6 +200,15 @@ Angular 21 single-page application — текстовый мессенджер (
 - **wrapValidator(validatorFn, customKey)** — оборачивает стандартный валидатор, ремапит error key
 
 Каждый ui-kit компонент имеет `index.ts` barrel export.
+
+## Auth Configuration
+
+`provideAuth(config?: Partial<IAuthConfig>)` — вызывается в `app.config.ts`, принимает опциональный конфиг:
+
+- `authUrl` — базовый URL провайдера токенов (default: `'/api/auth'`). Используется в `AuthService` (login/refresh) и в `authInterceptor` (пропуск без Bearer-заголовка)
+- `storageKeys.accessToken` / `storageKeys.refreshToken` — ключи localStorage (defaults: `'access_token'` / `'refresh_token'`)
+
+Токен `AUTH_CONFIG` инжектируется в `AuthService`, `TokenStorageService`, `authInterceptor`.
 
 ## Data Flow
 
