@@ -1,15 +1,17 @@
 import { Routes } from '@angular/router';
+import { ChatComponent } from '@pages/chat/chat.component';
+import { NoChatComponent } from '@pages/no-chat/no-chat.component';
 
 export const internalRoutes: Routes = [
   {
+    // Eagerly loaded: these are the primary screens rendered immediately
+    // with the internal layout — no lazy-load delay on first open.
     path: '',
-    loadComponent: () =>
-      import('@pages/no-chat/no-chat.component').then(m => m.NoChatComponent),
+    component: NoChatComponent,
   },
   {
     path: 'chat/:id',
-    loadComponent: () =>
-      import('@pages/chat/chat.component').then(m => m.ChatComponent),
+    component: ChatComponent,
   },
   {
     path: 'profile',

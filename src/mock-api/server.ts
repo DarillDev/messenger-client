@@ -61,22 +61,131 @@ export const users: IUser[] = [
 ];
 
 export const messagesByChat: Record<string, IMessage[]> = {
+  // Stepan ↔ Alex
   c1: [
-    { id: 'msg-c1-1', chatId: 'c1', senderId: 'u2', text: 'Привет! Как дела?', createdAt: '2026-04-10T08:00:00.000Z' },
-    { id: 'msg-c1-2', chatId: 'c1', senderId: 'u1', text: 'Отлично, работаю над проектом!', createdAt: '2026-04-10T08:01:00.000Z' },
-    { id: 'msg-c1-3', chatId: 'c1', senderId: 'u2', text: 'Интересно, расскажи подробнее', createdAt: '2026-04-10T08:02:00.000Z' },
+    {
+      id: 'msg-c1-1',
+      chatId: 'c1',
+      senderId: 'u2',
+      text: 'Привет! Как дела?',
+      createdAt: '2026-04-10T08:00:00.000Z',
+    },
+    {
+      id: 'msg-c1-2',
+      chatId: 'c1',
+      senderId: 'u1',
+      text: 'Отлично, работаю над проектом!',
+      createdAt: '2026-04-10T08:01:00.000Z',
+    },
+    {
+      id: 'msg-c1-3',
+      chatId: 'c1',
+      senderId: 'u2',
+      text: 'Интересно, расскажи подробнее',
+      createdAt: '2026-04-10T08:02:00.000Z',
+    },
   ],
+  // Stepan ↔ Maria
   c2: [
-    { id: 'msg-c2-1', chatId: 'c2', senderId: 'u1', text: 'Мария, ты сегодня онлайн?', createdAt: '2026-04-09T18:00:00.000Z' },
-    { id: 'msg-c2-2', chatId: 'c2', senderId: 'u3', text: 'Да, только зашла', createdAt: '2026-04-09T18:05:00.000Z' },
+    {
+      id: 'msg-c2-1',
+      chatId: 'c2',
+      senderId: 'u1',
+      text: 'Мария, ты сегодня онлайн?',
+      createdAt: '2026-04-09T18:00:00.000Z',
+    },
+    {
+      id: 'msg-c2-2',
+      chatId: 'c2',
+      senderId: 'u3',
+      text: 'Да, только зашла',
+      createdAt: '2026-04-09T18:05:00.000Z',
+    },
   ],
+  // Stepan ↔ Denis
   c3: [
-    { id: 'msg-c3-1', chatId: 'c3', senderId: 'u4', text: 'Денис здесь', createdAt: '2026-04-08T12:00:00.000Z' },
-    { id: 'msg-c3-2', chatId: 'c3', senderId: 'u1', text: 'Привет Денис!', createdAt: '2026-04-08T12:01:00.000Z' },
+    {
+      id: 'msg-c3-1',
+      chatId: 'c3',
+      senderId: 'u4',
+      text: 'Денис здесь',
+      createdAt: '2026-04-08T12:00:00.000Z',
+    },
+    {
+      id: 'msg-c3-2',
+      chatId: 'c3',
+      senderId: 'u1',
+      text: 'Привет Денис!',
+      createdAt: '2026-04-08T12:01:00.000Z',
+    },
   ],
+  // Stepan ↔ Olga
   c4: [
-    { id: 'msg-c4-1', chatId: 'c4', senderId: 'u5', text: 'Можем созвониться?', createdAt: '2026-04-07T15:00:00.000Z' },
-    { id: 'msg-c4-2', chatId: 'c4', senderId: 'u1', text: 'Конечно, когда?', createdAt: '2026-04-07T15:02:00.000Z' },
+    {
+      id: 'msg-c4-1',
+      chatId: 'c4',
+      senderId: 'u5',
+      text: 'Можем созвониться?',
+      createdAt: '2026-04-07T15:00:00.000Z',
+    },
+    {
+      id: 'msg-c4-2',
+      chatId: 'c4',
+      senderId: 'u1',
+      text: 'Конечно, когда?',
+      createdAt: '2026-04-07T15:02:00.000Z',
+    },
+  ],
+  // Alex ↔ Maria
+  c5: [
+    {
+      id: 'msg-c5-1',
+      chatId: 'c5',
+      senderId: 'u3',
+      text: 'Alex, видел новый релиз?',
+      createdAt: '2026-04-10T09:00:00.000Z',
+    },
+    {
+      id: 'msg-c5-2',
+      chatId: 'c5',
+      senderId: 'u2',
+      text: 'Да, уже смотрю!',
+      createdAt: '2026-04-10T09:05:00.000Z',
+    },
+  ],
+  // Alex ↔ Denis
+  c6: [
+    {
+      id: 'msg-c6-1',
+      chatId: 'c6',
+      senderId: 'u2',
+      text: 'Denis, встреча в 15:00?',
+      createdAt: '2026-04-09T10:00:00.000Z',
+    },
+    {
+      id: 'msg-c6-2',
+      chatId: 'c6',
+      senderId: 'u4',
+      text: 'Буду',
+      createdAt: '2026-04-09T10:02:00.000Z',
+    },
+  ],
+  // Alex ↔ Olga
+  c7: [
+    {
+      id: 'msg-c7-1',
+      chatId: 'c7',
+      senderId: 'u5',
+      text: 'Привет! Как проект?',
+      createdAt: '2026-04-08T16:00:00.000Z',
+    },
+    {
+      id: 'msg-c7-2',
+      chatId: 'c7',
+      senderId: 'u2',
+      text: 'В процессе',
+      createdAt: '2026-04-08T16:10:00.000Z',
+    },
   ],
 };
 
@@ -107,6 +216,27 @@ export const chats: IChat[] = [
     participantIds: ['u1', 'u5'],
     lastMessage: messagesByChat['c4'][messagesByChat['c4'].length - 1],
     updatedAt: '2026-04-07T15:02:00.000Z',
+    unreadCount: 0,
+  },
+  {
+    id: 'c5',
+    participantIds: ['u2', 'u3'],
+    lastMessage: messagesByChat['c5'][messagesByChat['c5'].length - 1],
+    updatedAt: '2026-04-10T09:05:00.000Z',
+    unreadCount: 1,
+  },
+  {
+    id: 'c6',
+    participantIds: ['u2', 'u4'],
+    lastMessage: messagesByChat['c6'][messagesByChat['c6'].length - 1],
+    updatedAt: '2026-04-09T10:02:00.000Z',
+    unreadCount: 0,
+  },
+  {
+    id: 'c7',
+    participantIds: ['u2', 'u5'],
+    lastMessage: messagesByChat['c7'][messagesByChat['c7'].length - 1],
+    updatedAt: '2026-04-08T16:10:00.000Z',
     unreadCount: 0,
   },
 ];
@@ -268,10 +398,7 @@ class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('message:send')
-  public handleMessageSend(
-    client: Socket,
-    payload: { chatId: string; text: string },
-  ): void {
+  public handleMessageSend(client: Socket, payload: { chatId: string; text: string }): void {
     const senderId = client.data['userId'] as string;
 
     const message: IMessage = {

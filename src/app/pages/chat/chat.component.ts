@@ -10,7 +10,6 @@ import { ChatStore } from '@store/chat/chat.store';
 import { UserStore } from '@store/user/user.store';
 import { map } from 'rxjs';
 
-
 @Component({
   selector: 'app-chat',
   imports: [MessageBubbleComponent, DateDividerComponent],
@@ -32,18 +31,24 @@ export class ChatComponent {
 
   protected readonly activeChat = computed(() => {
     const id = this.chatId();
+
     return id ? this.chatStore.chats().find(c => c.id === id) : undefined;
   });
 
   protected readonly messages = computed(() => {
     const id = this.chatId();
+
     return id ? (this.messageStore.messagesByChatId()[id] ?? []) : [];
   });
 
   protected readonly typingUsers = computed(() => {
     const id = this.chatId();
-    if (!id) return [];
+    if (!id) {
+      return [];
+    }
+
     const typingIds = this.messageStore.typingByChatId()[id] ?? [];
+
     return typingIds.filter(userId => userId !== this.userStore.currentUser()?.userId);
   });
 
@@ -55,6 +60,7 @@ export class ChatComponent {
   constructor() {
     effect(() => {
       const id = this.chatId();
+
       if (id) {
         this.messageStore.loadMessages(id);
       }
@@ -62,6 +68,7 @@ export class ChatComponent {
 
     effect(() => {
       this.messages();
+
       queueMicrotask(() => {
         this.messagesEndRef()?.nativeElement.scrollIntoView({ behavior: 'smooth' });
       });
@@ -78,7 +85,9 @@ export class ChatComponent {
     const text = this.messageText().trim();
     const chatId = this.chatId();
 
-    if (!text || !chatId) return;
+    if (!text || !chatId) {
+      return;
+    }
 
     this.messagesService.emit('message:send', { chatId, text });
     this.messageText.set('');
@@ -102,14 +111,19 @@ export class ChatComponent {
 
   private handleTyping(): void {
     const chatId = this.chatId();
-    if (!chatId) return;
+
+    if (!chatId) {
+      return;
+    }
 
     if (!this.isTyping) {
       this.isTyping = true;
       this.messagesService.emit('typing:start', { chatId });
     }
 
-    if (this.typingTimer) clearTimeout(this.typingTimer);
+    if (this.typingTimer) {
+      clearTimeout(this.typingTimer);
+    }
 
     this.typingTimer = setTimeout(() => {
       this.stopTyping();
@@ -122,6 +136,7 @@ export class ChatComponent {
       this.isTyping = false;
       this.messagesService.emit('typing:stop', { chatId });
     }
+
     if (this.typingTimer) {
       clearTimeout(this.typingTimer);
       this.typingTimer = null;

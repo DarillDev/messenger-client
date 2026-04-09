@@ -28,7 +28,7 @@ import type { IFormField } from '../../tokens/form-field.token';
 export class FormFieldComponent implements IFormField {
   private readonly cdr = inject(ChangeDetectorRef);
 
-  public readonly label = input.required<string>();
+  public readonly label = input('');
   public readonly hint = input('');
   public readonly isFloatingLabel = input(false);
   public readonly errorMessages = input<Record<string, string>>({});
