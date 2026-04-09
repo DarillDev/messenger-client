@@ -2,27 +2,26 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
-import { SocketService } from '@core/socket/services/socket/socket.service';
-import { IMessageDto } from '@shared/dtos/message-dto.interface';
+import { APPLICATION_ENVIRONMENT } from '@core/environment/application-environment.token';
+import { MessagesService } from '@pages/chat/services/messages/messages.service';
+import { IMessage } from '@shared/interfaces/message.interface';
 import { ChatStore } from '@store/chat/chat.store';
-import { MessageStore } from '@store/message/message.store';
+import { MessageStore } from '@pages/chat/store/message/message.store';
 import { UserStore } from '@store/user/user.store';
 import { of } from 'rxjs';
 
 import { ChatComponent } from './chat.component';
 
-const mockMessages: IMessageDto[] = [
-  { id: 'msg-1', chatId: 'c1', senderId: 'u2', text: 'Hi!', createdAt: '2026-04-10T10:00:00.000Z' },
-  { id: 'msg-2', chatId: 'c1', senderId: 'u1', text: 'Hello!', createdAt: '2026-04-10T10:01:00.000Z' },
+const mockMessages: IMessage[] = [
+  { id: 'msg-1', chatId: 'c1', senderId: 'u2', text: 'Hi!', createdAt: new Date('2026-04-10T10:00:00.000Z') },
+  { id: 'msg-2', chatId: 'c1', senderId: 'u1', text: 'Hello!', createdAt: new Date('2026-04-10T10:01:00.000Z') },
 ];
 
 describe('ChatComponent', () => {
   let fixture: ComponentFixture<ChatComponent>;
   let messageStore: InstanceType<typeof MessageStore>;
 
-  const mockSocketService = {
-    connect: jest.fn(),
-    disconnect: jest.fn(),
+  const mockMessagesService = {
     emit: jest.fn(),
   };
 
@@ -41,7 +40,8 @@ describe('ChatComponent', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         provideRouter([]),
-        { provide: SocketService, useValue: mockSocketService },
+        { provide: APPLICATION_ENVIRONMENT, useValue: { apiUrl: '' } },
+        { provide: MessagesService, useValue: mockMessagesService },
         { provide: ActivatedRoute, useValue: { params: of({ id: 'c1' }) } },
       ],
     }).compileComponents();
@@ -57,7 +57,7 @@ describe('ChatComponent', () => {
   describe('View', () => {
     it('should render message bubbles', () => {
       fixture.detectChanges();
-      const bubbles = fixture.nativeElement.querySelectorAll('app-message-bubble');
+      const bubbles = fixture.nativeElement.querySelectorAll('ui-kit-message-bubble');
       expect(bubbles).toHaveLength(2);
     });
 
@@ -86,7 +86,7 @@ describe('ChatComponent', () => {
       fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit'));
       fixture.detectChanges();
 
-      expect(mockSocketService.emit).toHaveBeenCalledWith('message:send', {
+      expect(mockMessagesService.emit).toHaveBeenCalledWith('message:send', {
         chatId: 'c1',
         text: 'Test message',
       });
@@ -110,7 +110,7 @@ describe('ChatComponent', () => {
     it('should not emit when message is empty', () => {
       fixture.detectChanges();
       fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit'));
-      expect(mockSocketService.emit).not.toHaveBeenCalledWith('message:send', expect.anything());
+      expect(mockMessagesService.emit).not.toHaveBeenCalledWith('message:send', expect.anything());
     });
 
     it('should submit on Enter key without Shift', () => {
@@ -126,7 +126,7 @@ describe('ChatComponent', () => {
       const enterEvent = new KeyboardEvent('keydown', { key: 'Enter', shiftKey: false });
       input.dispatchEvent(enterEvent);
 
-      expect(mockSocketService.emit).toHaveBeenCalledWith('message:send', {
+      expect(mockMessagesService.emit).toHaveBeenCalledWith('message:send', {
         chatId: 'c1',
         text: 'Enter message',
       });
@@ -145,7 +145,7 @@ describe('ChatComponent', () => {
       const shiftEnterEvent = new KeyboardEvent('keydown', { key: 'Enter', shiftKey: true });
       input.dispatchEvent(shiftEnterEvent);
 
-      expect(mockSocketService.emit).not.toHaveBeenCalledWith('message:send', expect.anything());
+      expect(mockMessagesService.emit).not.toHaveBeenCalledWith('message:send', expect.anything());
     });
 
     it('should emit typing:start when user types', () => {
@@ -158,7 +158,7 @@ describe('ChatComponent', () => {
       input.dispatchEvent(new Event('input'));
       fixture.detectChanges();
 
-      expect(mockSocketService.emit).toHaveBeenCalledWith('typing:start', { chatId: 'c1' });
+      expect(mockMessagesService.emit).toHaveBeenCalledWith('typing:start', { chatId: 'c1' });
     });
 
     it('should emit typing:stop after typing timer expires', () => {
@@ -174,9 +174,88 @@ describe('ChatComponent', () => {
 
       jest.advanceTimersByTime(1000);
 
-      expect(mockSocketService.emit).toHaveBeenCalledWith('typing:stop', { chatId: 'c1' });
+      expect(mockMessagesService.emit).toHaveBeenCalledWith('typing:stop', { chatId: 'c1' });
 
       jest.useRealTimers();
     });
+
+    it('should reset typing state when stopTyping is called while not typing', () => {
+      jest.useFakeTimers({ doNotFake: ['queueMicrotask'] });
+      fixture.detectChanges();
+
+      // onSubmit calls stopTyping internally — without starting typing first
+      // this exercises the !this.isTyping branch in stopTyping
+      fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit'));
+
+      expect(mockMessagesService.emit).not.toHaveBeenCalledWith('typing:stop', expect.anything());
+
+      jest.useRealTimers();
+    });
+  });
+});
+
+describe('ChatComponent (no chatId)', () => {
+  let fixture: ComponentFixture<ChatComponent>;
+
+  const mockMessagesServiceNoChat = {
+    emit: jest.fn(),
+  };
+
+  beforeEach(async () => {
+    jest.clearAllMocks();
+    window.HTMLElement.prototype.scrollIntoView = jest.fn();
+
+    await TestBed.configureTestingModule({
+      imports: [ChatComponent],
+      providers: [
+        ChatStore,
+        MessageStore,
+        UserStore,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        { provide: APPLICATION_ENVIRONMENT, useValue: { apiUrl: '' } },
+        { provide: MessagesService, useValue: mockMessagesServiceNoChat },
+        { provide: ActivatedRoute, useValue: { params: of({}) } },
+      ],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(ChatComponent);
+  });
+
+  it('should render without messages when chatId is absent', () => {
+    fixture.detectChanges();
+
+    const bubbles = fixture.nativeElement.querySelectorAll('ui-kit-message-bubble');
+
+    expect(bubbles).toHaveLength(0);
+  });
+
+  it('should not emit message:send when chatId is absent', () => {
+    fixture.detectChanges();
+
+    const input = fixture.nativeElement.querySelector(
+      '[data-testid="message-input"]',
+    ) as HTMLTextAreaElement;
+    input.value = 'Hello';
+    input.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit'));
+
+    expect(mockMessagesServiceNoChat.emit).not.toHaveBeenCalledWith('message:send', expect.anything());
+  });
+
+  it('should not emit typing:start when chatId is absent', () => {
+    fixture.detectChanges();
+
+    const input = fixture.nativeElement.querySelector(
+      '[data-testid="message-input"]',
+    ) as HTMLTextAreaElement;
+    input.value = 'typing...';
+    input.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    expect(mockMessagesServiceNoChat.emit).not.toHaveBeenCalledWith('typing:start', expect.anything());
   });
 });

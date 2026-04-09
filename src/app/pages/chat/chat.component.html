@@ -20,9 +20,9 @@
   <div class="messages">
     @for (message of messages(); track message.id; let index = $index) {
       @if (getPrevMessage(index) === undefined || getDayLabel(getPrevMessage(index)!.createdAt) !== getDayLabel(message.createdAt)) {
-        <app-date-divider [date]="message.createdAt" />
+        <ui-kit-date-divider [date]="getDayLabel(message.createdAt)" />
       }
-      <app-message-bubble [message]="message" />
+      <ui-kit-message-bubble [message]="message" />
     }
 
     @if (typingUsers().length > 0) {

@@ -1,14 +1,15 @@
 import { Component, computed, effect, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { SocketService } from '@core/socket/services/socket/socket.service';
+import { MessagesService } from '@pages/chat/services/messages/messages.service';
+import { MessageStore } from '@pages/chat/store/message/message.store';
+import { IMessage } from '@shared/interfaces/message.interface';
 import { ChatStore } from '@store/chat/chat.store';
-import { MessageStore } from '@store/message/message.store';
 import { UserStore } from '@store/user/user.store';
 import { map } from 'rxjs';
 
-import { DateDividerComponent } from './components/date-divider/date-divider.component';
-import { MessageBubbleComponent } from './components/message-bubble/message-bubble.component';
+import { DateDividerComponent } from '@shared/ui-kit/date-divider';
+import { MessageBubbleComponent } from '@shared/ui-kit/message-bubble';
 
 @Component({
   selector: 'app-chat',
@@ -21,7 +22,7 @@ export class ChatComponent {
   private readonly messageStore = inject(MessageStore);
   private readonly chatStore = inject(ChatStore);
   private readonly userStore = inject(UserStore);
-  private readonly socketService = inject(SocketService);
+  private readonly messagesService = inject(MessagesService);
 
   private readonly messagesEndRef = viewChild<ElementRef<HTMLDivElement>>('messagesEnd');
 
@@ -79,7 +80,7 @@ export class ChatComponent {
 
     if (!text || !chatId) return;
 
-    this.socketService.emit('message:send', { chatId, text });
+    this.messagesService.emit('message:send', { chatId, text });
     this.messageText.set('');
     this.stopTyping();
   }
@@ -95,7 +96,7 @@ export class ChatComponent {
     return date.toDateString();
   }
 
-  protected getPrevMessage(index: number): { createdAt: Date } | undefined {
+  protected getPrevMessage(index: number): IMessage | undefined {
     return index > 0 ? this.messages()[index - 1] : undefined;
   }
 
@@ -105,7 +106,7 @@ export class ChatComponent {
 
     if (!this.isTyping) {
       this.isTyping = true;
-      this.socketService.emit('typing:start', { chatId });
+      this.messagesService.emit('typing:start', { chatId });
     }
 
     if (this.typingTimer) clearTimeout(this.typingTimer);
@@ -119,7 +120,7 @@ export class ChatComponent {
     const chatId = this.chatId();
     if (this.isTyping && chatId) {
       this.isTyping = false;
-      this.socketService.emit('typing:stop', { chatId });
+      this.messagesService.emit('typing:stop', { chatId });
     }
     if (this.typingTimer) {
       clearTimeout(this.typingTimer);
