@@ -16,7 +16,7 @@
 
 <div class="chat-list">
   @for (chat of filteredChats(); track chat.id) {
-    <app-chat-item [chat]="chat" />
+    <ui-kit-chat-item [chat]="chat" />
   } @empty {
     <p class="no-results">Чаты не найдены</p>
   }
