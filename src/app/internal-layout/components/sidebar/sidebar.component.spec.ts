@@ -62,7 +62,7 @@ describe('SidebarComponent', () => {
       ]);
       fixture.detectChanges();
 
-      const items = fixture.nativeElement.querySelectorAll('app-chat-item');
+      const items = fixture.nativeElement.querySelectorAll('ui-kit-chat-item');
       expect(items).toHaveLength(2);
     });
 
@@ -81,7 +81,7 @@ describe('SidebarComponent', () => {
       searchInput.dispatchEvent(new Event('input'));
       fixture.detectChanges();
 
-      expect(fixture.nativeElement.querySelectorAll('app-chat-item')).toHaveLength(1);
+      expect(fixture.nativeElement.querySelectorAll('ui-kit-chat-item')).toHaveLength(1);
     });
 
     it('should show no-results message when no chats match', () => {
