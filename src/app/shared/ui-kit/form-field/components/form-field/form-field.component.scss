@@ -1,0 +1,128 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.form-field-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.form-field-infix {
+  flex: 1;
+  position: relative;
+  min-width: 0;
+}
+
+// Static label (default)
+.form-field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  transition: color 0.2s var(--ease-out);
+}
+
+.form-field.focused .form-field-label {
+  color: var(--accent);
+}
+
+.form-field.error .form-field-label {
+  color: var(--accent-warm);
+}
+
+// Floating label
+.form-field.floating .form-field-label {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  transform: translateY(-50%);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--text-muted);
+  pointer-events: none;
+  margin-bottom: 0;
+  transition: all 0.2s var(--ease-out);
+  transform-origin: left top;
+}
+
+.form-field.floating.focused .form-field-label,
+.form-field.floating.filled .form-field-label {
+  top: 0;
+  transform: translateY(-100%) translateY(-4px);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.form-field.floating.focused .form-field-label {
+  color: var(--accent);
+}
+
+.form-field.floating.error .form-field-label {
+  color: var(--accent-warm);
+}
+
+.form-field-prefix,
+.form-field-suffix {
+  display: flex;
+  align-items: center;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.form-field-prefix {
+  margin-right: 8px;
+}
+
+.form-field-suffix {
+  margin-left: 8px;
+}
+
+.form-field-subscript {
+  min-height: 20px;
+  padding-top: 6px;
+  padding-left: 2px;
+}
+
+.form-field-error {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--accent-warm);
+  animation: shakeIn 0.35s var(--ease-spring);
+
+  .material-icons-round {
+    font-size: 15px;
+  }
+}
+
+.form-field-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+@keyframes shakeIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+
+  50% {
+    transform: translateX(3px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

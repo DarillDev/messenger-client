@@ -1,0 +1,40 @@
+@if (control(); as ctrl) {
+  <div
+    class="form-field"
+    [class.floating]="isFloatingLabel()"
+    [class.focused]="ctrl.isFocused"
+    [class.filled]="!ctrl.isEmpty"
+    [class.error]="ctrl.isErrorState"
+    [class.disabled]="ctrl.isDisabled"
+  >
+    <div class="form-field-wrapper">
+      @if (hasPrefix()) {
+        <div class="form-field-prefix">
+          <ng-content select="[uiKitPrefix]" />
+        </div>
+      }
+
+      <div class="form-field-infix">
+        <label class="form-field-label" [attr.for]="controlId()">{{ label() }}</label>
+        <ng-content />
+      </div>
+
+      @if (hasSuffix()) {
+        <div class="form-field-suffix">
+          <ng-content select="[uiKitSuffix]" />
+        </div>
+      }
+    </div>
+
+    <div class="form-field-subscript">
+      @if (ctrl.isErrorState && (ctrl.ngControl?.errors | errorText: errorMessages()); as text) {
+        <div class="form-field-error">
+          <span class="material-icons-round">error_outline</span>
+          <span>{{ text }}</span>
+        </div>
+      } @else if (hint()) {
+        <div class="form-field-hint">{{ hint() }}</div>
+      }
+    </div>
+  </div>
+}
