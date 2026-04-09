@@ -1,7 +1,8 @@
 import { inject, Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
 import { IChat } from '@shared/interfaces/chat.interface';
 import { IMessage } from '@shared/interfaces/message.interface';
+import { map, Observable } from 'rxjs';
+
 import { ChatMapper } from '../../mappers/chat/chat.mapper';
 import { MessageMapper } from '../../mappers/message/message.mapper';
 import { ChatApiService } from '../chat-api/chat-api.service';

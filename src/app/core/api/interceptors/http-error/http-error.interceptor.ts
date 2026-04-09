@@ -11,6 +11,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (request, next) => {
     catchError((error: unknown) => {
       if (error instanceof TimeoutError) {
         void router.navigate(['/error']);
+        
         return throwError(() => error);
       }
 

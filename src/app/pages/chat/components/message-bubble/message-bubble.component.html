@@ -1,6 +1,0 @@
-<div class="msg-group" [class.sent]="isSent()" [class.received]="!isSent()">
-  <div class="msg-bubble">
-    <span data-testid="message-text">{{ message().text }}</span>
-  </div>
-  <span class="msg-time">{{ message().createdAt | date: 'HH:mm' }}</span>
-</div>

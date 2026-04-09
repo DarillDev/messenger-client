@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { HttpService } from '@core/api/http/http.service';
+import { Observable } from 'rxjs';
+
 import { IChatDto } from '../../dtos/chat-dto.interface';
 import { IMessageDto } from '../../dtos/message-dto.interface';
 
