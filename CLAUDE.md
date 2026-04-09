@@ -76,7 +76,7 @@ Angular 21 single-page application — текстовый мессенджер (
 - Boolean: isLoading, isEmpty, hasPrefix (is/has prefix)
 - Типы компонента в *.types.ts рядом
 - File suffixes: *.component.ts, *.service.ts, *.directive.ts, *.pipe.ts, *.token.ts
-- Path aliases: @app/*, @core/*, @shared/*, @state/*, @pages/*, @mock-api/*
+- Path aliases: @app/*, @core/*, @shared/*, @store/*, @pages/*, @mock-api/*
 - **Без сокращений в именах переменных**: `request` не `req`, `response` не `res`, `error` не `err`, `control` не `ctrl`, `subscription` не `sub`, `button` не `btn`. CSS-классы (`btn-primary`) — исключение.
 
 ### Тестирование

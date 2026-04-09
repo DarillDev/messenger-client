@@ -5,9 +5,9 @@ import {
   provideAppInitializer,
 } from '@angular/core';
 import { JwtToken } from '@core/auth/models/jwt-token';
-import { AppStore } from '@state/app/app.store';
-import { AuthStore } from '@state/auth/auth.store';
-import { UserStore } from '@state/user/user.store';
+import { AppStore } from '@store/app/app.store';
+import { AuthStore } from '@store/auth/auth.store';
+import { UserStore } from '@store/user/user.store';
 
 import { AuthService } from '../../services/auth/auth.service';
 import { TokenStorageService } from '../../services/token-storage/token-storage.service';

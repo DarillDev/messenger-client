@@ -1,7 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
-import { AuthStore } from '@state/auth/auth.store';
+import { AuthStore } from '@store/auth/auth.store';
 
 import { authGuard } from './auth.guard';
 

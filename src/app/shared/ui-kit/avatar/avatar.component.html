@@ -1,0 +1,6 @@
+<div class="avatar" [class]="colorClass">
+  {{ initial }}
+  @if (isOnline()) {
+    <span class="online-dot" data-testid="online-indicator"></span>
+  }
+</div>

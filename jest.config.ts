@@ -37,10 +37,12 @@ const config: Config = {
   ],
   coverageReporters: ['html', 'text-summary', 'json-summary'],
   moduleNameMapper: {
+    '^@angular/core/rxjs-interop$':
+      '<rootDir>/node_modules/@angular/core/fesm2022/rxjs-interop.mjs',
     '^@app/(.*)$': '<rootDir>/src/app/$1',
     '^@core/(.*)$': '<rootDir>/src/app/core/$1',
     '^@shared/(.*)$': '<rootDir>/src/app/shared/$1',
-    '^@state/(.*)$': '<rootDir>/src/app/state/$1',
+    '^@store/(.*)$': '<rootDir>/src/app/store/$1',
     '^@pages/(.*)$': '<rootDir>/src/app/pages/$1',
     '^@mock-api/(.*)$': '<rootDir>/src/mock-api/$1',
   },

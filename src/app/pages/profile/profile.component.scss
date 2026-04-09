@@ -1,0 +1,11 @@
+:host {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.stub {
+  color: var(--text-muted);
+  font-size: 14px;
+}

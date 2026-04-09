@@ -1,0 +1,23 @@
+<header class="sidebar-header">
+  <div class="sidebar-top">
+    <span class="sidebar-title">Сообщения</span>
+  </div>
+
+  <div class="search-box">
+    <span class="material-icons-round">search</span>
+    <input
+      type="text"
+      placeholder="Поиск..."
+      data-testid="search-input"
+      (input)="onSearchInput($event)"
+    />
+  </div>
+</header>
+
+<div class="chat-list">
+  @for (chat of filteredChats(); track chat.id) {
+    <ui-kit-chat-item [chat]="chat" />
+  } @empty {
+    <p class="no-results">Чаты не найдены</p>
+  }
+</div>

@@ -1,0 +1,23 @@
+<a
+  class="chat-item-link"
+  [routerLink]="['/chat', chat().id]"
+  routerLinkActive="active"
+>
+  <ui-kit-avatar
+    [userName]="chat().participant.userName"
+    [userId]="chat().participant.userId"
+    [isOnline]="chat().participant.isOnline"
+  />
+
+  <div class="info">
+    <div class="name-row">
+      <span class="name" data-testid="chat-name">{{ chat().participant.userName }}</span>
+      <span class="time">{{ chat().lastMessage.createdAt | date: 'HH:mm' }}</span>
+    </div>
+    <span class="preview" data-testid="chat-preview">{{ chat().lastMessage.text }}</span>
+  </div>
+
+  @if (chat().unreadCount > 0) {
+    <span class="badge" data-testid="unread-badge">{{ chat().unreadCount }}</span>
+  }
+</a>
