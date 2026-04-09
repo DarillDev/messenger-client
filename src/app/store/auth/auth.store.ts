@@ -1,6 +1,7 @@
 import { computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
+import { UserMapper } from '@core/api/controllers/user/mappers/user/user.mapper';
 import { ILoginRequest } from '@core/auth/interfaces/login-request.interface';
 import { ILoginResponse } from '@core/auth/interfaces/login-response.interface';
 import { IRefreshResponse } from '@core/auth/interfaces/refresh-response.interface';
@@ -45,7 +46,7 @@ export const AuthStore = signalStore(
             patchState(store, { token: jwtToken });
 
             tokenStorage.setTokens(response.accessToken, response.refreshToken);
-            userStore.setUser(response.user);
+            userStore.setUser(UserMapper.fromDto(response.user));
           }),
         );
       },

@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
-import { IMessageDto } from '@shared/dtos/message-dto.interface';
+import { IMessage } from '@shared/interfaces/message.interface';
 import { UserStore } from '@store/user/user.store';
 
 @Component({
@@ -12,7 +12,7 @@ import { UserStore } from '@store/user/user.store';
 export class MessageBubbleComponent {
   private readonly userStore = inject(UserStore);
 
-  public readonly message = input.required<IMessageDto>();
+  public readonly message = input.required<IMessage>();
 
   protected readonly isSent = computed(
     () => this.message().senderId === this.userStore.currentUser()?.userId,

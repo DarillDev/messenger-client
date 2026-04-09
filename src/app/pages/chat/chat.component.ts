@@ -91,11 +91,11 @@ export class ChatComponent {
     }
   }
 
-  protected getDayLabel(dateString: string): string {
-    return new Date(dateString).toDateString();
+  protected getDayLabel(date: Date): string {
+    return date.toDateString();
   }
 
-  protected getPrevMessage(index: number): { createdAt: string } | undefined {
+  protected getPrevMessage(index: number): { createdAt: Date } | undefined {
     return index > 0 ? this.messages()[index - 1] : undefined;
   }
 

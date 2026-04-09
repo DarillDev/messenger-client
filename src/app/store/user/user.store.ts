@@ -1,10 +1,10 @@
 import { computed } from '@angular/core';
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
-import { IUserDto } from '@shared/dtos/user-dto.interface';
+import { IUser } from '@shared/interfaces/user.interface';
 
 type TUserState = {
-  currentUser: IUserDto | null;
+  currentUser: IUser | null;
 };
 
 const initialState: TUserState = {
@@ -20,7 +20,7 @@ export const UserStore = signalStore(
     isOnline: computed(() => currentUser()?.isOnline),
   })),
   withMethods(store => ({
-    setUser(user: IUserDto): void {
+    setUser(user: IUser): void {
       patchState(store, { currentUser: user });
     },
     clear(): void {

@@ -1,4 +1,5 @@
 import { inject, Injectable } from '@angular/core';
+import { MessageMapper } from '@core/api/controllers/chat/mappers/message/message.mapper';
 import { TokenStorageService } from '@core/auth/services/token-storage/token-storage.service';
 import { IMessageDto } from '@shared/dtos/message-dto.interface';
 import { ChatStore } from '@store/chat/chat.store';
@@ -23,8 +24,9 @@ export class SocketService {
     });
 
     this.socket.on('message:new', ({ chatId, message }: { chatId: string; message: IMessageDto }) => {
-      this.messageStore.addMessage(chatId, message);
-      this.chatStore.updateLastMessage(message);
+      const mappedMessage = MessageMapper.fromDto(message);
+      this.messageStore.addMessage(chatId, mappedMessage);
+      this.chatStore.updateLastMessage(mappedMessage);
     });
 
     this.socket.on('typing', ({ chatId, userId, isTyping }: { chatId: string; userId: string; isTyping: boolean }) => {

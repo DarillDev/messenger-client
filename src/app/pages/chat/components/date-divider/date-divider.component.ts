@@ -12,5 +12,5 @@ registerLocaleData(localeRu);
   providers: [{ provide: LOCALE_ID, useValue: 'ru' }],
 })
 export class DateDividerComponent {
-  public readonly date = input.required<string>();
+  public readonly date = input.required<Date>();
 }

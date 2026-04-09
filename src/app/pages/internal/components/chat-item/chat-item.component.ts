@@ -1,7 +1,7 @@
 import { DatePipe, SlicePipe } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { IChatDto } from '@shared/dtos/chat-dto.interface';
+import { IChat } from '@shared/interfaces/chat.interface';
 
 @Component({
   selector: 'app-chat-item',
@@ -10,5 +10,5 @@ import { IChatDto } from '@shared/dtos/chat-dto.interface';
   styleUrl: './chat-item.component.scss',
 })
 export class ChatItemComponent {
-  public readonly chat = input.required<IChatDto>();
+  public readonly chat = input.required<IChat>();
 }

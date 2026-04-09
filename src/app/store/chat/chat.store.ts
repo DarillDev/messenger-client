@@ -1,13 +1,14 @@
 import { inject } from '@angular/core';
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
-import { ChatService } from '@core/chat/services/chat/chat.service';
+import { ChatService } from '@core/api/controllers/chat/services/chat/chat.service';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { IChatDto } from '@shared/dtos/chat-dto.interface';
-import { IMessageDto } from '@shared/dtos/message-dto.interface';
+import { IChat } from '@shared/interfaces/chat.interface';
+import { IMessage } from '@shared/interfaces/message.interface';
+import { IUser } from '@shared/interfaces/user.interface';
 import { createDestroyer } from '@shared/utils/create-destroyer';
 
 type TChatState = {
-  chats: IChatDto[];
+  chats: IChat[];
   isLoading: boolean;
 };
 
@@ -41,7 +42,7 @@ export const ChatStore = signalStore(
           });
       },
 
-      updateLastMessage(message: IMessageDto): void {
+      updateLastMessage(message: IMessage): void {
         patchState(store, state => ({
           chats: state.chats.map(chat =>
             chat.id === message.chatId
@@ -55,7 +56,7 @@ export const ChatStore = signalStore(
         patchState(store, state => ({
           chats: state.chats.map(chat =>
             chat.participant.userId === userId
-              ? { ...chat, participant: { ...chat.participant, isOnline } }
+              ? { ...chat, participant: { ...chat.participant, isOnline } as IUser }
               : chat,
           ),
         }));

@@ -1,12 +1,12 @@
 import { inject } from '@angular/core';
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
-import { ChatService } from '@core/chat/services/chat/chat.service';
+import { ChatService } from '@core/api/controllers/chat/services/chat/chat.service';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { IMessageDto } from '@shared/dtos/message-dto.interface';
+import { IMessage } from '@shared/interfaces/message.interface';
 import { createDestroyer } from '@shared/utils/create-destroyer';
 
 type TMessageState = {
-  messagesByChatId: Record<string, IMessageDto[]>;
+  messagesByChatId: Record<string, IMessage[]>;
   typingByChatId: Record<string, string[]>;
   isLoading: boolean;
 };
@@ -45,7 +45,7 @@ export const MessageStore = signalStore(
           });
       },
 
-      addMessage(chatId: string, message: IMessageDto): void {
+      addMessage(chatId: string, message: IMessage): void {
         patchState(store, state => {
           const existing = state.messagesByChatId[chatId] ?? [];
           return {
