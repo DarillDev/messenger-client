@@ -1,6 +1,6 @@
-import { DatePipe, LOCALE_ID, registerLocaleData } from '@angular/common';
+import { DatePipe, registerLocaleData } from '@angular/common';
 import localeRu from '@angular/common/locales/ru';
-import { Component, input } from '@angular/core';
+import { Component, input, LOCALE_ID } from '@angular/core';
 
 registerLocaleData(localeRu);
 
