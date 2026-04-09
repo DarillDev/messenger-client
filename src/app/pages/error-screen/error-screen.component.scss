@@ -1,0 +1,55 @@
+:host {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-base);
+}
+
+.error-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 32px;
+}
+
+.icon {
+  font-size: 64px;
+  opacity: 0.5;
+  color: var(--error);
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.subtitle {
+  font-size: 15px;
+  max-width: 360px;
+}
+
+.retry-btn {
+  margin-top: 8px;
+  padding: 10px 24px;
+  background: var(--accent);
+  color: var(--text-inverse);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.85;
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
