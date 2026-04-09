@@ -1,0 +1,33 @@
+<app-glass-card>
+  <div class="login-logo">
+    <div class="login-logo-icon">
+      <span class="material-icons-round">chat_bubble</span>
+    </div>
+    <span class="login-logo-text">Messenger</span>
+  </div>
+
+  <p class="login-subtitle">Sign in to continue messaging</p>
+
+  <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <ui-kit-form-field label="Login">
+      <input uiKitInput formControlName="username" placeholder="Enter username" />
+    </ui-kit-form-field>
+
+    <ui-kit-form-field label="Password">
+      <input uiKitInput formControlName="password" type="password" placeholder="Enter password" />
+    </ui-kit-form-field>
+
+    <app-button type="submit" variant="primary" [fullWidth]="true" [disabled]="isSubmitting()">
+      @if (isSubmitting()) {
+        Signing in...
+      } @else {
+        Sign in
+      }
+    </app-button>
+  </form>
+
+  <div class="login-footer">
+    <span>No account? </span>
+    <a href="#">Create</a>
+  </div>
+</app-glass-card>
