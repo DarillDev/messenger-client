@@ -2,11 +2,11 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterOutlet, provideRouter } from '@angular/router';
+import { provideRouter, RouterOutlet } from '@angular/router';
 import { SocketService } from '@core/socket/services/socket/socket.service';
 import { ChatStore } from '@state/chat/chat.store';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
 
+import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { InternalLayoutComponent } from './internal-layout.component';
 
 // Stub for SidebarComponent to avoid needing all its dependencies

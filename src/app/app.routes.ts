@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '@core/auth/guards/auth/auth.guard';
 import { guestGuard } from '@core/auth/guards/guest/guest.guard';
-
 // Not lazy-loaded intentionally — ChatComponent is the primary view of the app
 // and should be available immediately without a network round-trip.
 import { ChatComponent } from '@pages/chat/chat.component';
