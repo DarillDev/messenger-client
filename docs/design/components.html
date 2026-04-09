@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messenger — Component Showcase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <style>
+    /* ═══════════════════════════════════════════════
+       DESIGN TOKENS — DARK
+       ═══════════════════════════════════════════════ */
+    [data-theme="dark"] {
+      --bg-root: #151a26;
+      --bg-panel: rgba(26, 32, 48, 0.88);
+      --bg-panel-hover: rgba(34, 40, 60, 0.92);
+      --bg-card: rgba(32, 38, 58, 0.65);
+      --bg-input: rgba(20, 25, 40, 0.55);
+      --bg-glass: rgba(255, 255, 255, 0.04);
+      --liquid-bg: rgba(255, 255, 255, 0.06);
+      --liquid-border: rgba(255, 255, 255, 0.12);
+      --liquid-shine: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.06) 100%);
+      --liquid-blur: blur(24px);
+      --liquid-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      --accent: #00e5c7;
+      --accent-glow: rgba(0, 229, 199, 0.15);
+      --accent-dim: rgba(0, 229, 199, 0.4);
+      --accent-warm: #ff6b6b;
+      --accent-warm-glow: rgba(255, 107, 107, 0.12);
+      --text-primary: #eaf0f8;
+      --text-secondary: #8891a8;
+      --text-muted: #586178;
+      --text-inverse: #111827;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(255, 255, 255, 0.15);
+      --border-accent: rgba(0, 229, 199, 0.3);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.25);
+      --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.35);
+      --shadow-glow: 0 0 30px rgba(0, 229, 199, 0.08);
+      --msg-sent-bg: linear-gradient(135deg, rgba(0, 229, 199, 0.15), rgba(0, 180, 216, 0.1));
+      --cover-bg: linear-gradient(135deg, #1a2040 0%, #2a2060 40%, #163050 100%);
+      --online-border-color: rgba(26, 32, 48, 1);
+      --toggle-track: rgba(255, 255, 255, 0.12);
+      --toggle-track-active: var(--accent);
+    }
+
+    /* ═══════════════════════════════════════════════
+       DESIGN TOKENS — LIGHT
+       ═══════════════════════════════════════════════ */
+    [data-theme="light"] {
+      --bg-root: #f0f2f7;
+      --bg-panel: rgba(255, 255, 255, 0.82);
+      --bg-panel-hover: rgba(240, 242, 248, 0.95);
+      --bg-card: rgba(235, 238, 246, 0.7);
+      --bg-input: rgba(230, 234, 244, 0.6);
+      --bg-glass: rgba(0, 0, 0, 0.02);
+      --liquid-bg: rgba(255, 255, 255, 0.55);
+      --liquid-border: rgba(255, 255, 255, 0.7);
+      --liquid-shine: linear-gradient(135deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.35) 100%);
+      --liquid-blur: blur(24px);
+      --liquid-shadow: 0 8px 32px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      --accent: #00c4aa;
+      --accent-glow: rgba(0, 196, 170, 0.12);
+      --accent-dim: rgba(0, 196, 170, 0.4);
+      --accent-warm: #e5484d;
+      --accent-warm-glow: rgba(229, 72, 77, 0.1);
+      --text-primary: #1a1f36;
+      --text-secondary: #5c6478;
+      --text-muted: #9098ad;
+      --text-inverse: #ffffff;
+      --border: rgba(0, 0, 0, 0.07);
+      --border-hover: rgba(0, 0, 0, 0.12);
+      --border-accent: rgba(0, 196, 170, 0.35);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.1);
+      --shadow-glow: 0 0 30px rgba(0, 196, 170, 0.06);
+      --msg-sent-bg: linear-gradient(135deg, rgba(0, 196, 170, 0.12), rgba(0, 160, 200, 0.08));
+      --cover-bg: linear-gradient(135deg, #c8e0f0 0%, #b8c8e8 40%, #a8d0e0 100%);
+      --online-border-color: rgba(255, 255, 255, 1);
+      --toggle-track: rgba(0, 0, 0, 0.12);
+      --toggle-track-active: var(--accent);
+    }
+
+    :root {
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      --radius-full: 9999px;
+      --font-body: 'DM Sans', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-root);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      padding: 40px;
+      transition: background-color 0.4s var(--ease-out), color 0.4s var(--ease-out);
+    }
+
+    .material-icons-round { font-size: 20px; line-height: 1; }
+
+    /* ═══════════════════════════════════════════════
+       SHOWCASE LAYOUT
+       ═══════════════════════════════════════════════ */
+    .showcase-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 48px; padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .showcase-title { font-size: 28px; font-weight: 700; letter-spacing: -0.03em; }
+    .showcase-subtitle { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+
+    .theme-toggle-btn {
+      padding: 8px 20px; border-radius: var(--radius-full);
+      background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--text-primary); font-family: var(--font-body);
+      font-size: 13px; font-weight: 500; cursor: pointer;
+      display: flex; align-items: center; gap: 8px;
+      transition: all 0.3s var(--ease-out);
+    }
+
+    .theme-toggle-btn:hover { border-color: var(--border-accent); }
+    .theme-toggle-btn:active { transform: scale(0.96); }
+
+    .section {
+      margin-bottom: 56px;
+    }
+
+    .section-title {
+      font-size: 18px; font-weight: 700; margin-bottom: 6px;
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    .section-title code {
+      font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+      background: var(--bg-card); border: 1px solid var(--border);
+      padding: 2px 8px; border-radius: 4px; color: var(--accent);
+    }
+
+    .section-desc {
+      font-size: 13px; color: var(--text-secondary); margin-bottom: 24px;
+    }
+
+    .component-row {
+      display: flex; align-items: flex-start; gap: 20px;
+      flex-wrap: wrap; margin-bottom: 16px;
+    }
+
+    .component-card {
+      background: var(--bg-panel); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 20px;
+      transition: background-color 0.4s, border-color 0.4s;
+    }
+
+    .component-card-wide {
+      background: var(--bg-panel); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 24px;
+      width: 100%;
+      transition: background-color 0.4s, border-color 0.4s;
+    }
+
+    .state-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .spec-table {
+      width: 100%; border-collapse: collapse;
+      font-size: 12px; margin-top: 12px;
+    }
+
+    .spec-table th {
+      text-align: left; padding: 6px 10px;
+      font-weight: 600; color: var(--text-muted);
+      font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .spec-table td {
+      padding: 6px 10px; border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .spec-table td:first-child { color: var(--text-primary); font-weight: 500; }
+
+    .spec-table code {
+      font-family: var(--font-mono); font-size: 11px;
+      background: var(--bg-card); padding: 1px 5px; border-radius: 3px;
+    }
+
+    .spacer { height: 12px; }
+
+    .inline-row {
+      display: flex; align-items: center; gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .inline-col {
+      display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+    }
+
+    /* ═══════════════════════════════════════════════
+       COMPONENT STYLES (from design system)
+       ═══════════════════════════════════════════════ */
+
+    /* --- Avatar --- */
+    .avatar {
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 600; color: #fff; position: relative; flex-shrink: 0;
+    }
+
+    .avatar.size-sm { width: 32px; height: 32px; border-radius: var(--radius-sm); font-size: 12px; }
+    .avatar.size-md { width: 46px; height: 46px; border-radius: var(--radius-md); font-size: 16px; }
+    .avatar.size-lg { width: 96px; height: 96px; border-radius: var(--radius-lg); font-size: 36px; font-weight: 700; }
+
+    .avatar.av-1 { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+    .avatar.av-2 { background: linear-gradient(135deg, #f59e0b, #ef4444); }
+    .avatar.av-3 { background: linear-gradient(135deg, #10b981, #06b6d4); }
+    .avatar.av-4 { background: linear-gradient(135deg, #ec4899, #f43f5e); }
+    .avatar.av-5 { background: linear-gradient(135deg, #3b82f6, #6366f1); }
+
+    .avatar-online-dot {
+      position: absolute; bottom: -1px; right: -1px;
+      width: 12px; height: 12px; background: #22c55e;
+      border: 2.5px solid var(--online-border-color); border-radius: 50%;
+    }
+
+    /* --- Badge --- */
+    .badge {
+      min-width: 20px; height: 20px; padding: 0 6px;
+      background: var(--accent); border-radius: 50%;
+      font-size: 11px; font-weight: 700; color: var(--text-inverse);
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+
+    .badge.badge-wide { border-radius: 10px; }
+
+    /* --- Button --- */
+    .btn {
+      padding: 13px 24px; border-radius: var(--radius-md);
+      font-family: var(--font-body); font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: all 0.3s var(--ease-out);
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      border: none; position: relative; overflow: hidden;
+    }
+
+    .btn .material-icons-round { font-size: 18px; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #00b4d8);
+      color: var(--text-inverse);
+    }
+
+    .btn-primary::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+      transform: translateX(-100%);
+      transition: transform 0.6s var(--ease-out);
+    }
+
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(0, 229, 199, 0.3); }
+    .btn-primary:hover::after { transform: translateX(100%); }
+    .btn-primary:active { transform: translateY(1px) scale(0.97); box-shadow: none; }
+
+    .btn-primary-full { width: 100%; padding: 15px; font-size: 15px; letter-spacing: 0.02em; }
+
+    .btn-secondary {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .btn-secondary:hover { border-color: var(--accent-warm); color: var(--accent-warm); }
+    .btn-secondary:active { transform: translateY(1px) scale(0.97); }
+
+    /* --- Icon Button --- */
+    .icon-btn {
+      width: 36px; height: 36px; border: none;
+      border-radius: var(--radius-sm); background: var(--bg-glass);
+      color: var(--text-secondary); cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: all 0.2s var(--ease-out);
+    }
+
+    .icon-btn .material-icons-round { font-size: 20px; }
+    .icon-btn:hover { background: var(--bg-panel-hover); color: var(--text-primary); }
+    .icon-btn:active { transform: scale(0.9); opacity: 0.8; }
+
+    .icon-btn-send {
+      width: 48px; height: 48px; border: none;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--accent), #00b4d8);
+      color: var(--text-inverse); cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: all 0.25s var(--ease-out);
+    }
+
+    .icon-btn-send:hover { transform: scale(1.05); box-shadow: 0 4px 20px rgba(0, 229, 199, 0.3); }
+    .icon-btn-send:active { transform: scale(0.96); }
+
+    /* --- Input --- */
+    .form-group { width: 100%; }
+
+    .form-label {
+      display: block; font-size: 12px; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--text-secondary); margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%; padding: 14px 16px;
+      background: var(--bg-input); border: 1px solid var(--border);
+      border-radius: var(--radius-md); color: var(--text-primary);
+      font-family: var(--font-body); font-size: 15px;
+      outline: none; transition: all 0.25s var(--ease-out);
+    }
+
+    .form-input::placeholder { color: var(--text-muted); }
+    .form-input:focus { border-color: var(--border-accent); box-shadow: 0 0 0 3px var(--accent-glow), inset 0 0 0 1px var(--border-accent); }
+    .form-input.error { border-color: var(--accent-warm); box-shadow: 0 0 0 3px var(--accent-warm-glow); }
+
+    .form-error {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 12px; color: var(--accent-warm);
+      margin-top: 6px; padding-left: 2px;
+    }
+
+    .form-error .material-icons-round { font-size: 15px; }
+
+    .search-input {
+      width: 100%; padding: 10px 14px 10px 38px;
+      background: var(--bg-input); border: 1px solid var(--border);
+      border-radius: var(--radius-md); color: var(--text-primary);
+      font-family: var(--font-body); font-size: 13px;
+      outline: none; transition: all 0.25s var(--ease-out);
+    }
+
+    .search-input::placeholder { color: var(--text-muted); }
+    .search-input:focus { border-color: var(--border-accent); }
+
+    .search-box { position: relative; }
+
+    .search-box .material-icons-round {
+      position: absolute; left: 11px; top: 50%;
+      transform: translateY(-50%); color: var(--text-muted);
+      font-size: 18px; pointer-events: none;
+    }
+
+    /* --- Toggle --- */
+    .toggle { position: relative; width: 48px; height: 26px; cursor: pointer; flex-shrink: 0; display: inline-block; }
+    .toggle input { display: none; }
+
+    .toggle-track {
+      position: absolute; inset: 0;
+      background: var(--toggle-track); border-radius: 13px;
+      transition: background-color 0.3s var(--ease-out);
+    }
+
+    .toggle input:checked + .toggle-track { background: var(--toggle-track-active); }
+
+    .toggle-thumb {
+      position: absolute; top: 3px; left: 3px;
+      width: 20px; height: 20px; background: #fff; border-radius: 50%;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      transition: transform 0.3s var(--ease-spring);
+      pointer-events: none;
+    }
+
+    .toggle:active .toggle-thumb { transform: scaleX(1.15); }
+    .toggle input:checked ~ .toggle-thumb { transform: translateX(22px); }
+    .toggle:active input:checked ~ .toggle-thumb { transform: translateX(22px) scaleX(1.15); }
+
+    /* --- Custom Select (dropdown) --- */
+    .select-wrapper { position: relative; display: inline-block; min-width: 160px; }
+
+    .select-trigger {
+      padding: 8px 36px 8px 12px;
+      background: var(--bg-input); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); color: var(--text-primary);
+      font-family: var(--font-body); font-size: 13px;
+      cursor: pointer; user-select: none;
+      display: flex; align-items: center; gap: 8px;
+      transition: border-color 0.2s, background-color 0.2s;
+      position: relative;
+    }
+
+    .select-trigger::after {
+      content: 'expand_more';
+      font-family: 'Material Icons Round'; font-size: 18px;
+      color: var(--text-muted);
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      transition: transform 0.25s var(--ease-out);
+    }
+
+    .select-trigger:hover { border-color: var(--border-hover); }
+    .select-wrapper.open .select-trigger { border-color: var(--border-accent); }
+    .select-wrapper.open .select-trigger::after { transform: translateY(-50%) rotate(180deg); }
+
+    .select-dropdown {
+      position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+      background: var(--bg-panel);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      padding: 4px; z-index: 100;
+      opacity: 0; transform: translateY(-6px); pointer-events: none;
+      transition: opacity 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+    }
+
+    .select-wrapper.open .select-dropdown {
+      opacity: 1; transform: translateY(0); pointer-events: auto;
+    }
+
+    .select-option {
+      padding: 8px 12px; border-radius: 6px;
+      font-size: 13px; cursor: pointer;
+      display: flex; align-items: center; gap: 8px;
+      transition: background-color 0.15s;
+      color: var(--text-secondary);
+    }
+
+    .select-option:hover { background: var(--bg-glass); color: var(--text-primary); }
+    .select-option:active { background: var(--accent-glow); }
+
+    .select-option.selected {
+      color: var(--accent); font-weight: 500;
+    }
+
+    .select-option.selected::before {
+      content: 'check';
+      font-family: 'Material Icons Round'; font-size: 16px;
+    }
+
+    .select-option:not(.selected)::before {
+      content: ''; width: 16px;
+    }
+
+    /* --- Panel Card --- */
+    .panel-card {
+      background: var(--bg-panel);
+      backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: background-color 0.4s, border-color 0.4s;
+    }
+
+    /* --- Glass Panel --- */
+    .glass-panel {
+      background: var(--liquid-bg);
+      backdrop-filter: var(--liquid-blur); -webkit-backdrop-filter: var(--liquid-blur);
+      border: 1px solid var(--liquid-border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--liquid-shadow);
+      position: relative; overflow: hidden;
+    }
+
+    .glass-panel::before {
+      content: ''; position: absolute; inset: 0;
+      background: var(--liquid-shine); pointer-events: none; border-radius: inherit;
+    }
+
+    /* --- Chat Item --- */
+    .chat-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px; border-radius: var(--radius-md);
+      cursor: pointer; transition: all 0.2s var(--ease-out);
+      position: relative; border: 1px solid transparent;
+    }
+
+    .chat-item:hover { background: var(--bg-glass); }
+    .chat-item:active { transform: scale(0.98); opacity: 0.85; }
+
+    .chat-item.active {
+      background: var(--accent-glow); border-color: var(--border-accent);
+    }
+
+    .chat-info { flex: 1; min-width: 0; }
+
+    .chat-name-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .chat-name {
+      font-size: 14px; font-weight: 600;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .chat-time {
+      font-size: 11px; color: var(--text-muted);
+      font-family: var(--font-mono); flex-shrink: 0;
+    }
+
+    .chat-preview {
+      font-size: 13px; color: var(--text-secondary);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .chat-item .badge {
+      position: absolute; top: 10px; right: 10px;
+    }
+
+    /* --- Message Bubble --- */
+    .msg-bubble {
+      padding: 10px 16px; font-size: 14px;
+      line-height: 1.55; word-wrap: break-word;
+      max-width: 400px;
+    }
+
+    .msg-bubble.sent {
+      background: var(--msg-sent-bg); border: 1px solid var(--border-accent);
+      border-radius: var(--radius-md) var(--radius-md) 6px var(--radius-md);
+    }
+
+    .msg-bubble.sent.last-in-group {
+      border-radius: var(--radius-md) 6px 6px var(--radius-md);
+    }
+
+    .msg-bubble.received {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md) var(--radius-md) var(--radius-md) 6px;
+    }
+
+    .msg-bubble.received.last-in-group {
+      border-radius: 6px var(--radius-md) var(--radius-md) 6px;
+    }
+
+    .msg-time {
+      font-size: 11px; color: var(--text-muted);
+      font-family: var(--font-mono); margin-top: 4px; padding: 0 4px;
+    }
+
+    /* --- Date Divider --- */
+    .date-divider {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--text-muted);
+      background: var(--liquid-bg);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      padding: 6px 14px; border-radius: var(--radius-full);
+      border: 1px solid var(--liquid-border);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+      display: inline-block;
+    }
+
+    /* --- Typing Indicator --- */
+    .typing-indicator {
+      display: flex; align-items: center; gap: 8px;
+      padding: 0 4px; height: 20px;
+    }
+
+    .typing-indicator span {
+      font-size: 12px; color: var(--text-muted); font-style: italic;
+    }
+
+    .typing-dots { display: flex; gap: 3px; }
+
+    .typing-dots i {
+      width: 5px; height: 5px; background: var(--accent-dim);
+      border-radius: 50%; animation: typingBounce 1.2s infinite;
+      display: block;
+    }
+
+    .typing-dots i:nth-child(2) { animation-delay: 0.15s; }
+    .typing-dots i:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-4px); opacity: 1; }
+    }
+
+    /* --- Chat Header --- */
+    .chat-header-demo {
+      padding: 16px 24px; border: 1px solid var(--border);
+      border-radius: var(--radius-md); background: var(--bg-panel);
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background-color 0.4s, border-color 0.4s;
+    }
+
+    .chat-header-info { display: flex; align-items: center; gap: 14px; }
+    .chat-header-name { font-size: 15px; font-weight: 600; }
+
+    .chat-header-status {
+      font-size: 12px; color: #22c55e;
+      display: flex; align-items: center; gap: 5px;
+    }
+
+    .chat-header-status::before {
+      content: ''; width: 6px; height: 6px;
+      background: #22c55e; border-radius: 50%;
+    }
+
+    .chat-header-actions { display: flex; gap: 4px; }
+
+    /* --- Message Input --- */
+    .msg-input-demo {
+      padding: 16px 20px; border: 1px solid var(--border);
+      border-radius: var(--radius-md); background: var(--bg-panel);
+      display: flex; align-items: flex-end; gap: 10px;
+      transition: background-color 0.4s, border-color 0.4s;
+    }
+
+    .msg-input-wrapper { flex: 1; position: relative; }
+
+    .msg-textarea {
+      width: 100%; padding: 13px 16px; padding-right: 48px;
+      background: var(--bg-input); border: 1px solid var(--border);
+      border-radius: var(--radius-md); color: var(--text-primary);
+      font-family: var(--font-body); font-size: 14px;
+      outline: none; resize: none;
+      transition: border-color 0.25s var(--ease-out);
+    }
+
+    .msg-textarea::placeholder { color: var(--text-muted); }
+    .msg-textarea:focus { border-color: var(--border-accent); }
+
+    .msg-attach-btn {
+      position: absolute; right: 10px; bottom: 8px;
+      width: 32px; height: 32px; border: none;
+      background: transparent; color: var(--text-muted);
+      cursor: pointer; border-radius: var(--radius-sm);
+      transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .msg-attach-btn:hover { color: var(--text-secondary); background: var(--bg-glass); }
+    .msg-attach-btn:active { transform: scale(0.9); opacity: 0.8; }
+
+    /* --- Profile Card --- */
+    .profile-cover-demo {
+      height: 100px; background: var(--cover-bg);
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      position: relative; overflow: hidden;
+      transition: background-color 0.4s;
+    }
+
+    .profile-cover-demo::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 30% 70%, rgba(0, 229, 199, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%);
+    }
+
+    .profile-stats-demo {
+      display: flex; gap: 24px; padding: 18px 28px;
+      background: var(--liquid-bg);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--liquid-border); border-radius: var(--radius-lg);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+      justify-content: center;
+    }
+
+    .profile-stat { text-align: center; }
+
+    .profile-stat-value {
+      font-size: 20px; font-weight: 700; font-family: var(--font-mono);
+      color: var(--text-primary);
+    }
+
+    .profile-stat-label {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-muted); margin-top: 4px;
+    }
+
+    /* --- Profile Field --- */
+    .profile-field {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px; background: var(--bg-card);
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      transition: border-color 0.2s;
+    }
+
+    .profile-field:hover { border-color: var(--border-hover); }
+
+    .profile-field-left { display: flex; align-items: center; gap: 10px; }
+    .profile-field-left .material-icons-round { font-size: 18px; color: var(--text-muted); }
+
+    .profile-field-label {
+      font-size: 12px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--text-muted);
+    }
+
+    .profile-field-value { font-size: 14px; color: var(--text-primary); }
+
+    /* --- Settings Row --- */
+    .settings-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px; background: var(--bg-card);
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      transition: border-color 0.2s, background-color 0.4s;
+    }
+
+    .settings-row:hover { border-color: var(--border-hover); }
+
+    .settings-row-left { display: flex; align-items: center; gap: 12px; }
+
+    .settings-row-icon {
+      width: 36px; height: 36px; border-radius: var(--radius-sm);
+      background: var(--bg-glass);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .settings-row-icon .material-icons-round { font-size: 20px; color: var(--text-secondary); }
+    .settings-row-text { display: flex; flex-direction: column; gap: 2px; }
+    .settings-row-label { font-size: 14px; font-weight: 500; }
+    .settings-row-desc { font-size: 12px; color: var(--text-muted); }
+
+    /* --- Settings Section --- */
+    .settings-section-title {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-muted);
+      margin-bottom: 14px; padding-left: 2px;
+    }
+
+    /* --- Theme Picker --- */
+    .theme-options { display: flex; gap: 10px; }
+
+    .theme-option {
+      flex: 1; padding: 14px; border-radius: var(--radius-md);
+      border: 2px solid var(--border); cursor: pointer;
+      transition: all 0.25s var(--ease-out);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      background: var(--bg-glass);
+    }
+
+    .theme-option:hover { border-color: var(--border-hover); }
+    .theme-option:active { transform: scale(0.96); }
+    .theme-option.active { border-color: var(--accent); }
+
+    .theme-option-preview {
+      width: 100%; height: 48px; border-radius: var(--radius-sm);
+      display: flex; gap: 4px; padding: 6px; overflow: hidden;
+    }
+
+    .theme-option-preview.dark-preview { background: #1a2030; }
+    .theme-option-preview.dark-preview .preview-sidebar { width: 30%; height: 100%; background: rgba(255,255,255,0.06); border-radius: 4px; }
+    .theme-option-preview.dark-preview .preview-main { flex: 1; height: 100%; background: rgba(255,255,255,0.04); border-radius: 4px; }
+
+    .theme-option-preview.light-preview { background: #f0f2f7; }
+    .theme-option-preview.light-preview .preview-sidebar { width: 30%; height: 100%; background: rgba(0,0,0,0.05); border-radius: 4px; }
+    .theme-option-preview.light-preview .preview-main { flex: 1; height: 100%; background: rgba(0,0,0,0.03); border-radius: 4px; }
+
+    .theme-option-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+    .theme-option.active .theme-option-label { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ Header ═══ -->
+  <div class="showcase-header">
+    <div>
+      <div class="showcase-title">Component Showcase</div>
+      <div class="showcase-subtitle">Messenger Design System — all components with states and specs</div>
+    </div>
+    <button class="theme-toggle-btn" onclick="toggleTheme()">
+      <span class="material-icons-round">dark_mode</span>
+      Toggle theme
+    </button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       1. AVATAR
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">Avatar <code>shared/ui-kit/avatar/</code></div>
+    <div class="section-desc">Displays user initials on gradient background. Supports 3 sizes and 5 color variants. Optional online indicator.</div>
+
+    <div class="component-row">
+      <div class="component-card">
+        <div class="state-label">Sizes</div>
+        <div class="inline-row">
+          <div class="inline-col" style="align-items: center;">
+            <div class="avatar size-sm av-1">АС</div>
+            <span style="font-size:10px;color:var(--text-muted)">32px sm</span>
+          </div>
+          <div class="inline-col" style="align-items: center;">
+            <div class="avatar size-md av-1">АС</div>
+            <span style="font-size:10px;color:var(--text-muted)">46px md</span>
+          </div>
+          <div class="inline-col" style="align-items: center;">
+            <div class="avatar size-lg av-1">АС</div>
+            <span style="font-size:10px;color:var(--text-muted)">96px lg</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="component-card">
+        <div class="state-label">Color Variants</div>
+        <div class="inline-row">
+          <div class="avatar size-md av-1">АС</div>
+          <div class="avatar size-md av-2">МК</div>
+          <div class="avatar size-md av-3">ДВ</div>
+          <div class="avatar size-md av-4">ЕН</div>
+          <div class="avatar size-md av-5">КП</div>
+        </div>
+      </div>
+
+      <div class="component-card">
+        <div class="state-label">Online Indicator</div>
+        <div class="inline-row">
+          <div class="avatar size-md av-3">ДВ
+            <span class="avatar-online-dot"></span>
+          </div>
+          <div class="avatar size-md av-1">АС</div>
+        </div>
+      </div>
+    </div>
+
+    <table class="spec-table">
+      <tr><th>Property</th><th>sm</th><th>md</th><th>lg</th></tr>
+      <tr><td>Size</td><td><code>32 x 32</code></td><td><code>46 x 46</code></td><td><code>96 x 96</code></td></tr>
+      <tr><td>Border-radius</td><td><code>--radius-sm (8px)</code></td><td><code>--radius-md (14px)</code></td><td><code>--radius-lg (20px)</code></td></tr>
+      <tr><td>Font-size</td><td><code>12px</code></td><td><code>16px / 600</code></td><td><code>36px / 700</code></td></tr>
+      <tr><td>Online dot</td><td colspan="3"><code>12 x 12</code>, <code>#22c55e</code>, border <code>2.5px solid --online-border-color</code></td></tr>
+      <tr><td>Gradient variants</td><td colspan="3"><code>av-1</code> indigo, <code>av-2</code> amber-red, <code>av-3</code> emerald-cyan, <code>av-4</code> pink-rose, <code>av-5</code> blue-indigo</td></tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       2. BADGE
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">Badge <code>shared/ui-kit/badge/</code></div>
+    <div class="section-desc">Unread message counter. Circular for single digits, pill-shaped for wider content.</div>
+
+    <div class="component-row">
+      <div class="component-card">
+        <div class="state-label">Variants</div>
+        <div class="inline-row">
+          <div class="badge">2</div>
+          <div class="badge">5</div>
+          <div class="badge badge-wide">99+</div>
+        </div>
+      </div>
+    </div>
+
+    <table class="spec-table">
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Min-width / Height</td><td><code>20px / 20px</code></td></tr>
+      <tr><td>Background</td><td><code>var(--accent)</code></td></tr>
+      <tr><td>Font</td><td><code>11px / 700</code>, color <code>--text-inverse</code></td></tr>
+      <tr><td>Border-radius</td><td><code>50%</code> (single) / <code>10px</code> (wide)</td></tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       3. BUTTON
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">Button <code>shared/ui-kit/button/</code></div>
+    <div class="section-desc">Primary (gradient) and secondary (outline) variants. Supports icon + text. Shimmer effect on primary hover.</div>
+
+    <div class="component-row">
+      <div class="component-card">
+        <div class="state-label">Primary</div>
+        <div class="inline-col">
+          <button class="btn btn-primary">
+            <span class="material-icons-round">edit</span>
+            Редактировать
+          </button>
+          <button class="btn btn-primary btn-primary-full">Войти</button>
+        </div>
+      </div>
+
+      <div class="component-card">
+        <div class="state-label">Secondary</div>
+        <div class="inline-col">
+          <button class="btn btn-secondary">
+            <span class="material-icons-round">logout</span>
+            Выйти
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <table class="spec-table">
+      <tr><th>Property</th><th>Primary</th><th>Secondary</th></tr>
+      <tr><td>Padding</td><td><code>13px 24px</code> / full-width: <code>15px</code></td><td><code>13px 24px</code></td></tr>
+      <tr><td>Background</td><td><code>linear-gradient(135deg, --accent, #00b4d8)</code></td><td><code>transparent</code></td></tr>
+      <tr><td>Border</td><td>none</td><td><code>1px solid --border</code></td></tr>
+      <tr><td>Font</td><td><code>14px / 600</code>, color <code>--text-inverse</code></td><td><code>14px / 600</code>, color <code>--text-secondary</code></td></tr>
+      <tr><td>:hover</td><td><code>translateY(-1px)</code>, glow shadow, shimmer</td><td>border <code>--accent-warm</code>, color warm</td></tr>
+      <tr><td>:active</td><td><code>translateY(1px) scale(0.97)</code>, no shadow</td><td><code>translateY(1px) scale(0.97)</code></td></tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       4. ICON BUTTON
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">Icon Button <code>shared/ui-kit/icon-button/</code></div>
+    <div class="section-desc">Square icon-only button. Default 36x36 and accent send variant 48x48.</div>
+
+    <div class="component-row">
+      <div class="component-card">
+        <div class="state-label">Default (36px)</div>
+        <div class="inline-row">
+          <button class="icon-btn"><span class="material-icons-round">edit</span></button>
+          <button class="icon-btn"><span class="material-icons-round">settings</span></button>
+          <button class="icon-btn"><span class="material-icons-round">search</span></button>
+          <button class="icon-btn"><span class="material-icons-round">call</span></button>
+          <button class="icon-btn"><span class="material-icons-round">more_vert</span></button>
+          <button class="icon-btn"><span class="material-icons-round">attach_file</span></button>
+        </div>
+      </div>
+
+      <div class="component-card">
+        <div class="state-label">Send variant (48px)</div>
+        <div class="inline-row">
+          <button class="icon-btn-send"><span class="material-icons-round">send</span></button>
+        </div>
+      </div>
+    </div>
+
+    <table class="spec-table">
+      <tr><th>Property</th><th>Default</th><th>Send</th></tr>
+      <tr><td>Size</td><td><code>36 x 36</code></td><td><code>48 x 48</code></td></tr>
+      <tr><td>Radius</td><td><code>--radius-sm (8px)</code></td><td><code>--radius-md (14px)</code></td></tr>
+      <tr><td>Background</td><td><code>--bg-glass</code></td><td><code>gradient(--accent, #00b4d8)</code></td></tr>
+      <tr><td>Icon size</td><td><code>20px</code></td><td><code>20px</code></td></tr>
+      <tr><td>:hover</td><td>bg <code>--bg-panel-hover</code>, color primary</td><td><code>scale(1.05)</code>, glow shadow</td></tr>
+      <tr><td>:active</td><td><code>scale(0.9)</code>, opacity <code>0.8</code></td><td><code>scale(0.96)</code></td></tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       5. INPUT
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">Input <code>shared/ui-kit/input/</code></div>
+    <div class="section-desc">Form input with label, focus glow, error state + error message. Search variant with icon overlay.</div>
+
+    <div class="component-row">
+      <div class="component-card" style="width: 320px;">
+        <div class="state-label">Default</div>
+        <div class="form-group">
+          <label class="form-label">Логин</label>
+          <input class="form-input" type="text" placeholder="Введите имя пользователя">
+        </div>
+      </div>
+
+      <div class="component-card" style="width: 320px;">
+        <div class="state-label">Error</div>
+        <div class="form-group">
+          <label class="form-label">Пароль</label>
+          <input class="form-input error" type="password" value="wrong">
+          <div class="form-error">
+            <span class="material-icons-round">error_outline</span>
+            Неверный пароль. Попробуйте снова.
+          </div>
+        </div>
+      </div>
+
+      <div class="component-card" style="width: 320px;">
+        <div class="state-label">Search variant</div>
+        <div class="search-box">
+          <span class="material-icons-round">search</span>
+          <input class="search-input" type="text" placeholder="Поиск по чатам...">
+        </div>
+      </div>
+    </div>
+
+    <table class="spec-table">
+      <tr><th>Property</th><th>Form Input</th><th>Search</th></tr>
+      <tr><td>Padding</td><td><code>14px 16px</code></td><td><code>10px 14px 10px 38px</code></td></tr>
+      <tr><td>Font</td><td><code>15px</code>, <code>--font-body</code></td><td><code>13px</code></td></tr>
+      <tr><td>Background</td><td colspan="2"><code>var(--bg-input)</code></td></tr>
+      <tr><td>Border</td><td colspan="2"><code>1px solid --border</code>, radius <code>--radius-md</code></td></tr>
+      <tr><td>:focus</td><td colspan="2">border <code>--border-accent</code>, shadow <code>0 0 0 3px --accent-glow</code></td></tr>
+      <tr><td>:error</td><td colspan="2">border <code>--accent-warm</code>, shadow <code>0 0 0 3px --accent-warm-glow</code></td></tr>
+      <tr><td>Label</td><td><code>12px / 600</code>, uppercase, <code>letter-spacing 0.06em</code></td><td>n/a (icon instead)</td></tr>
+      <tr><td>Error msg</td><td><code>12px</code>, color <code>--accent-warm</code>, icon <code>error_outline 15px</code></td><td>n/a</td></tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       6. TOGGLE
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">Toggle <code>shared/ui-kit/toggle/</code></div>
+    <div class="section-desc">On/off switch. Thumb stretches on :active. Track color changes when checked.</div>
+
+    <div class="component-row">
+      <div class="component-card">
+        <div class="state-label">Off</div>
+        <label class="toggle">
+          <input type="checkbox">
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+      </div>
+      <div class="component-card">
+        <div class="state-label">On</div>
+        <label class="toggle">
+          <input type="checkbox" checked>
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+      </div>
+    </div>
+
+    <table class="spec-table">
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Track size</td><td><code>48 x 26</code>, radius <code>13px</code></td></tr>
+      <tr><td>Track bg</td><td>off: <code>--toggle-track</code>, on: <code>--toggle-track-active</code></td></tr>
+      <tr><td>Thumb</td><td><code>20 x 20</code>, <code>#fff</code>, shadow <code>0 1px 4px rgba(0,0,0,0.2)</code></td></tr>
+      <tr><td>Thumb offset</td><td>off: <code>left: 3px</code>, on: <code>translateX(22px)</code></td></tr>
+      <tr><td>:active</td><td>thumb <code>scaleX(1.15)</code></td></tr>
+      <tr><td>Transition</td><td>track: <code>0.3s ease-out</code>, thumb: <code>0.3s spring</code></td></tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       7. SELECT (custom dropdown)
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">Select <code>shared/ui-kit/select/</code></div>
+    <div class="section-desc">Custom dropdown with animated open/close. Trigger button + floating options panel with check icon on selected item. No native &lt;select&gt;.</div>
+
+    <div class="component-row">
+      <div class="component-card">
+        <div class="state-label">Closed</div>
+        <div class="select-wrapper" onclick="toggleSelect(this)">
+          <div class="select-trigger">Русский</div>
+          <div class="select-dropdown">
+            <div class="select-option selected" onclick="pickOption(event, this)">Русский</div>
+            <div class="select-option" onclick="pickOption(event, this)">English</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="component-card">
+        <div class="state-label">Open</div>
+        <div class="select-wrapper open">
+          <div class="select-trigger">Русский</div>
+          <div class="select-dropdown" style="position: relative; top: 6px;">
+            <div class="select-option selected">Русский</div>
+            <div class="select-option">English</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <table class="spec-table">
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Trigger padding</td><td><code>8px 36px 8px 12px</code></td></tr>
+      <tr><td>Trigger bg</td><td><code>--bg-input</code></td></tr>
+      <tr><td>Trigger border</td><td><code>1px solid --border</code>, radius <code>--radius-sm (8px)</code></td></tr>
+      <tr><td>Trigger icon</td><td>Material <code>expand_more</code> via ::after, <code>18px</code>, rotates 180deg on open</td></tr>
+      <tr><td>:hover</td><td>border <code>--border-hover</code></td></tr>
+      <tr><td>.open</td><td>border <code>--border-accent</code></td></tr>
+      <tr><td>Dropdown bg</td><td><code>--bg-panel</code>, <code>backdrop-filter: blur(20px)</code></td></tr>
+      <tr><td>Dropdown border</td><td><code>1px solid --border</code>, radius <code>--radius-sm</code></td></tr>
+      <tr><td>Dropdown shadow</td><td><code>--shadow-lg</code></td></tr>
+      <tr><td>Dropdown offset</td><td><code>6px</code> below trigger</td></tr>
+      <tr><td>Dropdown anim</td><td>opacity + translateY(-6px -> 0), <code>0.2s ease-out</code></td></tr>
+      <tr><td>Option padding</td><td><code>8px 12px</code>, radius <code>6px</code></td></tr>
+      <tr><td>Option :hover</td><td>bg <code>--bg-glass</code>, color <code>--text-primary</code></td></tr>
+      <tr><td>Option :active</td><td>bg <code>--accent-glow</code></td></tr>
+      <tr><td>Option .selected</td><td>color <code>--accent</code>, weight <code>500</code>, check icon <code>16px</code></td></tr>
+      <tr><td>Font</td><td><code>13px</code>, <code>--font-body</code></td></tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       8. PANEL CARD
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">Panel Card <code>shared/ui-kit/panel-card/</code></div>
+    <div class="section-desc">Base surface container for sidebar, chat window, profile card, settings card. Blur backdrop, subtle border. All major layout blocks use this.</div>
+
+    <div class="component-row">
+      <div class="panel-card" style="padding: 24px; width: 320px; min-height: 120px; display: flex; align-items: center; justify-content: center;">
+        <p style="font-size: 14px; color: var(--text-secondary); text-align: center;">Sidebar, Chat Window,<br>Profile Card, Settings Card</p>
+      </div>
+      <div class="panel-card" style="padding: 24px; width: 200px; min-height: 120px; display: flex; align-items: center; justify-content: center;">
+        <p style="font-size: 14px; color: var(--text-secondary); text-align: center;">Any content<br>panel</p>
+      </div>
+    </div>
+
+    <table class="spec-table">
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Background</td><td><code>--bg-panel</code></td></tr>
+      <tr><td>Backdrop-filter</td><td><code>blur(30px)</code></td></tr>
+      <tr><td>Border</td><td><code>1px solid --border</code></td></tr>
+      <tr><td>Border-radius</td><td><code>--radius-lg (20px)</code></td></tr>
+      <tr><td>Overflow</td><td><code>hidden</code></td></tr>
+      <tr><td>Usage</td><td>Sidebar (340px, flex-col), Chat Window (flex: 1), Profile/Settings cards (max-width)</td></tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       9. GLASS PANEL
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">Glass Panel <code>shared/ui-kit/glass-panel/</code></div>
+    <div class="section-desc">Liquid glass container with backdrop-filter blur, shine gradient overlay. Used for login card, nav, date divider, profile stats.</div>
+
+    <div class="component-row">
+      <div class="glass-panel" style="padding: 32px; max-width: 360px;">
+        <p style="position:relative; font-size:14px;">Content inside glass panel. Semi-transparent with blur and border shine.</p>
+      </div>
+    </div>
+
+    <table class="spec-table">
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Background</td><td><code>--liquid-bg</code></td></tr>
+      <tr><td>Backdrop-filter</td><td><code>--liquid-blur (blur 24px)</code></td></tr>
+      <tr><td>Border</td><td><code>1px solid --liquid-border</code></td></tr>
+      <tr><td>Radius</td><td><code>--radius-xl (28px)</code></td></tr>
+      <tr><td>Shadow</td><td><code>--liquid-shadow</code></td></tr>
+      <tr><td>::before shine</td><td><code>--liquid-shine</code> gradient overlay</td></tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       9. CHAT ITEM
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">Chat Item <code>shared/ui-kit/chat-item/</code></div>
+    <div class="section-desc">Clickable chat row: avatar + name/time + preview + optional badge. States: default, hover, active (selected).</div>
+
+    <div class="component-card-wide" style="max-width: 380px;">
+      <div class="state-label">Default</div>
+      <div class="chat-item">
+        <div class="avatar size-md av-2">МК</div>
+        <div class="chat-info">
+          <div class="chat-name-row">
+            <span class="chat-name">Мария Козлова</span>
+            <span class="chat-time">13:05</span>
+          </div>
+          <div class="chat-preview">Отправила макеты в Figma, посмотри</div>
+        </div>
+        <div class="badge">2</div>
+      </div>
+
+      <div class="spacer"></div>
+      <div class="state-label">Active (selected)</div>
+      <div class="chat-item active">
+        <div class="avatar size-md av-1">АС
+          <span class="avatar-online-dot"></span>
+        </div>
+        <div class="chat-info">
+          <div class="chat-name-row">
+            <span class="chat-name">Алексей Смирнов</span>
+            <span class="chat-time">14:23</span>
+          </div>
+          <div class="chat-preview">Да, давай обсудим это завтра на встрече</div>
+        </div>
+      </div>
+    </div>
+
+    <table class="spec-table">
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Padding</td><td><code>12px</code></td></tr>
+      <tr><td>Gap</td><td><code>12px</code></td></tr>
+      <tr><td>Radius</td><td><code>--radius-md (14px)</code></td></tr>
+      <tr><td>Name</td><td><code>14px / 600</code>, ellipsis</td></tr>
+      <tr><td>Time</td><td><code>11px</code>, <code>--font-mono</code>, color <code>--text-muted</code></td></tr>
+      <tr><td>Preview</td><td><code>13px</code>, color <code>--text-secondary</code>, ellipsis</td></tr>
+      <tr><td>:hover</td><td>bg <code>--bg-glass</code></td></tr>
+      <tr><td>:active</td><td><code>scale(0.98)</code>, opacity <code>0.85</code></td></tr>
+      <tr><td>.active</td><td>bg <code>--accent-glow</code>, border <code>--border-accent</code></td></tr>
+      <tr><td>Badge position</td><td>absolute <code>top: 10px; right: 10px</code></td></tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       10. MESSAGE BUBBLE
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">Message Bubble <code>shared/ui-kit/message-bubble/</code></div>
+    <div class="section-desc">Single message. Sent (accent border, right-aligned) or received (card bg, left-aligned). Corner radius changes for groups.</div>
+
+    <div class="component-row">
+      <div class="component-card">
+        <div class="state-label">Sent — single</div>
+        <div class="msg-bubble sent">Привет! Да, выглядит отлично</div>
+        <div class="msg-time" style="text-align: right;">12:32</div>
+      </div>
+
+      <div class="component-card">
+        <div class="state-label">Sent — group (2 messages)</div>
+        <div style="display:flex;flex-direction:column;gap:3px;align-items:flex-end;">
+          <div class="msg-bubble sent">Давай завтра разберём?</div>
+          <div class="msg-bubble sent last-in-group">Я подготовлю список вопросов</div>
+        </div>
+        <div class="msg-time" style="text-align: right;">14:20</div>
+      </div>
+
+      <div class="component-card">
+        <div class="state-label">Received — single</div>
+        <div class="msg-bubble received">Привет! Ты видел новый дизайн?</div>
+        <div class="msg-time">12:30</div>
+      </div>
+
+      <div class="component-card">
+        <div class="state-label">Received — group</div>
+        <div style="display:flex;flex-direction:column;gap:3px;">
+          <div class="msg-bubble received">Согласен, дизайнер постарался</div>
+          <div class="msg-bubble received last-in-group">Надо обсудить реализацию</div>
+        </div>
+        <div class="msg-time">12:35</div>
+      </div>
+    </div>
+
+    <table class="spec-table">
+      <tr><th>Property</th><th>Sent</th><th>Received</th></tr>
+      <tr><td>Background</td><td><code>--msg-sent-bg</code> (gradient)</td><td><code>--bg-card</code></td></tr>
+      <tr><td>Border</td><td><code>1px solid --border-accent</code></td><td><code>1px solid --border</code></td></tr>
+      <tr><td>Radius (single)</td><td><code>14 14 6 14</code></td><td><code>14 14 14 6</code></td></tr>
+      <tr><td>Radius (last in group)</td><td><code>14 6 6 14</code></td><td><code>6 14 14 6</code></td></tr>
+      <tr><td>Padding</td><td colspan="2"><code>10px 16px</code></td></tr>
+      <tr><td>Font</td><td colspan="2"><code>14px / 1.55</code></td></tr>
+      <tr><td>Max-width</td><td colspan="2"><code>65%</code> of container</td></tr>
+      <tr><td>Group gap</td><td colspan="2"><code>3px</code></td></tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       11. DATE DIVIDER
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">Date Divider <code>shared/ui-kit/date-divider/</code></div>
+    <div class="section-desc">Liquid glass pill centered in message list. Shows date or "Today".</div>
+
+    <div class="component-row">
+      <div class="component-card">
+        <div style="text-align: center;">
+          <span class="date-divider">Сегодня</span>
+        </div>
+      </div>
+    </div>
+
+    <table class="spec-table">
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Font</td><td><code>11px / 600</code>, uppercase, <code>letter-spacing 0.08em</code></td></tr>
+      <tr><td>Padding</td><td><code>6px 14px</code></td></tr>
+      <tr><td>Background</td><td><code>--liquid-bg</code>, <code>backdrop-filter: blur(12px)</code></td></tr>
+      <tr><td>Border</td><td><code>1px solid --liquid-border</code></td></tr>
+      <tr><td>Radius</td><td><code>--radius-full (9999px)</code></td></tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       12. TYPING INDICATOR
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">Typing Indicator <code>shared/ui-kit/typing-indicator/</code></div>
+    <div class="section-desc">Three animated dots + username text. Staggered bounce animation.</div>
+
+    <div class="component-row">
+      <div class="component-card">
+        <div class="typing-indicator">
+          <div class="typing-dots"><i></i><i></i><i></i></div>
+          <span>Алексей печатает...</span>
+        </div>
+      </div>
+    </div>
+
+    <table class="spec-table">
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Dots</td><td><code>5 x 5</code>, color <code>--accent-dim</code></td></tr>
+      <tr><td>Animation</td><td><code>typingBounce 1.2s infinite</code>, delays: <code>0, 0.15s, 0.3s</code></td></tr>
+      <tr><td>Text</td><td><code>12px</code>, italic, color <code>--text-muted</code></td></tr>
+      <tr><td>Gap</td><td>dots: <code>3px</code>, dots-to-text: <code>8px</code></td></tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       13. CHAT HEADER
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">Chat Header <code>shared/ui-kit/chat-header/</code></div>
+    <div class="section-desc">Top bar of chat window: avatar + name + online status + action buttons.</div>
+
+    <div class="component-card-wide" style="max-width: 600px;">
+      <div class="chat-header-demo">
+        <div class="chat-header-info">
+          <div class="avatar size-sm av-1" style="width:40px;height:40px;border-radius:var(--radius-sm);">АС</div>
+          <div>
+            <div class="chat-header-name">Алексей Смирнов</div>
+            <div class="chat-header-status">онлайн</div>
+          </div>
+        </div>
+        <div class="chat-header-actions">
+          <button class="icon-btn"><span class="material-icons-round">search</span></button>
+          <button class="icon-btn"><span class="material-icons-round">call</span></button>
+          <button class="icon-btn"><span class="material-icons-round">more_vert</span></button>
+        </div>
+      </div>
+    </div>
+
+    <table class="spec-table">
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Padding</td><td><code>16px 24px</code></td></tr>
+      <tr><td>Border-bottom</td><td><code>1px solid --border</code></td></tr>
+      <tr><td>Avatar</td><td><code>40 x 40</code>, radius <code>--radius-sm</code></td></tr>
+      <tr><td>Name</td><td><code>15px / 600</code></td></tr>
+      <tr><td>Status</td><td><code>12px</code>, color <code>#22c55e</code>, dot <code>6px</code></td></tr>
+      <tr><td>Actions gap</td><td><code>4px</code></td></tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       14. MESSAGE INPUT
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">Message Input <code>shared/ui-kit/message-input/</code></div>
+    <div class="section-desc">Textarea with attach button overlay + send button. Textarea auto-grows up to 120px.</div>
+
+    <div class="component-card-wide" style="max-width: 600px;">
+      <div class="msg-input-demo">
+        <div class="msg-input-wrapper">
+          <textarea class="msg-textarea" rows="1" placeholder="Написать сообщение..."></textarea>
+          <button class="msg-attach-btn" title="Прикрепить файл">
+            <span class="material-icons-round">attach_file</span>
+          </button>
+        </div>
+        <button class="icon-btn-send"><span class="material-icons-round">send</span></button>
+      </div>
+    </div>
+
+    <table class="spec-table">
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Container padding</td><td><code>16px 20px</code>, border-top <code>1px solid --border</code></td></tr>
+      <tr><td>Textarea</td><td><code>14px</code>, padding <code>13px 48px 13px 16px</code>, max-height <code>120px</code></td></tr>
+      <tr><td>Attach btn</td><td><code>32 x 32</code>, absolute <code>right: 10px; bottom: 8px</code></td></tr>
+      <tr><td>Send btn</td><td><code>48 x 48</code>, gradient bg, icon <code>send</code></td></tr>
+      <tr><td>Gap</td><td><code>10px</code></td></tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       15. PROFILE COVER
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">Profile Cover <code>shared/ui-kit/profile-cover/</code></div>
+    <div class="section-desc">Gradient header with radial glow overlays and bottom fade to panel.</div>
+
+    <div class="component-card-wide" style="max-width: 480px; padding: 0; overflow: hidden; border-radius: var(--radius-md);">
+      <div class="profile-cover-demo"></div>
+    </div>
+
+    <table class="spec-table">
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Height</td><td><code>140px</code></td></tr>
+      <tr><td>Background</td><td><code>--cover-bg</code></td></tr>
+      <tr><td>::before</td><td>Two radial-gradients (teal at 30%/70%, indigo at 80%/20%)</td></tr>
+      <tr><td>::after</td><td><code>60px</code> gradient fade to <code>--bg-panel</code></td></tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       16. PROFILE STATS
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">Profile Stats <code>shared/ui-kit/profile-stats/</code></div>
+    <div class="section-desc">Liquid glass bar with stat items. Each: monospace value + uppercase label.</div>
+
+    <div class="component-card-wide" style="max-width: 400px;">
+      <div class="profile-stats-demo">
+        <div class="profile-stat">
+          <div class="profile-stat-value">142</div>
+          <div class="profile-stat-label">Контакты</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-value">28</div>
+          <div class="profile-stat-label">Чаты</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-value">3.4k</div>
+          <div class="profile-stat-label">Сообщений</div>
+        </div>
+      </div>
+    </div>
+
+    <table class="spec-table">
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Container</td><td>liquid glass: <code>--liquid-bg</code>, blur <code>16px</code>, border <code>--liquid-border</code></td></tr>
+      <tr><td>Padding</td><td><code>18px 28px</code></td></tr>
+      <tr><td>Radius</td><td><code>--radius-lg (20px)</code></td></tr>
+      <tr><td>Value</td><td><code>20px / 700</code>, <code>--font-mono</code></td></tr>
+      <tr><td>Label</td><td><code>11px / 600</code>, uppercase, <code>letter-spacing 0.08em</code>, color <code>--text-muted</code></td></tr>
+      <tr><td>Gap</td><td><code>24px</code> between stats</td></tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       17. PROFILE FIELD
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">Profile Field <code>shared/ui-kit/profile-field/</code></div>
+    <div class="section-desc">Row with icon + label on left, value on right. Card background with hover border.</div>
+
+    <div class="component-card-wide" style="max-width: 440px; display: flex; flex-direction: column; gap: 8px;">
+      <div class="profile-field">
+        <div class="profile-field-left">
+          <span class="material-icons-round">mail</span>
+          <span class="profile-field-label">Email</span>
+        </div>
+        <span class="profile-field-value">schekan@example.com</span>
+      </div>
+      <div class="profile-field">
+        <div class="profile-field-left">
+          <span class="material-icons-round">phone</span>
+          <span class="profile-field-label">Телефон</span>
+        </div>
+        <span class="profile-field-value">+7 (999) 123-45-67</span>
+      </div>
+      <div class="profile-field">
+        <div class="profile-field-left">
+          <span class="material-icons-round">location_on</span>
+          <span class="profile-field-label">Локация</span>
+        </div>
+        <span class="profile-field-value">Москва, Россия</span>
+      </div>
+    </div>
+
+    <table class="spec-table">
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Padding</td><td><code>14px 16px</code></td></tr>
+      <tr><td>Background</td><td><code>--bg-card</code></td></tr>
+      <tr><td>Border</td><td><code>1px solid --border</code>, radius <code>--radius-md</code></td></tr>
+      <tr><td>:hover</td><td>border <code>--border-hover</code></td></tr>
+      <tr><td>Icon</td><td><code>18px</code>, color <code>--text-muted</code></td></tr>
+      <tr><td>Label</td><td><code>12px / 600</code>, uppercase, <code>letter-spacing 0.06em</code></td></tr>
+      <tr><td>Value</td><td><code>14px</code>, color <code>--text-primary</code></td></tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       18. SETTINGS ROW
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">Settings Row <code>shared/ui-kit/settings-row/</code></div>
+    <div class="section-desc">Settings entry: icon square + label/desc + control slot (toggle, select, or custom content).</div>
+
+    <div class="component-card-wide" style="max-width: 520px; display: flex; flex-direction: column; gap: 8px;">
+      <div class="settings-section-title">Уведомления</div>
+
+      <div class="settings-row">
+        <div class="settings-row-left">
+          <div class="settings-row-icon"><span class="material-icons-round">notifications</span></div>
+          <div class="settings-row-text">
+            <div class="settings-row-label">Push-уведомления</div>
+            <div class="settings-row-desc">Получать уведомления о новых сообщениях</div>
+          </div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" checked>
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+      </div>
+
+      <div class="settings-row">
+        <div class="settings-row-left">
+          <div class="settings-row-icon"><span class="material-icons-round">translate</span></div>
+          <div class="settings-row-text">
+            <div class="settings-row-label">Язык интерфейса</div>
+            <div class="settings-row-desc">Выберите язык приложения</div>
+          </div>
+        </div>
+        <div class="select-wrapper" onclick="toggleSelect(this)">
+          <div class="select-trigger">Русский</div>
+          <div class="select-dropdown">
+            <div class="select-option selected" onclick="pickOption(event, this)">Русский</div>
+            <div class="select-option" onclick="pickOption(event, this)">English</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <table class="spec-table">
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Padding</td><td><code>14px 16px</code></td></tr>
+      <tr><td>Background</td><td><code>--bg-card</code></td></tr>
+      <tr><td>Border</td><td><code>1px solid --border</code>, radius <code>--radius-md</code></td></tr>
+      <tr><td>:hover</td><td>border <code>--border-hover</code></td></tr>
+      <tr><td>Icon box</td><td><code>36 x 36</code>, radius <code>--radius-sm</code>, bg <code>--bg-glass</code></td></tr>
+      <tr><td>Label</td><td><code>14px / 500</code></td></tr>
+      <tr><td>Description</td><td><code>12px</code>, color <code>--text-muted</code></td></tr>
+      <tr><td>Section title</td><td><code>11px / 700</code>, uppercase, <code>letter-spacing 0.1em</code>, color <code>--text-muted</code></td></tr>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       19. THEME PICKER
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">Theme Picker <code>shared/ui-kit/theme-picker/</code></div>
+    <div class="section-desc">Two preview cards (dark/light) for selecting theme. Active state with accent border.</div>
+
+    <div class="component-card-wide" style="max-width: 360px;">
+      <div class="theme-options">
+        <div class="theme-option active" data-theme-value="dark" onclick="selectThemeOption(this, 'dark')">
+          <div class="theme-option-preview dark-preview">
+            <div class="preview-sidebar"></div>
+            <div class="preview-main"></div>
+          </div>
+          <span class="theme-option-label">Dark</span>
+        </div>
+        <div class="theme-option" data-theme-value="light" onclick="selectThemeOption(this, 'light')">
+          <div class="theme-option-preview light-preview">
+            <div class="preview-sidebar"></div>
+            <div class="preview-main"></div>
+          </div>
+          <span class="theme-option-label">Light</span>
+        </div>
+      </div>
+    </div>
+
+    <table class="spec-table">
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Padding</td><td><code>14px</code></td></tr>
+      <tr><td>Border</td><td><code>2px solid --border</code>, active: <code>--accent</code></td></tr>
+      <tr><td>Radius</td><td><code>--radius-md (14px)</code></td></tr>
+      <tr><td>Preview height</td><td><code>48px</code></td></tr>
+      <tr><td>Label</td><td><code>12px / 600</code>, active color <code>--accent</code></td></tr>
+      <tr><td>:hover</td><td>border <code>--border-hover</code></td></tr>
+      <tr><td>:active</td><td><code>scale(0.96)</code></td></tr>
+    </table>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      // Sync theme picker if visible
+      document.querySelectorAll('.theme-option').forEach(el => {
+        el.classList.toggle('active', el.dataset.themeValue === next);
+      });
+    }
+
+    function selectThemeOption(el, theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      document.querySelectorAll('.theme-option').forEach(o => o.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    /* Custom select */
+    function toggleSelect(wrapper) {
+      // Close other open selects
+      document.querySelectorAll('.select-wrapper.open').forEach(w => {
+        if (w !== wrapper) w.classList.remove('open');
+      });
+      wrapper.classList.toggle('open');
+    }
+
+    function pickOption(e, option) {
+      e.stopPropagation();
+      const wrapper = option.closest('.select-wrapper');
+      const trigger = wrapper.querySelector('.select-trigger');
+      wrapper.querySelectorAll('.select-option').forEach(o => o.classList.remove('selected'));
+      option.classList.add('selected');
+      trigger.textContent = option.textContent;
+      wrapper.classList.remove('open');
+    }
+
+    // Close selects on outside click
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.select-wrapper')) {
+        document.querySelectorAll('.select-wrapper.open').forEach(w => w.classList.remove('open'));
+      }
+    });
+  </script>
+
+</body>
+</html>
