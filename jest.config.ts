@@ -37,6 +37,8 @@ const config: Config = {
   ],
   coverageReporters: ['html', 'text-summary', 'json-summary'],
   moduleNameMapper: {
+    '^@angular/core/rxjs-interop$':
+      '<rootDir>/node_modules/@angular/core/fesm2022/rxjs-interop.mjs',
     '^@app/(.*)$': '<rootDir>/src/app/$1',
     '^@core/(.*)$': '<rootDir>/src/app/core/$1',
     '^@shared/(.*)$': '<rootDir>/src/app/shared/$1',

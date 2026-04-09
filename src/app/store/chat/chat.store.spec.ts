@@ -1,12 +1,15 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { IChatDto } from '@shared/dtos/chat-dto.interface';
-import { IMessageDto } from '@shared/dtos/message-dto.interface';
+import { IChatDto } from '@core/api/controllers/chat/dtos/chat-dto.interface';
+import { IMessageDto } from '@core/api/controllers/chat/dtos/message-dto.interface';
+import { APPLICATION_ENVIRONMENT } from '@core/environment/application-environment.token';
+import { IChat } from '@shared/interfaces/chat.interface';
+import { IMessage } from '@shared/interfaces/message.interface';
 
 import { ChatStore } from './chat.store';
 
-const mockMessage: IMessageDto = {
+const mockMessageDto: IMessageDto = {
   id: 'msg-1',
   chatId: 'c1',
   senderId: 'u2',
@@ -14,11 +17,27 @@ const mockMessage: IMessageDto = {
   createdAt: '2026-04-10T10:00:00.000Z',
 };
 
-const mockChat: IChatDto = {
+const mockChatDto: IChatDto = {
+  id: 'c1',
+  participant: { userId: 'u2', userName: 'Alex', isOnline: true },
+  lastMessage: mockMessageDto,
+  updatedAt: '2026-04-10T10:00:00.000Z',
+  unreadCount: 0,
+};
+
+const mockMessage: IMessage = {
+  id: 'msg-1',
+  chatId: 'c1',
+  senderId: 'u2',
+  text: 'Hello',
+  createdAt: new Date('2026-04-10T10:00:00.000Z'),
+};
+
+const mockChat: IChat = {
   id: 'c1',
   participant: { userId: 'u2', userName: 'Alex', isOnline: true },
   lastMessage: mockMessage,
-  updatedAt: '2026-04-10T10:00:00.000Z',
+  updatedAt: new Date('2026-04-10T10:00:00.000Z'),
   unreadCount: 0,
 };
 
@@ -28,7 +47,12 @@ describe('ChatStore', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ChatStore, provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        ChatStore,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: APPLICATION_ENVIRONMENT, useValue: { apiUrl: '' } },
+      ],
     });
     store = TestBed.inject(ChatStore);
     httpTesting = TestBed.inject(HttpTestingController);
@@ -49,14 +73,18 @@ describe('ChatStore', () => {
   describe('loadChats', () => {
     it('should load chats from API and update state', () => {
       store.loadChats();
-      httpTesting.expectOne('/api/chats').flush([mockChat]);
+
+      httpTesting.expectOne('/api/chats').flush([mockChatDto]);
+
       expect(store.chats()).toEqual([mockChat]);
       expect(store.isLoading()).toBe(false);
     });
 
     it('should set isLoading false on error', () => {
       store.loadChats();
+
       httpTesting.expectOne('/api/chats').flush('error', { status: 500, statusText: 'Server Error' });
+
       expect(store.isLoading()).toBe(false);
       expect(store.chats()).toEqual([]);
     });
@@ -65,14 +93,14 @@ describe('ChatStore', () => {
   describe('updateLastMessage', () => {
     it('should update lastMessage for the matching chat', () => {
       store.loadChats();
-      httpTesting.expectOne('/api/chats').flush([mockChat]);
+      httpTesting.expectOne('/api/chats').flush([mockChatDto]);
 
-      const newMessage: IMessageDto = {
+      const newMessage: IMessage = {
         id: 'msg-2',
         chatId: 'c1',
         senderId: 'u1',
         text: 'Reply',
-        createdAt: '2026-04-10T10:01:00.000Z',
+        createdAt: new Date('2026-04-10T10:01:00.000Z'),
       };
 
       store.updateLastMessage(newMessage);
@@ -85,7 +113,7 @@ describe('ChatStore', () => {
   describe('updateOnlineStatus', () => {
     it('should update online status for the matching participant', () => {
       store.loadChats();
-      httpTesting.expectOne('/api/chats').flush([mockChat]);
+      httpTesting.expectOne('/api/chats').flush([mockChatDto]);
 
       store.updateOnlineStatus('u2', false);
 
