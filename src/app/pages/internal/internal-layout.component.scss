@@ -10,19 +10,18 @@
 .sidebar {
   @include m.panel-card;
   @include m.scrollbar-thin;
-
-  width: 340px;
-  min-width: 340px;
   display: flex;
   flex-direction: column;
+  width: 340px;
+  min-width: 340px;
   padding: 20px;
   color: var(--text-secondary);
 }
 
 .main {
-  flex: 1;
-  min-width: 0;
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-width: 0;
   color: var(--text-secondary);
 }

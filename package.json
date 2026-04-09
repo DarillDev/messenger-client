@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:mock-api": "concurrently \"ng serve --proxy-config proxy.conf.json\" \"npx ts-node -P tsconfig.mock-api.json src/mock-api/server.ts\"",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "jest",
@@ -11,9 +12,10 @@
     "test:coverage": "jest --coverage",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write \"src/**/*.{ts,html,scss,json}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,html,scss,json}\"",
-    "start:mock-api": "concurrently \"ng serve --proxy-config proxy.conf.json\" \"npx ts-node -P tsconfig.mock-api.json src/mock-api/server.ts\""
+    "lint:style": "stylelint \"src/**/*.scss\"",
+    "lint:style:fix": "stylelint \"src/**/*.scss\" --fix",
+    "format": "prettier --write \"src/**/*.{ts,html,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,html,json}\""
   },
   "private": true,
   "packageManager": "npm@11.7.0",
@@ -45,6 +47,7 @@
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.1.18",
+    "@stylistic/stylelint-plugin": "^5.1.0",
     "@types/jest": "^30.0.0",
     "@types/passport-jwt": "^4.0.1",
     "concurrently": "^9.2.1",
@@ -58,6 +61,10 @@
     "passport-jwt": "^4.0.1",
     "prettier": "^3.8.1",
     "reflect-metadata": "^0.2.2",
+    "stylelint": "^17.6.0",
+    "stylelint-config-sass-guidelines": "^13.0.0",
+    "stylelint-order": "^8.1.1",
+    "stylelint-scss": "^7.0.0",
     "ts-node": "^10.9.2",
     "typescript": "~5.9.2",
     "typescript-eslint": "^8.58.1"

@@ -4,27 +4,28 @@
 }
 
 .form-field-wrapper {
+  position: relative;
   display: flex;
   align-items: center;
-  position: relative;
 }
 
 .form-field-infix {
-  flex: 1;
   position: relative;
+  flex: 1;
   min-width: 0;
 }
 
 // Static label (default)
+
 .form-field-label {
   display: block;
+  margin-bottom: 8px;
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
   color: var(--text-secondary);
-  margin-bottom: 8px;
-  transition: color 0.2s var(--ease-out);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  transition: color .2s var(--ease-out);
 }
 
 .form-field.focused .form-field-label {
@@ -36,31 +37,32 @@
 }
 
 // Floating label
+
 .form-field.floating .form-field-label {
   position: absolute;
   top: 50%;
   left: 16px;
-  transform: translateY(-50%);
+  margin-bottom: 0;
   font-size: 15px;
   font-weight: 400;
-  letter-spacing: normal;
-  text-transform: none;
   color: var(--text-muted);
-  pointer-events: none;
-  margin-bottom: 0;
-  transition: all 0.2s var(--ease-out);
+  text-transform: none;
+  letter-spacing: normal;
+  transform: translateY(-50%);
   transform-origin: left top;
+  transition: all .2s var(--ease-out);
+  pointer-events: none;
 }
 
 .form-field.floating.focused .form-field-label,
 .form-field.floating.filled .form-field-label {
   top: 0;
-  transform: translateY(-100%) translateY(-4px);
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
   color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  transform: translateY(-100%) translateY(-4px);
 }
 
 .form-field.floating.focused .form-field-label {
@@ -75,8 +77,8 @@
 .form-field-suffix {
   display: flex;
   align-items: center;
-  color: var(--text-secondary);
   flex-shrink: 0;
+  color: var(--text-secondary);
 }
 
 .form-field-prefix {
@@ -96,10 +98,10 @@
 .form-field-error {
   display: flex;
   align-items: center;
-  gap: 4px;
   font-size: 12px;
   color: var(--accent-warm);
-  animation: shakeIn 0.35s var(--ease-spring);
+  animation: shakeIn .35s var(--ease-spring);
+  gap: 4px;
 
   .material-icons-round {
     font-size: 15px;
@@ -112,9 +114,10 @@
 }
 
 @keyframes shakeIn {
+
   0% {
-    opacity: 0;
     transform: translateX(-6px);
+    opacity: 0;
   }
 
   50% {
@@ -122,7 +125,7 @@
   }
 
   100% {
-    opacity: 1;
     transform: translateX(0);
+    opacity: 1;
   }
 }

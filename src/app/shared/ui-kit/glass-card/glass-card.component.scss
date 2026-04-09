@@ -2,18 +2,14 @@
 
 :host {
   @include m.liquid-glass;
-
   display: block;
-  padding: 48px 40px;
-  max-width: 420px;
   width: 100%;
+  max-width: 420px;
+  padding: 48px 40px;
   box-shadow: var(--liquid-shadow), var(--shadow-glow);
-  transition:
-    background-color 0.4s,
-    border-color 0.4s,
-    box-shadow 0.4s;
+  transition: background-color .4s, border-color .4s, box-shadow .4s;
 
-  &::after {
+  &:after {
     content: '';
     position: absolute;
     top: -60px;

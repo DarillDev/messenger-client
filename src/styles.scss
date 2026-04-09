@@ -2,43 +2,38 @@
 @use 'styles/mixins';
 
 *,
-*::before,
-*::after {
+*:before,
+*:after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
 body {
-  font-family: var(--font-body);
-  background: var(--bg-root);
-  color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background: var(--bg-root);
+  transition: background-color .4s var(--ease-out), color .4s var(--ease-out);
   -webkit-font-smoothing: antialiased;
-  transition:
-    background-color 0.4s var(--ease-out),
-    color 0.4s var(--ease-out);
 }
 
-body::before {
+body:before {
   content: '';
   position: fixed;
   inset: 0;
-  background:
-    radial-gradient(ellipse 60% 50% at 10% 20%, var(--ambient-1) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 60% at 85% 80%, var(--ambient-2) 0%, transparent 60%),
-    radial-gradient(ellipse 80% 40% at 50% 50%, var(--ambient-3) 0%, transparent 70%);
+  background: radial-gradient(ellipse 60% 50% at 10% 20%, var(--ambient-1) 0%, transparent 60%), radial-gradient(ellipse 50% 60% at 85% 80%, var(--ambient-2) 0%, transparent 60%), radial-gradient(ellipse 80% 40% at 50% 50%, var(--ambient-3) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
 
-body::after {
+body:after {
   content: '';
   position: fixed;
   inset: 0;
-  opacity: var(--noise-opacity);
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: var(--noise-opacity);
   pointer-events: none;
   z-index: 0;
 }
@@ -49,23 +44,19 @@ body::after {
 }
 
 // UI-Kit Input directive styles
+
 .ui-kit-input {
+  display: block;
   width: 100%;
   padding: 14px 16px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--text-primary);
   background: var(--bg-input);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  color: var(--text-primary);
-  font-family: var(--font-body);
-  font-size: 15px;
   outline: none;
-  transition: all 0.25s var(--ease-out);
-  display: block;
-
-  &::placeholder {
-    color: transparent;
-    transition: color 0.2s var(--ease-out);
-  }
+  transition: all .25s var(--ease-out);
 
   &:focus::placeholder {
     color: var(--text-muted);
@@ -73,9 +64,12 @@ body::after {
 
   &:focus {
     border-color: var(--border-accent);
-    box-shadow:
-      0 0 0 3px var(--accent-glow),
-      inset 0 0 0 1px var(--border-accent);
+    box-shadow: 0 0 0 3px var(--accent-glow), inset 0 0 0 1px var(--border-accent);
+  }
+
+  &::placeholder {
+    color: transparent;
+    transition: color .2s var(--ease-out);
   }
 
   &.ui-kit-input-error {
