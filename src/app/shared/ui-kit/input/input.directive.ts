@@ -1,10 +1,10 @@
-import { Directive, ElementRef, inject, OnDestroy } from '@angular/core';
+import { Directive, ElementRef, inject, OnDestroy, OnInit } from '@angular/core';
 import { NgControl } from '@angular/forms';
 import {
   FORM_FIELD_CONTROL,
   IFormFieldControl,
-} from '@shared/ui-kit/form-field/form-field-control.token';
-import { FORM_FIELD } from '@shared/ui-kit/form-field/form-field.token';
+} from '@app/shared/ui-kit/form-field/tokens/form-field-control.token';
+import { FORM_FIELD } from '@app/shared/ui-kit/form-field/tokens/form-field.token';
 import { Subject } from 'rxjs';
 
 let nextId = 0;
@@ -15,25 +15,31 @@ let nextId = 0;
   providers: [{ provide: FORM_FIELD_CONTROL, useExisting: UiKitInputDirective }],
   host: {
     class: 'ui-kit-input',
-    '[id]': 'id',
     '[class.ui-kit-input-error]': 'isErrorState',
     '(focus)': 'onFocus()',
     '(blur)': 'onBlur()',
     '(input)': 'onInputChange()',
   },
 })
-export class UiKitInputDirective implements IFormFieldControl, OnDestroy {
+export class UiKitInputDirective implements IFormFieldControl, OnInit, OnDestroy {
   public readonly ngControl = inject(NgControl, { optional: true, self: true });
   private readonly elementRef = inject<ElementRef<HTMLInputElement>>(ElementRef);
   private readonly formField = inject(FORM_FIELD, { optional: true });
 
   public readonly stateChanges = new Subject<void>();
-  public readonly id = `ui-kit-input-${nextId++}`;
 
   public isFocused = false;
 
-  constructor() {
+  public ngOnInit(): void {
+    if (!this.elementRef.nativeElement.id) {
+      this.elementRef.nativeElement.id = `ui-kit-input-${nextId++}`;
+    }
+
     this.formField?.registerControl(this);
+  }
+
+  public get id(): string {
+    return this.elementRef.nativeElement.id;
   }
 
   public get isEmpty(): boolean {

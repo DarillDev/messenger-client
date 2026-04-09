@@ -1,8 +1,8 @@
 export { FormFieldComponent } from './components/form-field/form-field.component';
-export { FORM_FIELD } from './form-field.token';
-export type { IFormField } from './form-field.token';
-export { FORM_FIELD_CONTROL } from './form-field-control.token';
-export type { IFormFieldControl } from './form-field-control.token';
+export { FORM_FIELD } from './tokens/form-field.token';
+export type { IFormField } from './tokens/form-field.token';
+export { FORM_FIELD_CONTROL } from './tokens/form-field-control.token';
+export type { IFormFieldControl } from './tokens/form-field-control.token';
 export { UiKitPrefixDirective } from './directives/prefix/prefix.directive';
 export { UiKitSuffixDirective } from './directives/suffix/suffix.directive';
 export { ErrorTextPipe } from './pipes/error-text/error-text.pipe';

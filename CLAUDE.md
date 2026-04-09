@@ -27,6 +27,7 @@ Angular 21 single-page application — текстовый мессенджер (
 - **Formatter**: Prettier (100 chars, single quotes, angular HTML parser)
 - **Package manager**: npm
 - **No SSR** — client-only SPA
+- **Mock API**: dev-only через `MockApiInterceptor` в `main.ts`, prod uses `main.prod.ts` via `fileReplacements`
 
 ## Code Style Rules
 
@@ -35,7 +36,7 @@ Angular 21 single-page application — текстовый мессенджер (
 ### Компоненты
 - standalone: true и OnPush — дефолт в angular.json schematics (не указывать явно при генерации)
 - External templateUrl/styleUrl
-- host: {} для bindings, prefix app-, Emulated encapsulation (None только для overlay)
+- host: {} для bindings, prefix `app-` или `ui-kit-` для ui-kit компонентов, Emulated encapsulation (None только для overlay)
 - inject() всегда, constructor injection запрещён
 - createDestroyer() для cleanup подписок
 
@@ -45,16 +46,18 @@ Angular 21 single-page application — текстовый мессенджер (
 
 ### Lifecycle
 - Предпочтительно без хуков. afterNextRender() для DOM, ngOnInit только для NgControl
+- `effect(onCleanup => {...})` для подписок с автоочисткой
 
 ### Templates
 - Новый control flow: @if, @for (с track), @empty
+- **НЕ использовать** *ngIf, *ngFor — только новый синтаксис
 
 ### Сервисы
 - providedIn: 'root', BehaviorSubject/signal для состояния
 - Expose Observable (не Subject), ошибки через EMPTY/of(null)
 
 ### Директивы & Pipes
-- standalone, attribute selector [appName], createDestroyer()
+- standalone, attribute selector `[appName]` или `[uiKitName]` для ui-kit
 - Pipes: pure по умолчанию, OnDestroy для impure
 
 ### Маршрутизация
@@ -62,11 +65,14 @@ Angular 21 single-page application — текстовый мессенджер (
 
 ### SCSS
 - CSS custom properties, :host, host-классы для размеров, max 3 уровня nesting, @use mixins
+- `stylePreprocessorOptions.includePaths: ["src"]` — можно `@use 'styles/mixins'` из компонентов
+- Директивы не поддерживают `styleUrl` — стили через global CSS с host-классом
 
 ### Naming Conventions
 - Интерфейсы: IUser, Type aliases: TAlertType, Enum: ETheme
+- Boolean: isLoading, isEmpty, hasPrefix (is/has prefix)
 - Типы компонента в *.types.ts рядом
-- File suffixes: *.component.ts, *.service.ts, *.directive.ts, *.pipe.ts
+- File suffixes: *.component.ts, *.service.ts, *.directive.ts, *.pipe.ts, *.token.ts
 - Path aliases: @app/*, @core/*, @shared/*, @state/*, @pages/*, @mock/*
 
 ### Тестирование
@@ -82,6 +88,7 @@ Angular 21 single-page application — текстовый мессенджер (
 - Strict TypeScript: strict, noImplicitOverride, noImplicitReturns, noFallthroughCasesInSwitch
 - Strict Angular templates: strictTemplates, strictInjectionParameters, strictInputAccessModifiers
 - ESLint: strict naming conventions (I/T/E prefixes), no-explicit-any, explicit-function-return-type, explicit-member-accessibility
+- ESLint: selector prefixes `app-` и `ui-kit-`/`uiKit` разрешены
 - Prettier: 100 char width, single quotes, angular HTML parser
 
 ## Design
@@ -105,60 +112,77 @@ Angular 21 single-page application — текстовый мессенджер (
 ```
 ├── public/                            # Статические ассеты (favicon, изображения)
 ├── docs/                              # Документация проекта
-│   └── REQUIREMENTS.md
+│   ├── REQUIREMENTS.md
+│   ├── design/                        # Утверждённый дизайн (HTML)
+│   └── superpowers/                   # Спеки и планы реализации
+│       ├── specs/
+│       └── plans/
 └── src/
-    ├── main.ts                        # Точка входа, bootstrap приложения
-    ├── index.html                     # Корневой HTML
-    ├── styles.scss                    # Глобальные стили
-    ├── styles/                        # SCSS-утилиты для переиспользования
-    │   ├── _variables.scss
-    │   └── _mixins.scss
+    ├── main.ts                        # Dev точка входа (с MockApiInterceptor)
+    ├── main.prod.ts                   # Prod точка входа (чистый)
+    ├── index.html                     # Корневой HTML (data-theme="dark", Google Fonts)
+    ├── styles.scss                    # Глобальные стили (reset, ambient bg, ui-kit-input)
+    ├── styles/                        # SCSS-утилиты
+    │   ├── _variables.scss            # CSS custom properties (dark/light темы, radii, fonts, easings)
+    │   └── _mixins.scss               # liquid-glass, panel-card, scrollbar-thin, responsive
     └── app/
-        ├── app.component.ts           # Корневой компонент
-        ├── app.config.ts              # Провайдеры приложения (router, http, interceptors)
-        ├── app.routes.ts              # Определение маршрутов
+        ├── app.component.ts           # Корневой компонент (<router-outlet>)
+        ├── app.config.ts              # Провайдеры (router, httpClient)
+        ├── app.routes.ts              # Маршруты (/login, /, **)
         │
         ├── core/                      # Синглтоны: сервисы, guards, interceptors, модели
-        │   ├── guards/
-        │   │   └── auth.guard.ts
-        │   ├── interceptors/
-        │   │   └── auth.interceptor.ts
-        │   ├── services/
-        │   │   ├── auth.service.ts
-        │   │   └── api.service.ts
-        │   └── models/
-        │       ├── user.model.ts
-        │       ├── chat.model.ts
-        │       └── message.model.ts
         │
         ├── state/                     # Управление состоянием (state management)
-        │   ├── auth.state.ts
-        │   ├── chats.state.ts
-        │   └── messages.state.ts
         │
-        ├── pages/                     # Routed-компоненты, по одному на маршрут
-        │   ├── login/
-        │   │   └── login.component.ts
-        │   ├── home/
-        │   │   └── home.component.ts
-        │   └── user/
-        │       └── user.component.ts
+        ├── pages/                     # Routed-компоненты
+        │   ├── login/                 # Страница авторизации
+        │   │   ├── login.component.ts/html/scss/spec.ts
+        │   │   ├── enums/             # ELoginFormErrorKey
+        │   │   └── constants/         # LOGIN_FORM_ERRORS_TEXT
+        │   └── internal/              # Internal layout (sidebar + main)
+        │       └── internal-layout.component.ts/html/scss/spec.ts
         │
-        ├── shared/                    # Общие ресурсы, переиспользуемые по всему проекту
-        │   ├── ui-kit/                # Переиспользуемые UI-компоненты
-        │   │   ├── sidebar/
-        │   │   ├── chat-list/
-        │   │   ├── chat-window/
-        │   │   └── message-bubble/
-        │   ├── interfaces/            # Общие интерфейсы
-        │   ├── types/                 # Общие типы
-        │   ├── enums/                 # Перечисления
-        │   └── constants/             # Константы
+        ├── shared/
+        │   └── ui-kit/                # Переиспользуемые UI-компоненты
+        │       ├── button/            # ButtonComponent (primary/secondary, fullWidth)
+        │       │   └── index.ts
+        │       ├── glass-card/        # GlassCardComponent (liquid glass контейнер)
+        │       │   └── index.ts
+        │       ├── input/             # UiKitInputDirective (реализует FORM_FIELD_CONTROL)
+        │       │   └── index.ts
+        │       └── form-field/        # FormField архитектура (Material-style)
+        │           ├── components/
+        │           │   └── form-field/    # FormFieldComponent (контейнер: label, error, prefix/suffix)
+        │           ├── directives/
+        │           │   ├── prefix/        # UiKitPrefixDirective
+        │           │   └── suffix/        # UiKitSuffixDirective
+        │           ├── pipes/
+        │           │   └── error-text/    # ErrorTextPipe (DI-based error resolution)
+        │           ├── tokens/
+        │           │   └── error-messages.token.ts  # UI_KIT_ERROR_MESSAGES + provideUiKitErrorMessages()
+        │           ├── utils/
+        │           │   └── wrap-validator.ts  # wrapValidator(validatorFn, customKey)
+        │           ├── form-field.token.ts         # FORM_FIELD + IFormField
+        │           ├── form-field-control.token.ts  # FORM_FIELD_CONTROL + IFormFieldControl
+        │           └── index.ts
         │
-        └── mock/                      # Фейковый REST API для разработки
+        └── mock/                      # Фейковый REST API (dev-only)
             ├── db.json
             └── mock-api.interceptor.ts
 ```
+
+## UI-Kit Architecture
+
+### FormField (Material-style)
+- **FORM_FIELD_CONTROL** — InjectionToken + IFormFieldControl interface. Контрол реализует: stateChanges, isFocused, isEmpty, isDisabled, isErrorState, ngControl, id, placeholder
+- **FORM_FIELD** — InjectionToken + IFormField interface. FormField провайдит себя, контрол инжектит и регистрируется через `registerControl()`
+- **FormFieldComponent** — контейнер: floating/static label, error/hint subscript, prefix/suffix slots
+- **UiKitInputDirective** — вешается на нативный `<input>`, реализует FORM_FIELD_CONTROL, регистрируется в FormField через DI
+- **ErrorTextPipe** — резолвит ключ ошибки в текст: override map → DI map (UI_KIT_ERROR_MESSAGES) → fallback key
+- **provideUiKitErrorMessages(patch)** — патчит (не заменяет) дефолтный map ошибок на любом уровне инжектора
+- **wrapValidator(validatorFn, customKey)** — оборачивает стандартный валидатор, ремапит error key
+
+Каждый ui-kit компонент имеет `index.ts` barrel export.
 
 ## Data Flow
 
@@ -174,8 +198,8 @@ Pages → State → Services → HttpClient + authInterceptor → MockApiInterce
 
 ## Routes
 
-| Route    | Component      | Guard     |
-|----------|---------------|-----------|
-| `/`      | HomePage      | authGuard |
-| `/login` | LoginPage     | —         |
-| `/user`  | UserPage      | authGuard |
+| Route    | Component              | Guard     |
+|----------|------------------------|-----------|
+| `/`      | InternalLayoutComponent | —         |
+| `/login` | LoginComponent          | —         |
+| `**`     | redirect → `/`          | —         |

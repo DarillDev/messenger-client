@@ -11,11 +11,11 @@ import {
 
 import { UiKitPrefixDirective } from '../../directives/prefix/prefix.directive';
 import { UiKitSuffixDirective } from '../../directives/suffix/suffix.directive';
-import { FORM_FIELD } from '../../form-field.token';
+import { FORM_FIELD } from '../../tokens/form-field.token';
 import { ErrorTextPipe } from '../../pipes/error-text/error-text.pipe';
 
-import type { IFormFieldControl } from '../../form-field-control.token';
-import type { IFormField } from '../../form-field.token';
+import type { IFormFieldControl } from '../../tokens/form-field-control.token';
+import type { IFormField } from '../../tokens/form-field.token';
 
 @Component({
   selector: 'ui-kit-form-field',
