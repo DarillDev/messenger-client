@@ -33,6 +33,7 @@ const config: Config = {
     '!src/**/*.interface.ts',
     '!src/**/*.type.ts',
     '!src/**/*.enum.ts',
+    '!src/mock-api/**',
   ],
   coverageReporters: ['html', 'text-summary', 'json-summary'],
   moduleNameMapper: {
@@ -41,7 +42,7 @@ const config: Config = {
     '^@shared/(.*)$': '<rootDir>/src/app/shared/$1',
     '^@state/(.*)$': '<rootDir>/src/app/state/$1',
     '^@pages/(.*)$': '<rootDir>/src/app/pages/$1',
-    '^@mock/(.*)$': '<rootDir>/src/app/mock/$1',
+    '^@mock-api/(.*)$': '<rootDir>/src/mock-api/$1',
   },
 };
 

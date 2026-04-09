@@ -10,7 +10,6 @@
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "isolatedModules": true,
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2022",
@@ -22,7 +21,7 @@
       "@shared/*": ["src/app/shared/*"],
       "@state/*": ["src/app/state/*"],
       "@pages/*": ["src/app/pages/*"],
-      "@mock/*": ["src/app/mock/*"]
+      "@mock-api/*": ["src/mock-api/*"]
     }
   },
   "angularCompilerOptions": {
