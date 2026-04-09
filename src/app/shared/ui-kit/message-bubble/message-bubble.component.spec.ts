@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { IMessage } from '@shared/interfaces/message.interface';
 import { UserStore } from '@store/user/user.store';
 

@@ -1,8 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { TestBed, fakeAsync } from '@angular/core/testing';
+import { fakeAsync, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { provideRouter } from '@angular/router';
-import { throwError, of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { TimeoutError } from 'rxjs';
 
 import { httpErrorInterceptor } from './http-error.interceptor';

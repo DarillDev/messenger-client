@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-
 import { IChat } from '@shared/interfaces/chat.interface';
 
 import { ChatItemComponent } from './chat-item.component';

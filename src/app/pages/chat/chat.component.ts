@@ -4,12 +4,12 @@ import { ActivatedRoute } from '@angular/router';
 import { MessagesService } from '@pages/chat/services/messages/messages.service';
 import { MessageStore } from '@pages/chat/store/message/message.store';
 import { IMessage } from '@shared/interfaces/message.interface';
+import { DateDividerComponent } from '@shared/ui-kit/date-divider';
+import { MessageBubbleComponent } from '@shared/ui-kit/message-bubble';
 import { ChatStore } from '@store/chat/chat.store';
 import { UserStore } from '@store/user/user.store';
 import { map } from 'rxjs';
 
-import { DateDividerComponent } from '@shared/ui-kit/date-divider';
-import { MessageBubbleComponent } from '@shared/ui-kit/message-bubble';
 
 @Component({
   selector: 'app-chat',

@@ -1,10 +1,10 @@
 import { inject, Injectable } from '@angular/core';
-import { TokenStorageService } from '@core/auth/services/token-storage/token-storage.service';
-import { WsService } from '@core/api/ws/ws.service';
 import { IMessageDto } from '@core/api/controllers/chat/dtos/message-dto.interface';
 import { MessageMapper } from '@core/api/controllers/chat/mappers/message/message.mapper';
-import { ChatStore } from '@store/chat/chat.store';
+import { WsService } from '@core/api/ws/ws.service';
+import { TokenStorageService } from '@core/auth/services/token-storage/token-storage.service';
 import { IMessage } from '@shared/interfaces/message.interface';
+import { ChatStore } from '@store/chat/chat.store';
 import { Socket } from 'socket.io-client';
 
 @Injectable()

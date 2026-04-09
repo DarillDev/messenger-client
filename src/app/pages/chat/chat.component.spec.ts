@@ -4,9 +4,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { APPLICATION_ENVIRONMENT } from '@core/environment/application-environment.token';
 import { MessagesService } from '@pages/chat/services/messages/messages.service';
+import { MessageStore } from '@pages/chat/store/message/message.store';
 import { IMessage } from '@shared/interfaces/message.interface';
 import { ChatStore } from '@store/chat/chat.store';
-import { MessageStore } from '@pages/chat/store/message/message.store';
 import { UserStore } from '@store/user/user.store';
 import { of } from 'rxjs';
 

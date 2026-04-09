@@ -1,7 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { ChatItemComponent } from '@shared/ui-kit/chat-item';
 import { ChatStore } from '@store/chat/chat.store';
 
-import { ChatItemComponent } from '@shared/ui-kit/chat-item';
 
 @Component({
   selector: 'app-sidebar',

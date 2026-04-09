@@ -2,8 +2,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { APPLICATION_ENVIRONMENT } from '@core/environment/application-environment.token';
 import { IChatDto } from '@core/api/controllers/chat/dtos/chat-dto.interface';
+import { APPLICATION_ENVIRONMENT } from '@core/environment/application-environment.token';
 import { ChatStore } from '@store/chat/chat.store';
 
 import { SidebarComponent } from './sidebar.component';
