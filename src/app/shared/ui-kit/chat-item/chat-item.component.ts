@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { IChat } from '@shared/interfaces/chat.interface';
+
 import { AvatarComponent } from '../avatar';
 
 @Component({
