@@ -241,6 +241,48 @@ export const chats: IChat[] = [
   },
 ];
 
+// ─── User Details (static mock data) ──────────────────────────────────────────
+
+interface IUserDetails extends IUser {
+  email: string;
+  phone: string;
+  location: string;
+  stats: { contacts: number; chats: number; messages: number };
+}
+
+const userDetails: Record<string, Omit<IUserDetails, keyof IUser>> = {
+  u1: {
+    email: 'stepan@example.com',
+    phone: '+7 (999) 111-11-11',
+    location: 'Москва, Россия',
+    stats: { contacts: 4, chats: 4, messages: 142 },
+  },
+  u2: {
+    email: 'alex@example.com',
+    phone: '+7 (999) 222-22-22',
+    location: 'Санкт-Петербург, Россия',
+    stats: { contacts: 3, chats: 3, messages: 87 },
+  },
+  u3: {
+    email: 'maria@example.com',
+    phone: '+7 (999) 333-33-33',
+    location: 'Казань, Россия',
+    stats: { contacts: 2, chats: 2, messages: 54 },
+  },
+  u4: {
+    email: 'denis@example.com',
+    phone: '+7 (999) 444-44-44',
+    location: 'Новосибирск, Россия',
+    stats: { contacts: 2, chats: 2, messages: 31 },
+  },
+  u5: {
+    email: 'olga@example.com',
+    phone: '+7 (999) 555-55-55',
+    location: 'Екатеринбург, Россия',
+    stats: { contacts: 2, chats: 2, messages: 28 },
+  },
+};
+
 // ─── Auth Controller ───────────────────────────────────────────────────────────
 
 @Controller('api/auth')
@@ -360,14 +402,51 @@ class ChatsController {
   }
 }
 
+// ─── User Controller ──────────────────────────────────────────────────────────
+
+@Controller('api/user')
+class UserController {
+  constructor(private readonly jwtService: JwtService) {}
+
+  @Get(':id/details')
+  public getDetails(
+    @Headers('authorization') authHeader: string,
+    @Param('id') userId: string,
+  ): Omit<IUserDetails, 'password'> {
+    const token = authHeader?.replace('Bearer ', '');
+    try {
+      this.jwtService.verify<{ userId: string }>(token, { secret: JWT_SECRET });
+    } catch {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
+
+    const user = users.find(u => u.userId === userId);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const details = userDetails[userId] ?? {
+      email: '',
+      phone: '',
+      location: '',
+      stats: { contacts: 0, chats: 0, messages: 0 },
+    };
+
+    return {
+      userId: user.userId,
+      userName: user.userName,
+      isOnline: user.isOnline,
+      ...details,
+    };
+  }
+}
+
 // ─── WebSocket Gateway ────────────────────────────────────────────────────────
 
 @WebSocketGateway({ cors: { origin: '*' } })
 class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   private readonly server!: Server;
-
-  private readonly connectedUsers = new Map<string, Socket>();
 
   constructor(private readonly jwtService: JwtService) {}
 
@@ -379,12 +458,14 @@ class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect {
       });
 
       client.data['userId'] = payload.userId;
-      this.connectedUsers.set(payload.userId, client);
 
       const user = users.find(u => u.userId === payload.userId);
       if (user) user.isOnline = true;
 
-      this.broadcastExcept(payload.userId, 'user:online', { userId: payload.userId });
+      const userChats = chats.filter(c => c.participantIds.includes(payload.userId));
+      userChats.forEach(chat => client.join(`chat:${chat.id}`));
+
+      client.broadcast.emit('user:online', { userId: payload.userId });
     } catch {
       client.disconnect();
     }
@@ -394,12 +475,10 @@ class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const userId = client.data['userId'] as string | undefined;
 
     if (userId) {
-      this.connectedUsers.delete(userId);
-
       const user = users.find(u => u.userId === userId);
       if (user) user.isOnline = false;
 
-      this.broadcastExcept(userId, 'user:offline', { userId });
+      client.broadcast.emit('user:offline', { userId });
     }
   }
 
@@ -426,44 +505,28 @@ class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect {
       chat.updatedAt = message.createdAt;
     }
 
-    const participants = this.getParticipants(payload.chatId);
-    participants.forEach(userId => {
-      this.connectedUsers.get(userId)?.emit('message:new', {
-        chatId: payload.chatId,
-        message,
-      });
+    this.server.to(`chat:${payload.chatId}`).emit('message:new', {
+      chatId: payload.chatId,
+      message,
     });
   }
 
   @SubscribeMessage('typing:start')
   public handleTypingStart(client: Socket, payload: { chatId: string }): void {
-    this.broadcastTyping(client, payload.chatId, true);
+    const userId = client.data['userId'] as string;
+
+    client
+      .to(`chat:${payload.chatId}`)
+      .emit('typing', { chatId: payload.chatId, userId, isTyping: true });
   }
 
   @SubscribeMessage('typing:stop')
   public handleTypingStop(client: Socket, payload: { chatId: string }): void {
-    this.broadcastTyping(client, payload.chatId, false);
-  }
-
-  private broadcastTyping(client: Socket, chatId: string, isTyping: boolean): void {
     const userId = client.data['userId'] as string;
-    const participants = this.getParticipants(chatId);
 
-    participants
-      .filter(id => id !== userId)
-      .forEach(id => {
-        this.connectedUsers.get(id)?.emit('typing', { chatId, userId, isTyping });
-      });
-  }
-
-  private getParticipants(chatId: string): string[] {
-    return chats.find(c => c.id === chatId)?.participantIds ?? [];
-  }
-
-  private broadcastExcept(excludeUserId: string, event: string, data: unknown): void {
-    this.connectedUsers.forEach((socket, userId) => {
-      if (userId !== excludeUserId) socket.emit(event, data);
-    });
+    client
+      .to(`chat:${payload.chatId}`)
+      .emit('typing', { chatId: payload.chatId, userId, isTyping: false });
   }
 }
 
@@ -476,7 +539,7 @@ class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect {
       signOptions: { expiresIn: ACCESS_TOKEN_TTL },
     }),
   ],
-  controllers: [AuthController, ChatsController],
+  controllers: [AuthController, ChatsController, UserController],
   providers: [MessagesGateway],
 })
 class AppModule {}

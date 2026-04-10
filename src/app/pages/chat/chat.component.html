@@ -2,9 +2,14 @@
   @if (activeChat(); as chat) {
     <header class="chat-header">
       <div class="chat-header-info">
-        <div class="chat-header-avatar">
+        <button
+          type="button"
+          class="chat-header-avatar"
+          data-testid="participant-avatar"
+          (click)="openParticipantProfile(chat.participant.userId)"
+        >
           {{ chat.participant.userName.charAt(0).toUpperCase() }}
-        </div>
+        </button>
 
         <div>
           <div class="chat-header-name">{{ chat.participant.userName }}</div>
@@ -18,7 +23,7 @@
     </header>
   }
 
-  <app-messages-list [items]="messageItems()" [typingUsers]="typingUsers()" />
+  <app-messages-list [items]="messageItems()" [isAppend]="isAppend()" [typingUsers]="typingUsers()" />
 
   <form class="msg-input-area" (submit)="onSubmit($event)">
     <div class="msg-input-wrapper">

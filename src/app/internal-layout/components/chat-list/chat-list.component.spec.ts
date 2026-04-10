@@ -1,7 +1,8 @@
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { ScrollingModule } from '@angular/cdk/scrolling';
 import { IChat } from '@shared/interfaces/chat.interface';
+
 import { ChatListComponent } from './chat-list.component';
 
 const makeChat = (id: string): IChat => ({

@@ -1,13 +1,15 @@
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { Component, input } from '@angular/core';
+import { Component, input, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
+import { ERouterOutlet } from '@app/internal-layout/enums/router-outlet.enum';
 import { APPLICATION_ENVIRONMENT } from '@core/environment/application-environment.token';
 import { MessagesListComponent } from '@pages/chat/components/messages-list';
 import { MessagesService } from '@pages/chat/services/messages/messages.service';
 import { MessageStore } from '@pages/chat/store/message/message.store';
 import { TMessageListItem } from '@pages/chat/types/message-list-item.type';
+import { IChat } from '@shared/interfaces/chat.interface';
 import { IMessage } from '@shared/interfaces/message.interface';
 import { ChatStore } from '@store/chat/chat.store';
 import { UserStore } from '@store/user/user.store';
@@ -204,6 +206,31 @@ describe('ChatComponent', () => {
       expect(mockMessagesService.emit).not.toHaveBeenCalledWith('typing:stop', expect.anything());
 
       jest.useRealTimers();
+    });
+
+    it('should navigate to participant profile when right outlet is already open', () => {
+      // Arrange
+      const chatStore = TestBed.inject(ChatStore);
+      const mockChat: IChat = {
+        id: 'c1',
+        participant: { userId: 'u2', userName: 'Bob', isOnline: true },
+        lastMessage: mockMessages[0],
+        updatedAt: new Date(),
+        unreadCount: 0,
+      };
+      patchState(chatStore, { chats: [mockChat] });
+
+      const router = TestBed.inject(Router);
+      jest.spyOn(router, 'url', 'get').mockReturnValue('/chat/c1(right:profile/u99)');
+      const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+
+      // Act
+      fixture.detectChanges();
+
+      // Assert
+      expect(navigateSpy).toHaveBeenCalledWith([
+        { outlets: { [ERouterOutlet.Right]: ['profile', 'u2'] } },
+      ]);
     });
   });
 });

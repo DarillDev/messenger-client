@@ -65,11 +65,11 @@ export const AuthStore = signalStore(
       },
 
       logout(): void {
+        void router.navigateByUrl('/login', { replaceUrl: true });
+
         patchState(store, { token: null });
         tokenStorage.removeTokens();
         userStore.clear();
-
-        void router.navigate(['/login']);
       },
 
       restoreSession(accessToken: string, refreshToken: string): void {

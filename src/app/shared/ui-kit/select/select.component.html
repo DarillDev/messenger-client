@@ -1,0 +1,45 @@
+<div
+  #triggerEl
+  cdkOverlayOrigin
+  #origin="cdkOverlayOrigin"
+  class="select-trigger"
+  role="button"
+  tabindex="0"
+  (click)="toggleDropdown()"
+  (keydown.enter)="toggleDropdown()"
+  (keydown.space)="toggleDropdown()"
+>
+  <span
+    class="select-trigger-label"
+    data-testid="select-trigger"
+    [class.select-trigger-label--placeholder]="isEmptySignal()"
+  >
+    {{ isEmptySignal() ? placeholder : selectedLabel() }}
+  </span>
+  <span class="material-icons-round select-chevron" aria-hidden="true">expand_more</span>
+</div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="origin"
+  [cdkConnectedOverlayOpen]="isOpen()"
+  [cdkConnectedOverlayWidth]="triggerWidth()"
+  [cdkConnectedOverlayPositions]="positions"
+  [cdkConnectedOverlayHasBackdrop]="false"
+  (overlayOutsideClick)="close()"
+  (detach)="close()"
+>
+  <div class="select-dropdown" data-testid="select-dropdown" role="listbox">
+    @for (option of options(); track option.value) {
+      <div
+        class="select-option"
+        data-testid="select-option"
+        role="option"
+        [class.select-option--selected]="option.value === value()"
+        (click)="selectOption(option)"
+      >
+        {{ option.label }}
+      </div>
+    }
+  </div>
+</ng-template>

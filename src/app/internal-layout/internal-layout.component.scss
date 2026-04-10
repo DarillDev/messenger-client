@@ -5,3 +5,19 @@
   gap: 12px;
   box-sizing: border-box;
 }
+
+.left-panel {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.right-panel {
+  width: 0;
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: width 0.3s var(--ease-out);
+
+  &--open {
+    width: 340px;
+  }
+}

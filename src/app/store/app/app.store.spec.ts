@@ -50,4 +50,38 @@ describe('AppStore', () => {
       expect(store.isInitialized()).toBe(true);
     });
   });
+
+  describe('Theme persistence', () => {
+    beforeEach(() => {
+      localStorage.clear();
+    });
+
+    afterEach(() => {
+      localStorage.clear();
+    });
+
+    it('should apply data-theme attribute to documentElement when theme changes', () => {
+      store.setTheme('light');
+      TestBed.flushEffects();
+
+      expect(document.documentElement.getAttribute('data-theme')).toBe('light');
+    });
+
+    it('should save theme to localStorage when theme changes', () => {
+      store.setTheme('light');
+      TestBed.flushEffects();
+
+      expect(localStorage.getItem('theme')).toBe('light');
+    });
+
+    it('should load theme from localStorage on init', () => {
+      localStorage.setItem('theme', 'light');
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({});
+
+      const store = TestBed.inject(AppStore);
+
+      expect(store.theme()).toBe('light');
+    });
+  });
 });

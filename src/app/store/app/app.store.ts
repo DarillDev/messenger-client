@@ -1,8 +1,9 @@
+import { effect } from '@angular/core';
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
-import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import { patchState, signalStore, withHooks, withMethods, withState } from '@ngrx/signals';
 
-type TTheme = 'dark' | 'light';
-type TLanguage = 'ru' | 'en';
+export type TTheme = 'dark' | 'light';
+export type TLanguage = 'ru' | 'en';
 
 type TAppState = {
   theme: TTheme;
@@ -18,7 +19,6 @@ const initialState: TAppState = {
 
 export const AppStore = signalStore(
   { providedIn: 'root' },
-
   withDevtools('app'),
   withState(initialState),
   withMethods(store => ({
@@ -32,4 +32,18 @@ export const AppStore = signalStore(
       patchState(store, { isInitialized: true });
     },
   })),
+  withHooks({
+    onInit(store): void {
+      const saved = localStorage.getItem('theme');
+
+      if (saved === 'dark' || saved === 'light') {
+        patchState(store, { theme: saved });
+      }
+
+      effect(() => {
+        document.documentElement.setAttribute('data-theme', store.theme());
+        localStorage.setItem('theme', store.theme());
+      });
+    },
+  }),
 );

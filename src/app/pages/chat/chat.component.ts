@@ -1,6 +1,6 @@
 import { Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessagesListComponent } from '@pages/chat/components/messages-list';
 import { MessagesService } from '@pages/chat/services/messages/messages.service';
 import { MessageStore } from '@pages/chat/store/message/message.store';
@@ -8,6 +8,8 @@ import { IDateDividerItem, TMessageListItem } from '@pages/chat/types/message-li
 import { ChatStore } from '@store/chat/chat.store';
 import { UserStore } from '@store/user/user.store';
 import { map } from 'rxjs';
+
+import { ERouterOutlet } from '../../internal-layout/enums/router-outlet.enum';
 
 @Component({
   selector: 'app-chat',
@@ -17,6 +19,7 @@ import { map } from 'rxjs';
 })
 export class ChatComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly messageStore = inject(MessageStore);
   private readonly chatStore = inject(ChatStore);
   private readonly userStore = inject(UserStore);
@@ -51,6 +54,7 @@ export class ChatComponent implements OnDestroy {
   });
 
   protected readonly messageText = signal('');
+  protected readonly isAppend = signal(false);
 
   protected readonly messageItems = computed((): TMessageListItem[] => {
     const messages = this.messages();
@@ -80,12 +84,51 @@ export class ChatComponent implements OnDestroy {
   private typingTimer: ReturnType<typeof setTimeout> | null = null;
   private isTyping = false;
 
+  private prevChatId: string | null = null;
+  private isInitialLoadPending = false;
+  private prevItemsLength = 0;
+
   constructor() {
     effect(() => {
       const id = this.chatId();
 
       if (id) {
         this.messageStore.loadMessages(id);
+      }
+    });
+
+    effect(() => {
+      const chat = this.activeChat();
+
+      if (chat && this.router.url.includes('right:profile')) {
+        void this.router.navigate([
+          { outlets: { [ERouterOutlet.Right]: ['profile', chat.participant.userId] } },
+        ]);
+      }
+    });
+
+    effect(() => {
+      const chatId = this.chatId() ?? null;
+      const items = this.messageItems();
+      const isChatChanged = chatId !== this.prevChatId;
+
+      if (isChatChanged) {
+        this.prevChatId = chatId;
+        this.isInitialLoadPending = true;
+        this.prevItemsLength = 0;
+      }
+
+      if (items.length === 0) {
+        return;
+      }
+
+      if (this.isInitialLoadPending) {
+        this.isInitialLoadPending = false;
+        this.prevItemsLength = items.length;
+        this.isAppend.set(false);
+      } else if (items.length > this.prevItemsLength) {
+        this.prevItemsLength = items.length;
+        this.isAppend.set(true);
       }
     });
   }
@@ -140,6 +183,10 @@ export class ChatComponent implements OnDestroy {
 
   public ngOnDestroy(): void {
     this.stopTyping();
+  }
+
+  protected openParticipantProfile(userId: string): void {
+    void this.router.navigate([{ outlets: { [ERouterOutlet.Right]: ['profile', userId] } }]);
   }
 
   private stopTyping(): void {
