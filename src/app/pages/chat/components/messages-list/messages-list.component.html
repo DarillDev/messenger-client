@@ -1,4 +1,4 @@
-<cdk-virtual-scroll-viewport [itemSize]="72" class="messages-viewport">
+<cdk-virtual-scroll-viewport #viewport class="messages-viewport">
   <ng-container *cdkVirtualFor="let item of items(); trackBy: trackItem">
     @if (item.type === 'divider') {
       <ui-kit-date-divider [date]="item.date" />

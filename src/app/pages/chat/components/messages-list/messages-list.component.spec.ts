@@ -1,11 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import {
-  CdkVirtualScrollViewport,
-  FixedSizeVirtualScrollStrategy,
-  ScrollingModule,
-  VIRTUAL_SCROLL_STRATEGY,
-} from '@angular/cdk/scrolling';
+import { FixedSizeVirtualScrollStrategy, ScrollingModule, VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
 import { IMessage } from '@shared/interfaces/message.interface';
 import { IDateDividerItem, TMessageListItem } from '@pages/chat/types/message-list-item.type';
 import { MessagesListComponent } from './messages-list.component';
@@ -31,13 +25,18 @@ describe('MessagesListComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MessagesListComponent, ScrollingModule],
-      providers: [
-        {
-          provide: VIRTUAL_SCROLL_STRATEGY,
-          useFactory: () => new FixedSizeVirtualScrollStrategy(72, 300, 500),
+    })
+      .overrideComponent(MessagesListComponent, {
+        set: {
+          providers: [
+            {
+              provide: VIRTUAL_SCROLL_STRATEGY,
+              useFactory: () => new FixedSizeVirtualScrollStrategy(72, 300, 500),
+            },
+          ],
         },
-      ],
-    }).compileComponents();
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(MessagesListComponent);
     fixture.nativeElement.style.height = '500px';
@@ -85,47 +84,44 @@ describe('MessagesListComponent', () => {
   });
 
   describe('Events', () => {
-    it('should call scrollToIndex with smooth when new message arrives', async () => {
+    it('should call scrollTo with smooth when new message arrives', async () => {
       const initial: TMessageListItem[] = [makeMessage('m1', '2026-04-10T10:00:00Z')];
       fixture.componentRef.setInput('items', initial);
       fixture.detectChanges();
+      TestBed.flushEffects();
       await fixture.whenStable();
 
-      const viewport = fixture.debugElement.query(
-        By.directive(CdkVirtualScrollViewport),
-      ).componentInstance as CdkVirtualScrollViewport;
-      const scrollToIndexSpy = jest.spyOn(viewport, 'scrollToIndex');
+      const viewportEl = fixture.nativeElement.querySelector('cdk-virtual-scroll-viewport') as HTMLElement;
+      const scrollToSpy = jest.spyOn(viewportEl, 'scrollTo');
 
-      const updated: TMessageListItem[] = [
-        ...initial,
-        makeMessage('m2', '2026-04-10T10:01:00Z'),
-      ];
+      const updated: TMessageListItem[] = [...initial, makeMessage('m2', '2026-04-10T10:01:00Z')];
       fixture.componentRef.setInput('items', updated);
       fixture.detectChanges();
-      await fixture.whenStable();
+      TestBed.flushEffects();
+      await new Promise<void>(resolve => queueMicrotask(resolve));
 
-      expect(scrollToIndexSpy).toHaveBeenCalledWith(1, 'smooth');
+      expect(scrollToSpy).toHaveBeenCalledWith({ top: expect.any(Number), behavior: 'smooth' });
     });
 
-    it('should not call scrollToIndex when items reset to empty', async () => {
+    it('should not call scrollTo when items reset to empty', async () => {
       const initial: TMessageListItem[] = [
         makeMessage('m1', '2026-04-10T10:00:00Z'),
         makeMessage('m2', '2026-04-10T10:01:00Z'),
       ];
       fixture.componentRef.setInput('items', initial);
       fixture.detectChanges();
+      TestBed.flushEffects();
       await fixture.whenStable();
 
-      const viewport = fixture.debugElement.query(
-        By.directive(CdkVirtualScrollViewport),
-      ).componentInstance as CdkVirtualScrollViewport;
-      const scrollToIndexSpy = jest.spyOn(viewport, 'scrollToIndex');
+      const viewportEl = fixture.nativeElement.querySelector('cdk-virtual-scroll-viewport') as HTMLElement;
+      const scrollToSpy = jest.spyOn(viewportEl, 'scrollTo');
 
       fixture.componentRef.setInput('items', []);
       fixture.detectChanges();
-      await fixture.whenStable();
+      TestBed.flushEffects();
+      await new Promise<void>(resolve => queueMicrotask(resolve));
 
-      expect(scrollToIndexSpy).not.toHaveBeenCalled();
+      expect(scrollToSpy).not.toHaveBeenCalled();
     });
   });
 });
