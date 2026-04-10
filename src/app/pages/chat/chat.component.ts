@@ -1,6 +1,13 @@
-import { VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
-import { AutoSizeVirtualScrollStrategy } from '@angular/cdk-experimental/scrolling';
-import { Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
+import { FixedSizeVirtualScrollStrategy, VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  OnDestroy,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { MessagesListComponent } from '@pages/chat/components/messages-list';
@@ -19,7 +26,7 @@ import { map } from 'rxjs';
   providers: [
     {
       provide: VIRTUAL_SCROLL_STRATEGY,
-      useFactory: (): AutoSizeVirtualScrollStrategy => new AutoSizeVirtualScrollStrategy(50, 250),
+      useFactory: (): FixedSizeVirtualScrollStrategy => new FixedSizeVirtualScrollStrategy(72, 300, 600),
     },
   ],
 })
@@ -48,6 +55,7 @@ export class ChatComponent implements OnDestroy {
 
   protected readonly typingUsers = computed(() => {
     const id = this.chatId();
+
     if (!id) {
       return [];
     }
@@ -62,6 +70,7 @@ export class ChatComponent implements OnDestroy {
   protected readonly messageItems = computed((): TMessageListItem[] => {
     const messages = this.messages();
     const items: TMessageListItem[] = [];
+
     let prevDayLabel = '';
 
     for (const message of messages) {
@@ -73,10 +82,10 @@ export class ChatComponent implements OnDestroy {
           id: `divider-${dayLabel}`,
           date: dayLabel,
         };
+
         items.push(divider);
         prevDayLabel = dayLabel;
       }
-
       items.push({ ...message, type: 'message' });
     }
 
@@ -98,6 +107,7 @@ export class ChatComponent implements OnDestroy {
 
   protected onInput(event: Event): void {
     this.messageText.set((event.target as HTMLTextAreaElement).value);
+
     this.handleTyping();
   }
 
