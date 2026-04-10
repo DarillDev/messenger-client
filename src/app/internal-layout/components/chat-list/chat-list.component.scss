@@ -15,7 +15,12 @@
   @include mixins.scrollbar-thin;
 }
 
-.chat-item-wrapper {
+// Fixed-height container — must match itemSize (78px).
+// overflow: hidden enforces the constraint; padding-bottom is the visual gap.
+.scroll-item {
+  height: 78px;
+  box-sizing: border-box;
+  overflow: hidden;
   padding-bottom: 8px;
 }
 

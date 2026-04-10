@@ -1,6 +1,6 @@
 @if (chats().length > 0) {
-  <cdk-virtual-scroll-viewport [itemSize]="78" class="chat-viewport">
-    <div class="chat-item-wrapper" *cdkVirtualFor="let chat of chats()">
+  <cdk-virtual-scroll-viewport class="chat-viewport">
+    <div class="scroll-item" *cdkVirtualFor="let chat of chats()">
       <ui-kit-chat-item [chat]="chat" />
     </div>
   </cdk-virtual-scroll-viewport>
