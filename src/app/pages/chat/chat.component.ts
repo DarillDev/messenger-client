@@ -1,9 +1,9 @@
 import { Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MessagesService } from '@app/pages/chat/services/messages/messages.service';
+import { MessageStore } from '@app/pages/chat/store/message/message.store';
 import { MessagesListComponent } from '@pages/chat/components/messages-list';
-import { MessagesService } from '@pages/chat/services/messages/messages.service';
-import { MessageStore } from '@pages/chat/store/message/message.store';
 import { IDateDividerItem, TMessageListItem } from '@pages/chat/types/message-list-item.type';
 import { ChatStore } from '@store/chat/chat.store';
 import { UserStore } from '@store/user/user.store';
@@ -16,6 +16,7 @@ import { ERouterOutlet } from '../../internal-layout/enums/router-outlet.enum';
   imports: [MessagesListComponent],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
+  providers: [MessagesService, MessageStore],
 })
 export class ChatComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
@@ -131,6 +132,10 @@ export class ChatComponent implements OnDestroy {
         this.isAppend.set(true);
       }
     });
+  }
+
+  public ngOnInit(): void {
+    this.messagesService.connect(this.messageStore);
   }
 
   protected onInput(event: Event): void {

@@ -1,8 +1,4 @@
-<a
-  class="chat-item-link"
-  [routerLink]="['/chat', chat().id]"
-  routerLinkActive="active"
->
+<a class="chat-item-link" [routerLink]="['/chat', chat().id]" routerLinkActive="active">
   <ui-kit-avatar
     [userName]="chat().participant.userName"
     [userId]="chat().participant.userId"
@@ -17,6 +13,4 @@
     </div>
     <span class="preview" data-testid="chat-preview">{{ chat().lastMessage.text }}</span>
   </div>
-
-
 </a>

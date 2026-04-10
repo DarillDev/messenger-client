@@ -42,7 +42,9 @@ export class SidebarComponent {
   }
 
   protected openOwnProfile(): void {
-    void this.router.navigate([{ outlets: { [ERouterOutlet.Right]: ['profile', this.currentUserId()] } }]);
+    void this.router.navigate([
+      { outlets: { [ERouterOutlet.Right]: ['profile', this.currentUserId()] } },
+    ]);
   }
 
   protected openSettings(): void {

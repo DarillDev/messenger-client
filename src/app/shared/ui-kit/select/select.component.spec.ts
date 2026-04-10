@@ -1,3 +1,4 @@
+import { OverlayContainer } from '@angular/cdk/overlay';
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -18,6 +19,8 @@ class TestHostComponent {
 describe('SelectComponent', () => {
   let fixture: ComponentFixture<TestHostComponent>;
   let compiled: HTMLElement;
+  let overlayContainer: OverlayContainer;
+  let overlayEl: HTMLElement;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -27,6 +30,13 @@ describe('SelectComponent', () => {
     fixture = TestBed.createComponent(TestHostComponent);
     fixture.detectChanges();
     compiled = fixture.nativeElement;
+
+    overlayContainer = TestBed.inject(OverlayContainer);
+    overlayEl = overlayContainer.getContainerElement();
+  });
+
+  afterEach(() => {
+    overlayContainer.ngOnDestroy();
   });
 
   describe('Model', () => {
@@ -45,16 +55,14 @@ describe('SelectComponent', () => {
       fixture.detectChanges();
 
       // Assert
-      expect(compiled.querySelector('.select-trigger-label')?.textContent?.trim()).toBe(
-        'Русский',
-      );
+      expect(compiled.querySelector('.select-trigger-label')?.textContent?.trim()).toBe('Русский');
     });
   });
 
   describe('View', () => {
     it('should not show dropdown by default', () => {
       // Assert
-      expect(compiled.querySelector('[data-testid="select-dropdown"]')).toBeNull();
+      expect(overlayEl.querySelector('[data-testid="select-dropdown"]')).toBeNull();
     });
 
     it('should show dropdown when trigger clicked', () => {
@@ -63,7 +71,7 @@ describe('SelectComponent', () => {
       fixture.detectChanges();
 
       // Assert
-      expect(compiled.querySelector('[data-testid="select-dropdown"]')).not.toBeNull();
+      expect(overlayEl.querySelector('[data-testid="select-dropdown"]')).not.toBeNull();
     });
   });
 
@@ -74,7 +82,7 @@ describe('SelectComponent', () => {
       fixture.detectChanges();
 
       // Act
-      const options = compiled.querySelectorAll('[data-testid="select-option"]');
+      const options = overlayEl.querySelectorAll('[data-testid="select-option"]');
       (options[1] as HTMLElement).click();
       fixture.detectChanges();
 
@@ -88,12 +96,12 @@ describe('SelectComponent', () => {
       fixture.detectChanges();
 
       // Act
-      const options = compiled.querySelectorAll('[data-testid="select-option"]');
+      const options = overlayEl.querySelectorAll('[data-testid="select-option"]');
       (options[0] as HTMLElement).click();
       fixture.detectChanges();
 
       // Assert
-      expect(compiled.querySelector('[data-testid="select-dropdown"]')).toBeNull();
+      expect(overlayEl.querySelector('[data-testid="select-dropdown"]')).toBeNull();
     });
   });
 });

@@ -2,6 +2,7 @@
   @if (!leftOutletActive()) {
     <app-sidebar />
   }
+
   <router-outlet
     [name]="routerOutletEnum.Left"
     (activate)="onLeftActivate()"
@@ -9,7 +10,9 @@
   />
 </div>
 
-<router-outlet />
+<main>
+  <router-outlet />
+</main>
 
 <div class="right-panel" [class.right-panel--open]="rightPanelActive()">
   <router-outlet

@@ -28,11 +28,21 @@
     background: var(--accent-glow);
     border-color: var(--border-accent);
   }
+
+  @container sidebar-col (max-width: 200px) {
+    justify-content: center;
+    padding: 10px 4px;
+    gap: 0;
+  }
 }
 
 .info {
   flex: 1;
   min-width: 0;
+
+  @container sidebar-col (max-width: 200px) {
+    display: none;
+  }
 }
 
 .name-row {

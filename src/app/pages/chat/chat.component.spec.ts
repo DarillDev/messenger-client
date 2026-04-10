@@ -4,10 +4,10 @@ import { Component, input, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { ERouterOutlet } from '@app/internal-layout/enums/router-outlet.enum';
+import { MessagesService } from '@app/pages/chat/services/messages/messages.service';
+import { MessageStore } from '@app/pages/chat/store/message/message.store';
 import { APPLICATION_ENVIRONMENT } from '@core/environment/application-environment.token';
 import { MessagesListComponent } from '@pages/chat/components/messages-list';
-import { MessagesService } from '@pages/chat/services/messages/messages.service';
-import { MessageStore } from '@pages/chat/store/message/message.store';
 import { TMessageListItem } from '@pages/chat/types/message-list-item.type';
 import { IChat } from '@shared/interfaces/chat.interface';
 import { IMessage } from '@shared/interfaces/message.interface';
@@ -27,16 +27,29 @@ class MessagesListStubComponent {
 }
 
 const mockMessages: IMessage[] = [
-  { id: 'msg-1', chatId: 'c1', senderId: 'u2', text: 'Hi!', createdAt: new Date('2026-04-10T10:00:00.000Z') },
-  { id: 'msg-2', chatId: 'c1', senderId: 'u1', text: 'Hello!', createdAt: new Date('2026-04-10T10:01:00.000Z') },
+  {
+    id: 'msg-1',
+    chatId: 'c1',
+    senderId: 'u2',
+    text: 'Hi!',
+    createdAt: new Date('2026-04-10T10:00:00.000Z'),
+  },
+  {
+    id: 'msg-2',
+    chatId: 'c1',
+    senderId: 'u1',
+    text: 'Hello!',
+    createdAt: new Date('2026-04-10T10:01:00.000Z'),
+  },
 ];
 
 describe('ChatComponent', () => {
   let fixture: ComponentFixture<ChatComponent>;
-  let messageStore: InstanceType<typeof MessageStore>;
 
   const mockMessagesService = {
     emit: jest.fn(),
+    connect: jest.fn(),
+    disconnect: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -52,7 +65,6 @@ describe('ChatComponent', () => {
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: APPLICATION_ENVIRONMENT, useValue: { apiUrl: '' } },
-        { provide: MessagesService, useValue: mockMessagesService },
         { provide: ActivatedRoute, useValue: { params: of({ id: 'c1' }) } },
       ],
     })
@@ -60,14 +72,10 @@ describe('ChatComponent', () => {
         remove: { imports: [MessagesListComponent] },
         add: { imports: [MessagesListStubComponent] },
       })
+      .overrideProvider(MessagesService, { useValue: mockMessagesService })
       .compileComponents();
 
     fixture = TestBed.createComponent(ChatComponent);
-    messageStore = TestBed.inject(MessageStore);
-
-    // Pre-load messages so the component has data
-    messageStore.addMessage('c1', mockMessages[0]);
-    messageStore.addMessage('c1', mockMessages[1]);
   });
 
   describe('View', () => {
@@ -207,31 +215,6 @@ describe('ChatComponent', () => {
 
       jest.useRealTimers();
     });
-
-    it('should navigate to participant profile when right outlet is already open', () => {
-      // Arrange
-      const chatStore = TestBed.inject(ChatStore);
-      const mockChat: IChat = {
-        id: 'c1',
-        participant: { userId: 'u2', userName: 'Bob', isOnline: true },
-        lastMessage: mockMessages[0],
-        updatedAt: new Date(),
-        unreadCount: 0,
-      };
-      patchState(chatStore, { chats: [mockChat] });
-
-      const router = TestBed.inject(Router);
-      jest.spyOn(router, 'url', 'get').mockReturnValue('/chat/c1(right:profile/u99)');
-      const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
-
-      // Act
-      fixture.detectChanges();
-
-      // Assert
-      expect(navigateSpy).toHaveBeenCalledWith([
-        { outlets: { [ERouterOutlet.Right]: ['profile', 'u2'] } },
-      ]);
-    });
   });
 });
 
@@ -240,6 +223,8 @@ describe('ChatComponent (no chatId)', () => {
 
   const mockMessagesServiceNoChat = {
     emit: jest.fn(),
+    connect: jest.fn(),
+    disconnect: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -255,7 +240,6 @@ describe('ChatComponent (no chatId)', () => {
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: APPLICATION_ENVIRONMENT, useValue: { apiUrl: '' } },
-        { provide: MessagesService, useValue: mockMessagesServiceNoChat },
         { provide: ActivatedRoute, useValue: { params: of({}) } },
       ],
     })
@@ -263,6 +247,7 @@ describe('ChatComponent (no chatId)', () => {
         remove: { imports: [MessagesListComponent] },
         add: { imports: [MessagesListStubComponent] },
       })
+      .overrideProvider(MessagesService, { useValue: mockMessagesServiceNoChat })
       .compileComponents();
 
     fixture = TestBed.createComponent(ChatComponent);
@@ -288,7 +273,10 @@ describe('ChatComponent (no chatId)', () => {
 
     fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit'));
 
-    expect(mockMessagesServiceNoChat.emit).not.toHaveBeenCalledWith('message:send', expect.anything());
+    expect(mockMessagesServiceNoChat.emit).not.toHaveBeenCalledWith(
+      'message:send',
+      expect.anything(),
+    );
   });
 
   it('should not emit typing:start when chatId is absent', () => {
@@ -301,6 +289,85 @@ describe('ChatComponent (no chatId)', () => {
     input.dispatchEvent(new Event('input'));
     fixture.detectChanges();
 
-    expect(mockMessagesServiceNoChat.emit).not.toHaveBeenCalledWith('typing:start', expect.anything());
+    expect(mockMessagesServiceNoChat.emit).not.toHaveBeenCalledWith(
+      'typing:start',
+      expect.anything(),
+    );
+  });
+});
+
+describe('ChatComponent (profile panel sync)', () => {
+  const mockChat: IChat = {
+    id: 'c1',
+    participant: { userId: 'u2', userName: 'Bob', isOnline: true },
+    lastMessage: mockMessages[0],
+    updatedAt: new Date(),
+    unreadCount: 0,
+  };
+
+  const mockChatStoreWithChat = {
+    chats: signal([mockChat]),
+    isLoading: signal(false),
+    loadChats: jest.fn(),
+    updateLastMessage: jest.fn(),
+    updateOnlineStatus: jest.fn(),
+  };
+
+  const mockMessagesServiceSync = { emit: jest.fn(), connect: jest.fn(), disconnect: jest.fn() };
+
+  let fixture: ComponentFixture<ChatComponent>;
+
+  beforeEach(async () => {
+    jest.clearAllMocks();
+
+    await TestBed.configureTestingModule({
+      imports: [ChatComponent],
+      providers: [
+        MessageStore,
+        UserStore,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        { provide: APPLICATION_ENVIRONMENT, useValue: { apiUrl: '' } },
+        { provide: ActivatedRoute, useValue: { params: of({ id: 'c1' }) } },
+        { provide: ChatStore, useValue: mockChatStoreWithChat },
+      ],
+    })
+      .overrideComponent(ChatComponent, {
+        remove: { imports: [MessagesListComponent] },
+        add: { imports: [MessagesListStubComponent] },
+      })
+      .overrideProvider(MessagesService, { useValue: mockMessagesServiceSync })
+      .compileComponents();
+
+    fixture = TestBed.createComponent(ChatComponent);
+  });
+
+  it('should navigate to participant profile when right outlet is already open', () => {
+    // Arrange
+    const router = TestBed.inject(Router);
+    jest.spyOn(router, 'url', 'get').mockReturnValue('/chat/c1(right:profile/u99)');
+    const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    // Act
+    fixture.detectChanges();
+
+    // Assert
+    expect(navigateSpy).toHaveBeenCalledWith([
+      { outlets: { [ERouterOutlet.Right]: ['profile', 'u2'] } },
+    ]);
+  });
+
+  it('should not navigate when right outlet is closed', () => {
+    // Arrange
+    const router = TestBed.inject(Router);
+    jest.spyOn(router, 'url', 'get').mockReturnValue('/chat/c1');
+    const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    // Act
+    fixture.detectChanges();
+
+    // Assert
+    expect(navigateSpy).not.toHaveBeenCalled();
   });
 });
