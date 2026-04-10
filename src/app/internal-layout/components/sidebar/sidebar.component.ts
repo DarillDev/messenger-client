@@ -1,13 +1,13 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormFieldComponent, UiKitPrefixDirective } from '@shared/ui-kit/form-field';
 import { UiKitInputDirective } from '@shared/ui-kit/input';
-import { ChatItemComponent } from '@shared/ui-kit/chat-item';
 import { ChatStore } from '@store/chat/chat.store';
 
+import { ChatListComponent } from '../chat-list';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [ChatItemComponent, FormFieldComponent, UiKitInputDirective, UiKitPrefixDirective],
+  imports: [ChatListComponent, FormFieldComponent, UiKitInputDirective, UiKitPrefixDirective],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
 })

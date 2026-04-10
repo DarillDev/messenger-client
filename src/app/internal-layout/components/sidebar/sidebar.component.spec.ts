@@ -1,11 +1,13 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { IChatDto } from '@core/api/controllers/chat/dtos/chat-dto.interface';
 import { APPLICATION_ENVIRONMENT } from '@core/environment/application-environment.token';
 import { ChatStore } from '@store/chat/chat.store';
 
+import { ChatListComponent } from '../chat-list';
 import { SidebarComponent } from './sidebar.component';
 
 const makeChat = (id: string, name: string, userId: string): IChatDto => ({
@@ -49,12 +51,19 @@ describe('SidebarComponent', () => {
   describe('View', () => {
     it('should render search input', () => {
       fixture.detectChanges();
+
       expect(fixture.nativeElement.querySelector('[data-testid="search-input"]')).toBeTruthy();
+    });
+
+    it('should render app-chat-list', () => {
+      fixture.detectChanges();
+
+      expect(fixture.debugElement.query(By.directive(ChatListComponent))).toBeTruthy();
     });
   });
 
   describe('Model', () => {
-    it('should show all chats when search is empty', () => {
+    it('should pass all chats to ChatListComponent when search is empty', () => {
       chatStore.loadChats();
       httpTesting.expectOne('/api/chats').flush([
         makeChat('c1', 'Alex', 'u2'),
@@ -62,11 +71,13 @@ describe('SidebarComponent', () => {
       ]);
       fixture.detectChanges();
 
-      const items = fixture.nativeElement.querySelectorAll('ui-kit-chat-item');
-      expect(items).toHaveLength(2);
+      const chatList = fixture.debugElement.query(By.directive(ChatListComponent));
+      const chatListComponent = chatList.componentInstance as ChatListComponent;
+
+      expect(chatListComponent.chats()).toHaveLength(2);
     });
 
-    it('should filter chats by search query', () => {
+    it('should pass filtered chats to ChatListComponent when search query is set', () => {
       chatStore.loadChats();
       httpTesting.expectOne('/api/chats').flush([
         makeChat('c1', 'Alex', 'u2'),
@@ -81,10 +92,14 @@ describe('SidebarComponent', () => {
       searchInput.dispatchEvent(new Event('input'));
       fixture.detectChanges();
 
-      expect(fixture.nativeElement.querySelectorAll('ui-kit-chat-item')).toHaveLength(1);
+      const chatList = fixture.debugElement.query(By.directive(ChatListComponent));
+      const chatListComponent = chatList.componentInstance as ChatListComponent;
+
+      expect(chatListComponent.chats()).toHaveLength(1);
+      expect(chatListComponent.chats()[0].participant.userName).toBe('Alex');
     });
 
-    it('should show no-results message when no chats match', () => {
+    it('should pass empty chats array to ChatListComponent when no chats match query', () => {
       chatStore.loadChats();
       httpTesting.expectOne('/api/chats').flush([makeChat('c1', 'Alex', 'u2')]);
       fixture.detectChanges();
@@ -96,7 +111,10 @@ describe('SidebarComponent', () => {
       searchInput.dispatchEvent(new Event('input'));
       fixture.detectChanges();
 
-      expect(fixture.nativeElement.querySelector('.no-results')).toBeTruthy();
+      const chatList = fixture.debugElement.query(By.directive(ChatListComponent));
+      const chatListComponent = chatList.componentInstance as ChatListComponent;
+
+      expect(chatListComponent.chats()).toHaveLength(0);
     });
   });
 });

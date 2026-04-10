@@ -16,10 +16,4 @@
   </ui-kit-form-field>
 </header>
 
-<div class="chat-list">
-  @for (chat of filteredChats(); track chat.id) {
-    <ui-kit-chat-item [chat]="chat" />
-  } @empty {
-    <p class="no-results">Чаты не найдены</p>
-  }
-</div>
+<app-chat-list [chats]="filteredChats()" />
