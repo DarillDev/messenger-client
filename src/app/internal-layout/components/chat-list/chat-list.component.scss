@@ -1,3 +1,5 @@
+@use 'styles/mixins';
+
 :host {
   display: flex;
   flex: 1;
@@ -10,18 +12,7 @@
 .chat-viewport {
   flex: 1;
 
-  &::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 2px;
-  }
+  @include mixins.scrollbar-thin;
 }
 
 .chat-item-wrapper {

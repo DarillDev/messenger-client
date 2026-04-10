@@ -1,9 +1,9 @@
-<cdk-virtual-scroll-viewport [itemSize]="78" class="chat-viewport">
-  <div class="chat-item-wrapper" *cdkVirtualFor="let chat of chats()">
-    <ui-kit-chat-item [chat]="chat" />
-  </div>
-</cdk-virtual-scroll-viewport>
-
-@if (chats().length === 0) {
+@if (chats().length > 0) {
+  <cdk-virtual-scroll-viewport [itemSize]="78" class="chat-viewport">
+    <div class="chat-item-wrapper" *cdkVirtualFor="let chat of chats()">
+      <ui-kit-chat-item [chat]="chat" />
+    </div>
+  </cdk-virtual-scroll-viewport>
+} @else {
   <p class="no-results" data-testid="no-results">Чаты не найдены</p>
 }
