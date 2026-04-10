@@ -10,8 +10,19 @@
 
 .messages-viewport {
   flex: 1;
-  padding: 24px;
   @include mixins.scrollbar-thin;
+
+  // CDK creates .cdk-virtual-scroll-content-wrapper with display: block.
+  // MessageBubbleComponent uses :host { display: contents } so .msg-group must be
+  // a direct flex child to make align-self: flex-end/flex-start work correctly.
+  /* stylelint-disable-next-line selector-pseudo-class-no-unknown */
+  ::ng-deep .cdk-virtual-scroll-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 24px;
+    min-height: 100%;
+  }
 }
 
 .typing-indicator {
