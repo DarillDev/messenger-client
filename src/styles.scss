@@ -43,6 +43,11 @@ body:after {
   line-height: 1;
 }
 
+// CDK virtual scroll overrides (::ng-deep not reliable with emulated encapsulation)
+app-messages-list .cdk-virtual-scroll-content-wrapper {
+  padding-top: 16px;
+}
+
 // UI-Kit Input directive styles
 
 .ui-kit-input {

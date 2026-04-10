@@ -10,35 +10,22 @@
 
 .messages-viewport {
   flex: 1;
+  position: relative;
   @include mixins.scrollbar-thin;
-
-  // CDK content wrapper: flex column so .scroll-item children stack vertically.
-  // No gap here — spacing is baked into the fixed 120px item height (padding-bottom).
-  /* stylelint-disable-next-line selector-pseudo-class-no-unknown */
-  ::ng-deep .cdk-virtual-scroll-content-wrapper {
-    display: flex;
-    flex-direction: column;
-    padding: 16px 24px 0;
-  }
 }
 
-// Each virtual scroll item is exactly itemSize (120px) so CDK position
-// calculations stay accurate. Overflow hidden enforces the fixed height contract.
 .scroll-item {
   height: 120px;
   box-sizing: border-box;
   overflow: hidden;
-  padding-bottom: 14px; // visual gap baked into the fixed height
+  padding: 0 24px 14px;
 }
 
-// Flex column so MessageBubbleComponent (:host display:contents) passes
-// .msg-group directly into flex context → align-self: flex-end/flex-start works.
 .scroll-item--message {
   display: flex;
   flex-direction: column;
 }
 
-// Center divider vertically within the 120px slot.
 .scroll-item--divider {
   display: flex;
   align-items: center;

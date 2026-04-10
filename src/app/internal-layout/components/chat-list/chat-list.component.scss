@@ -7,6 +7,13 @@
   min-height: 0;
   overflow: hidden;
   padding: 8px 10px;
+
+  &::ng-deep .cdk-virtual-scroll-content-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
 }
 
 .chat-viewport {
@@ -15,8 +22,6 @@
   @include mixins.scrollbar-thin;
 }
 
-// Fixed-height container — must match itemSize (78px).
-// overflow: hidden enforces the constraint; padding-bottom is the visual gap.
 .scroll-item {
   height: 78px;
   box-sizing: border-box;
