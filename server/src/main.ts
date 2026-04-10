@@ -1,0 +1,571 @@
+import 'reflect-metadata';
+import * as path from 'path';
+import * as express from 'express';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  HttpCode,
+  Module,
+  Param,
+  Post,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { JwtModule, JwtService } from '@nestjs/jwt';
+import { NestFactory } from '@nestjs/core';
+import {
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
+} from '@nestjs/websockets';
+import { IoAdapter } from '@nestjs/platform-socket.io';
+import { Server, Socket } from 'socket.io';
+
+const JWT_SECRET = 'mock-secret-key-for-dev-only';
+const ACCESS_TOKEN_TTL = '1h';
+const REFRESH_TOKEN_TTL = '7d';
+
+// ─── Types ───────────────────────────────────────────────────────────────────
+
+interface IUser {
+  userId: string;
+  userName: string;
+  password: string;
+  isOnline: boolean;
+}
+
+interface IMessage {
+  id: string;
+  chatId: string;
+  senderId: string;
+  text: string;
+  createdAt: string;
+}
+
+interface IChat {
+  id: string;
+  participantIds: string[];
+  lastMessage: IMessage;
+  updatedAt: string;
+  unreadCount: number;
+}
+
+// ─── In-memory DB ─────────────────────────────────────────────────────────────
+
+export const users: IUser[] = [
+  { userId: 'u1', userName: 'Stepan', password: 'pass123', isOnline: true },
+  { userId: 'u2', userName: 'Alex', password: 'pass123', isOnline: true },
+  { userId: 'u3', userName: 'Maria', password: 'pass123', isOnline: false },
+  { userId: 'u4', userName: 'Denis', password: 'pass123', isOnline: true },
+  { userId: 'u5', userName: 'Olga', password: 'pass123', isOnline: false },
+];
+
+export const messagesByChat: Record<string, IMessage[]> = {
+  // Stepan ↔ Alex
+  c1: [
+    {
+      id: 'msg-c1-1',
+      chatId: 'c1',
+      senderId: 'u2',
+      text: 'Привет! Как дела?',
+      createdAt: '2026-04-10T08:00:00.000Z',
+    },
+    {
+      id: 'msg-c1-2',
+      chatId: 'c1',
+      senderId: 'u1',
+      text: 'Отлично, работаю над проектом!',
+      createdAt: '2026-04-10T08:01:00.000Z',
+    },
+    {
+      id: 'msg-c1-3',
+      chatId: 'c1',
+      senderId: 'u2',
+      text: 'Интересно, расскажи подробнее',
+      createdAt: '2026-04-10T08:02:00.000Z',
+    },
+  ],
+  // Stepan ↔ Maria
+  c2: [
+    {
+      id: 'msg-c2-1',
+      chatId: 'c2',
+      senderId: 'u1',
+      text: 'Мария, ты сегодня онлайн?',
+      createdAt: '2026-04-09T18:00:00.000Z',
+    },
+    {
+      id: 'msg-c2-2',
+      chatId: 'c2',
+      senderId: 'u3',
+      text: 'Да, только зашла',
+      createdAt: '2026-04-09T18:05:00.000Z',
+    },
+  ],
+  // Stepan ↔ Denis
+  c3: [
+    {
+      id: 'msg-c3-1',
+      chatId: 'c3',
+      senderId: 'u4',
+      text: 'Денис здесь',
+      createdAt: '2026-04-08T12:00:00.000Z',
+    },
+    {
+      id: 'msg-c3-2',
+      chatId: 'c3',
+      senderId: 'u1',
+      text: 'Привет Денис!',
+      createdAt: '2026-04-08T12:01:00.000Z',
+    },
+  ],
+  // Stepan ↔ Olga
+  c4: [
+    {
+      id: 'msg-c4-1',
+      chatId: 'c4',
+      senderId: 'u5',
+      text: 'Можем созвониться?',
+      createdAt: '2026-04-07T15:00:00.000Z',
+    },
+    {
+      id: 'msg-c4-2',
+      chatId: 'c4',
+      senderId: 'u1',
+      text: 'Конечно, когда?',
+      createdAt: '2026-04-07T15:02:00.000Z',
+    },
+  ],
+  // Alex ↔ Maria
+  c5: [
+    {
+      id: 'msg-c5-1',
+      chatId: 'c5',
+      senderId: 'u3',
+      text: 'Alex, видел новый релиз?',
+      createdAt: '2026-04-10T09:00:00.000Z',
+    },
+    {
+      id: 'msg-c5-2',
+      chatId: 'c5',
+      senderId: 'u2',
+      text: 'Да, уже смотрю!',
+      createdAt: '2026-04-10T09:05:00.000Z',
+    },
+  ],
+  // Alex ↔ Denis
+  c6: [
+    {
+      id: 'msg-c6-1',
+      chatId: 'c6',
+      senderId: 'u2',
+      text: 'Denis, встреча в 15:00?',
+      createdAt: '2026-04-09T10:00:00.000Z',
+    },
+    {
+      id: 'msg-c6-2',
+      chatId: 'c6',
+      senderId: 'u4',
+      text: 'Буду',
+      createdAt: '2026-04-09T10:02:00.000Z',
+    },
+  ],
+  // Alex ↔ Olga
+  c7: [
+    {
+      id: 'msg-c7-1',
+      chatId: 'c7',
+      senderId: 'u5',
+      text: 'Привет! Как проект?',
+      createdAt: '2026-04-08T16:00:00.000Z',
+    },
+    {
+      id: 'msg-c7-2',
+      chatId: 'c7',
+      senderId: 'u2',
+      text: 'В процессе',
+      createdAt: '2026-04-08T16:10:00.000Z',
+    },
+  ],
+};
+
+export const chats: IChat[] = [
+  {
+    id: 'c1',
+    participantIds: ['u1', 'u2'],
+    lastMessage: messagesByChat['c1'][messagesByChat['c1'].length - 1],
+    updatedAt: '2026-04-10T08:02:00.000Z',
+    unreadCount: 1,
+  },
+  {
+    id: 'c2',
+    participantIds: ['u1', 'u3'],
+    lastMessage: messagesByChat['c2'][messagesByChat['c2'].length - 1],
+    updatedAt: '2026-04-09T18:05:00.000Z',
+    unreadCount: 0,
+  },
+  {
+    id: 'c3',
+    participantIds: ['u1', 'u4'],
+    lastMessage: messagesByChat['c3'][messagesByChat['c3'].length - 1],
+    updatedAt: '2026-04-08T12:01:00.000Z',
+    unreadCount: 0,
+  },
+  {
+    id: 'c4',
+    participantIds: ['u1', 'u5'],
+    lastMessage: messagesByChat['c4'][messagesByChat['c4'].length - 1],
+    updatedAt: '2026-04-07T15:02:00.000Z',
+    unreadCount: 0,
+  },
+  {
+    id: 'c5',
+    participantIds: ['u2', 'u3'],
+    lastMessage: messagesByChat['c5'][messagesByChat['c5'].length - 1],
+    updatedAt: '2026-04-10T09:05:00.000Z',
+    unreadCount: 1,
+  },
+  {
+    id: 'c6',
+    participantIds: ['u2', 'u4'],
+    lastMessage: messagesByChat['c6'][messagesByChat['c6'].length - 1],
+    updatedAt: '2026-04-09T10:02:00.000Z',
+    unreadCount: 0,
+  },
+  {
+    id: 'c7',
+    participantIds: ['u2', 'u5'],
+    lastMessage: messagesByChat['c7'][messagesByChat['c7'].length - 1],
+    updatedAt: '2026-04-08T16:10:00.000Z',
+    unreadCount: 0,
+  },
+];
+
+// ─── User Details ──────────────────────────────────────────────────────────────
+
+interface IUserDetails extends IUser {
+  email: string;
+  phone: string;
+  location: string;
+  stats: { contacts: number; chats: number; messages: number };
+}
+
+const userDetails: Record<string, Omit<IUserDetails, keyof IUser>> = {
+  u1: {
+    email: 'stepan@example.com',
+    phone: '+7 (999) 111-11-11',
+    location: 'Москва, Россия',
+    stats: { contacts: 4, chats: 4, messages: 142 },
+  },
+  u2: {
+    email: 'alex@example.com',
+    phone: '+7 (999) 222-22-22',
+    location: 'Санкт-Петербург, Россия',
+    stats: { contacts: 3, chats: 3, messages: 87 },
+  },
+  u3: {
+    email: 'maria@example.com',
+    phone: '+7 (999) 333-33-33',
+    location: 'Казань, Россия',
+    stats: { contacts: 2, chats: 2, messages: 54 },
+  },
+  u4: {
+    email: 'denis@example.com',
+    phone: '+7 (999) 444-44-44',
+    location: 'Новосибирск, Россия',
+    stats: { contacts: 2, chats: 2, messages: 31 },
+  },
+  u5: {
+    email: 'olga@example.com',
+    phone: '+7 (999) 555-55-55',
+    location: 'Екатеринбург, Россия',
+    stats: { contacts: 2, chats: 2, messages: 28 },
+  },
+};
+
+// ─── Auth Controller ───────────────────────────────────────────────────────────
+
+@Controller('api/auth')
+class AuthController {
+  constructor(private readonly jwtService: JwtService) {}
+
+  @Post('login')
+  @HttpCode(200)
+  public login(@Body() body: { userName: string; password: string }): {
+    accessToken: string;
+    refreshToken: string;
+    user: Omit<IUser, 'password'>;
+  } {
+    const user = users.find(u => u.userName === body.userName && u.password === body.password);
+
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const payload = { userId: user.userId, userName: user.userName };
+
+    return {
+      accessToken: this.jwtService.sign(payload, { expiresIn: ACCESS_TOKEN_TTL }),
+      refreshToken: this.jwtService.sign(payload, { expiresIn: REFRESH_TOKEN_TTL }),
+      user: {
+        userId: user.userId,
+        userName: user.userName,
+        isOnline: user.isOnline,
+      },
+    };
+  }
+
+  @Post('refresh')
+  @HttpCode(200)
+  public refresh(@Body() body: { refreshToken: string }): {
+    accessToken: string;
+    refreshToken: string;
+  } {
+    try {
+      const decoded = this.jwtService.verify<{ userId: string; userName: string }>(
+        body.refreshToken,
+      );
+
+      const user = users.find(u => u.userId === decoded.userId);
+
+      if (!user) {
+        throw new UnauthorizedException('Invalid token');
+      }
+
+      const payload = { userId: user.userId, userName: user.userName };
+
+      return {
+        accessToken: this.jwtService.sign(payload, { expiresIn: ACCESS_TOKEN_TTL }),
+        refreshToken: this.jwtService.sign(payload, { expiresIn: REFRESH_TOKEN_TTL }),
+      };
+    } catch {
+      throw new UnauthorizedException('Invalid token');
+    }
+  }
+}
+
+// ─── Chats Controller ─────────────────────────────────────────────────────────
+
+@Controller('api/chats')
+class ChatsController {
+  constructor(private readonly jwtService: JwtService) {}
+
+  @Get()
+  public getChats(@Headers('authorization') authHeader: string): object[] {
+    const token = authHeader?.replace('Bearer ', '');
+    let userId: string;
+    try {
+      ({ userId } = this.jwtService.verify<{ userId: string }>(token, { secret: JWT_SECRET }));
+    } catch {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
+
+    return chats
+      .filter(chat => chat.participantIds.includes(userId))
+      .map(chat => {
+        const otherUserId = chat.participantIds.find(id => id !== userId)!;
+        const participant = users.find(u => u.userId === otherUserId)!;
+
+        return {
+          id: chat.id,
+          participant: {
+            userId: participant.userId,
+            userName: participant.userName,
+            isOnline: participant.isOnline,
+          },
+          lastMessage: chat.lastMessage,
+          updatedAt: chat.updatedAt,
+          unreadCount: chat.unreadCount,
+        };
+      });
+  }
+
+  @Get(':id/messages')
+  public getMessages(
+    @Headers('authorization') authHeader: string,
+    @Param('id') chatId: string,
+  ): IMessage[] {
+    const token = authHeader?.replace('Bearer ', '');
+    let userId: string;
+    try {
+      ({ userId } = this.jwtService.verify<{ userId: string }>(token, { secret: JWT_SECRET }));
+    } catch {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
+
+    const chat = chats.find(c => c.id === chatId);
+    if (!chat?.participantIds.includes(userId)) {
+      return [];
+    }
+
+    return messagesByChat[chatId] ?? [];
+  }
+}
+
+// ─── User Controller ──────────────────────────────────────────────────────────
+
+@Controller('api/user')
+class UserController {
+  constructor(private readonly jwtService: JwtService) {}
+
+  @Get(':id/details')
+  public getDetails(
+    @Headers('authorization') authHeader: string,
+    @Param('id') userId: string,
+  ): Omit<IUserDetails, 'password'> {
+    const token = authHeader?.replace('Bearer ', '');
+    try {
+      this.jwtService.verify<{ userId: string }>(token, { secret: JWT_SECRET });
+    } catch {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
+
+    const user = users.find(u => u.userId === userId);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const details = userDetails[userId] ?? {
+      email: '',
+      phone: '',
+      location: '',
+      stats: { contacts: 0, chats: 0, messages: 0 },
+    };
+
+    return {
+      userId: user.userId,
+      userName: user.userName,
+      isOnline: user.isOnline,
+      ...details,
+    };
+  }
+}
+
+// ─── WebSocket Gateway ────────────────────────────────────────────────────────
+
+@WebSocketGateway({ cors: { origin: '*' } })
+class MessagesGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  @WebSocketServer()
+  private readonly server!: Server;
+
+  constructor(private readonly jwtService: JwtService) {}
+
+  public handleConnection(client: Socket): void {
+    try {
+      const token = client.handshake.auth['token'] as string;
+      const payload = this.jwtService.verify<{ userId: string }>(token, {
+        secret: JWT_SECRET,
+      });
+
+      client.data['userId'] = payload.userId;
+
+      const user = users.find(u => u.userId === payload.userId);
+      if (user) user.isOnline = true;
+
+      const userChats = chats.filter(c => c.participantIds.includes(payload.userId));
+      userChats.forEach(chat => client.join(`chat:${chat.id}`));
+
+      client.broadcast.emit('user:online', { userId: payload.userId });
+    } catch {
+      client.disconnect();
+    }
+  }
+
+  public handleDisconnect(client: Socket): void {
+    const userId = client.data['userId'] as string | undefined;
+
+    if (userId) {
+      const user = users.find(u => u.userId === userId);
+      if (user) user.isOnline = false;
+
+      client.broadcast.emit('user:offline', { userId });
+    }
+  }
+
+  @SubscribeMessage('message:send')
+  public handleMessageSend(client: Socket, payload: { chatId: string; text: string }): void {
+    const senderId = client.data['userId'] as string;
+
+    const message: IMessage = {
+      id: `msg-${Date.now()}`,
+      chatId: payload.chatId,
+      senderId,
+      text: payload.text,
+      createdAt: new Date().toISOString(),
+    };
+
+    if (!messagesByChat[payload.chatId]) {
+      messagesByChat[payload.chatId] = [];
+    }
+    messagesByChat[payload.chatId].push(message);
+
+    const chat = chats.find(c => c.id === payload.chatId);
+    if (chat) {
+      chat.lastMessage = message;
+      chat.updatedAt = message.createdAt;
+    }
+
+    this.server.to(`chat:${payload.chatId}`).emit('message:new', {
+      chatId: payload.chatId,
+      message,
+    });
+  }
+
+  @SubscribeMessage('typing:start')
+  public handleTypingStart(client: Socket, payload: { chatId: string }): void {
+    const userId = client.data['userId'] as string;
+
+    client
+      .to(`chat:${payload.chatId}`)
+      .emit('typing', { chatId: payload.chatId, userId, isTyping: true });
+  }
+
+  @SubscribeMessage('typing:stop')
+  public handleTypingStop(client: Socket, payload: { chatId: string }): void {
+    const userId = client.data['userId'] as string;
+
+    client
+      .to(`chat:${payload.chatId}`)
+      .emit('typing', { chatId: payload.chatId, userId, isTyping: false });
+  }
+}
+
+// ─── App Module ───────────────────────────────────────────────────────────────
+
+@Module({
+  imports: [
+    JwtModule.register({
+      secret: JWT_SECRET,
+      signOptions: { expiresIn: ACCESS_TOKEN_TTL },
+    }),
+  ],
+  controllers: [AuthController, ChatsController, UserController],
+  providers: [MessagesGateway],
+})
+class AppModule {}
+
+async function bootstrap(): Promise<void> {
+  const app = await NestFactory.create(AppModule);
+  app.useWebSocketAdapter(new IoAdapter(app));
+  app.enableCors({ origin: '*' });
+
+  // Init registers NestJS routes BEFORE we add the catch-all
+  await app.init();
+
+  // Add static serving AFTER NestJS routes so /api/* is handled by NestJS first
+  const staticDir = path.resolve(__dirname, '..', '..', 'dist', 'messenger-client', 'browser');
+  const expressApp = app.getHttpAdapter().getInstance() as express.Express;
+  expressApp.use(express.static(staticDir));
+  expressApp.use((_req: express.Request, res: express.Response) => {
+    res.sendFile(path.join(staticDir, 'index.html'));
+  });
+
+  const port = process.env['PORT'] ?? 3000;
+  await app.getHttpServer().listen(port);
+  console.log(`Server running on port ${port}`);
+}
+
+bootstrap();

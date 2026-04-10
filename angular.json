@@ -73,7 +73,12 @@
                 }
               ],
               "outputHashing": "all",
-              "fileReplacements": []
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.json",
+                  "with": "src/environments/environment.prod.json"
+                }
+              ]
             },
             "development": {
               "optimization": false,
