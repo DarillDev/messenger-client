@@ -1,5 +1,5 @@
-import { Component, effect, input, viewChild } from '@angular/core';
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
+import { afterNextRender, Component, effect, input, viewChild } from '@angular/core';
 import { TMessageListItem } from '@pages/chat/types/message-list-item.type';
 import { DateDividerComponent } from '@shared/ui-kit/date-divider';
 import { MessageBubbleComponent } from '@shared/ui-kit/message-bubble';
@@ -17,6 +17,12 @@ export class MessagesListComponent {
   private readonly viewport = viewChild.required(CdkVirtualScrollViewport);
 
   constructor() {
+    // AutoSizeVirtualScrollStrategy needs an explicit size check after the flex
+    // layout resolves — otherwise the viewport reports height 0 and renders nothing.
+    afterNextRender(() => {
+      this.viewport().checkViewportSize();
+    });
+
     let prevLength = 0;
 
     effect(() => {
@@ -28,10 +34,7 @@ export class MessagesListComponent {
         return;
       }
 
-      this.viewport().scrollToIndex(
-        items.length - 1,
-        isNewMessage ? 'smooth' : 'instant',
-      );
+      this.viewport().scrollToIndex(items.length - 1, isNewMessage ? 'smooth' : 'instant');
     });
   }
 
