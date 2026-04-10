@@ -1,29 +1,34 @@
-import { Component, computed, effect, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
+import { AutoSizeVirtualScrollStrategy } from '@angular/cdk-experimental/scrolling';
+import { Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
+import { MessagesListComponent } from '@pages/chat/components/messages-list';
 import { MessagesService } from '@pages/chat/services/messages/messages.service';
 import { MessageStore } from '@pages/chat/store/message/message.store';
-import { IMessage } from '@shared/interfaces/message.interface';
-import { DateDividerComponent } from '@shared/ui-kit/date-divider';
-import { MessageBubbleComponent } from '@shared/ui-kit/message-bubble';
+import { IDateDividerItem, TMessageListItem } from '@pages/chat/types/message-list-item.type';
 import { ChatStore } from '@store/chat/chat.store';
 import { UserStore } from '@store/user/user.store';
 import { map } from 'rxjs';
 
 @Component({
   selector: 'app-chat',
-  imports: [MessageBubbleComponent, DateDividerComponent],
+  imports: [MessagesListComponent],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
+  providers: [
+    {
+      provide: VIRTUAL_SCROLL_STRATEGY,
+      useFactory: (): AutoSizeVirtualScrollStrategy => new AutoSizeVirtualScrollStrategy(50, 250),
+    },
+  ],
 })
-export class ChatComponent {
+export class ChatComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly messageStore = inject(MessageStore);
   private readonly chatStore = inject(ChatStore);
   private readonly userStore = inject(UserStore);
   private readonly messagesService = inject(MessagesService);
-
-  private readonly messagesEndRef = viewChild<ElementRef<HTMLDivElement>>('messagesEnd');
 
   protected readonly chatId = toSignal(
     this.route.params.pipe(map((params): string => params['id'] as string)),
@@ -35,7 +40,7 @@ export class ChatComponent {
     return id ? this.chatStore.chats().find(c => c.id === id) : undefined;
   });
 
-  protected readonly messages = computed(() => {
+  private readonly messages = computed(() => {
     const id = this.chatId();
 
     return id ? (this.messageStore.messagesByChatId()[id] ?? []) : [];
@@ -54,6 +59,30 @@ export class ChatComponent {
 
   protected readonly messageText = signal('');
 
+  protected readonly messageItems = computed((): TMessageListItem[] => {
+    const messages = this.messages();
+    const items: TMessageListItem[] = [];
+    let prevDayLabel = '';
+
+    for (const message of messages) {
+      const dayLabel = message.createdAt.toDateString();
+
+      if (dayLabel !== prevDayLabel) {
+        const divider: IDateDividerItem = {
+          type: 'divider',
+          id: `divider-${dayLabel}`,
+          date: dayLabel,
+        };
+        items.push(divider);
+        prevDayLabel = dayLabel;
+      }
+
+      items.push({ ...message, type: 'message' });
+    }
+
+    return items;
+  });
+
   private typingTimer: ReturnType<typeof setTimeout> | null = null;
   private isTyping = false;
 
@@ -64,14 +93,6 @@ export class ChatComponent {
       if (id) {
         this.messageStore.loadMessages(id);
       }
-    });
-
-    effect(() => {
-      this.messages();
-
-      queueMicrotask(() => {
-        this.messagesEndRef()?.nativeElement.scrollIntoView({ behavior: 'smooth' });
-      });
     });
   }
 
@@ -101,14 +122,6 @@ export class ChatComponent {
     }
   }
 
-  protected getDayLabel(date: Date): string {
-    return date.toDateString();
-  }
-
-  protected getPrevMessage(index: number): IMessage | undefined {
-    return index > 0 ? this.messages()[index - 1] : undefined;
-  }
-
   private handleTyping(): void {
     const chatId = this.chatId();
 
@@ -128,6 +141,10 @@ export class ChatComponent {
     this.typingTimer = setTimeout(() => {
       this.stopTyping();
     }, 1000);
+  }
+
+  public ngOnDestroy(): void {
+    this.stopTyping();
   }
 
   private stopTyping(): void {
