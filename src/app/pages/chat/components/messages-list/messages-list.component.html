@@ -1,4 +1,4 @@
-<cdk-virtual-scroll-viewport class="messages-viewport">
+<cdk-virtual-scroll-viewport [itemSize]="72" class="messages-viewport">
   <ng-container *cdkVirtualFor="let item of items(); trackBy: trackItem">
     @if (item.type === 'divider') {
       <ui-kit-date-divider [date]="item.date" />
@@ -10,9 +10,7 @@
 
 @if (typingUsers().length > 0) {
   <div class="typing-indicator" data-testid="typing-indicator">
-    <div class="typing-dots">
-      <i></i><i></i><i></i>
-    </div>
+    <div class="typing-dots"><i></i><i></i><i></i></div>
     <span>печатает...</span>
   </div>
 }

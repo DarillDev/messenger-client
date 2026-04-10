@@ -1,13 +1,4 @@
-import { FixedSizeVirtualScrollStrategy, VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  OnDestroy,
-  signal,
-} from '@angular/core';
+import { Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { MessagesListComponent } from '@pages/chat/components/messages-list';
@@ -23,12 +14,6 @@ import { map } from 'rxjs';
   imports: [MessagesListComponent],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
-  providers: [
-    {
-      provide: VIRTUAL_SCROLL_STRATEGY,
-      useFactory: (): FixedSizeVirtualScrollStrategy => new FixedSizeVirtualScrollStrategy(72, 300, 600),
-    },
-  ],
 })
 export class ChatComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
