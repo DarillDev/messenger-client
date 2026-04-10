@@ -28,7 +28,6 @@ describe('UserService', () => {
 
   describe('getUserDetails', () => {
     it('should map DTO to IUserDetails domain model', () => {
-      // Arrange
       const dto = {
         userId: 'u1',
         userName: 'Stepan',
@@ -39,14 +38,12 @@ describe('UserService', () => {
         stats: { contacts: 4, chats: 4, messages: 142 },
       };
 
-      // Act
       let result: IUserDetails | undefined;
       service.getUserDetails('u1').subscribe(details => (result = details));
 
       const request = httpMock.expectOne('http://localhost:3000/api/user/u1/details');
       request.flush(dto);
 
-      // Assert
       expect(result).toEqual({
         userId: 'u1',
         userName: 'Stepan',

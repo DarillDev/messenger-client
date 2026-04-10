@@ -1,14 +1,14 @@
 :host {
-  container-type: inline-size;
-  min-width: 1024px;
-  container-name: layout;
   display: grid;
-  grid-template-columns: minmax(200px, 340px) 1fr;
+  min-width: 1024px;
   height: 100vh;
   padding: 16px;
-  gap: 12px;
   box-sizing: border-box;
-  transition: grid-template-columns 0.3s var(--ease-out);
+  transition: grid-template-columns .3s var(--ease-out);
+  container-type: inline-size;
+  container-name: layout;
+  grid-template-columns: minmax(200px, 340px) 1fr;
+  gap: 12px;
 
   &.right-panel-open {
     grid-template-columns: minmax(200px, 340px) 1fr minmax(200px, 340px);
@@ -24,12 +24,12 @@
 }
 
 .left-panel {
-  container-type: inline-size;
-  container-name: sidebar-col;
   display: flex;
   align-items: stretch;
   min-width: 0;
   overflow: hidden;
+  container-type: inline-size;
+  container-name: sidebar-col;
 }
 
 main {

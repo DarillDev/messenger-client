@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { AppStore, TLanguage, TTheme } from '@app/core/store/app/app.store';
 import { ISelectOption, SelectComponent } from '@shared/ui-kit/select';
-import { AppStore, TLanguage, TTheme } from '@store/app/app.store';
 
 import { ERouterOutlet } from '../../internal-layout/enums/router-outlet.enum';
 

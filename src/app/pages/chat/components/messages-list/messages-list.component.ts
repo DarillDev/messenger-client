@@ -52,10 +52,9 @@ export class MessagesListComponent {
       const isAppend = untracked(() => this.isAppend());
       const behavior = isAppend ? 'smooth' : 'instant';
 
-      afterNextRender(
-        () => this.viewport().scrollToIndex(this.items().length - 1, behavior),
-        { injector: this.injector },
-      );
+      afterNextRender(() => this.viewport().scrollToIndex(this.items().length - 1, behavior), {
+        injector: this.injector,
+      });
     });
   }
 

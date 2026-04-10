@@ -1,26 +1,26 @@
 :host {
   display: flex;
-  flex: 1;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  flex: 1;
   background: var(--bg-panel);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
+  -webkit-backdrop-filter: blur(30px);
+  backdrop-filter: blur(30px);
 }
 
 .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
   color: var(--text-muted);
+  gap: 12px;
 }
 
 .icon {
   font-size: 48px;
-  opacity: 0.4;
+  opacity: .4;
 }
 
 .title {

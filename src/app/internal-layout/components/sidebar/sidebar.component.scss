@@ -1,16 +1,14 @@
 :host {
-  width: 100%;
-  background: var(--bg-panel);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
+  width: 100%;
   overflow: hidden;
-  transition:
-    background-color 0.4s,
-    border-color 0.4s;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  -webkit-backdrop-filter: blur(30px);
+  backdrop-filter: blur(30px);
+  transition: background-color .4s, border-color .4s;
 }
 
 .sidebar-header {
@@ -23,15 +21,15 @@
 
 .sidebar-top {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 18px;
 }
 
 .sidebar-title {
   font-size: 20px;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -.02em;
 
   @container sidebar-col (max-width: 200px) {
     display: none;
@@ -45,8 +43,8 @@
 
   @container sidebar-col (max-width: 200px) {
     flex-direction: column;
-    width: 100%;
     justify-content: center;
+    width: 100%;
   }
 }
 
@@ -75,26 +73,24 @@
 
 .sidebar-icon-btn {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   width: 36px;
   height: 36px;
-  border-radius: var(--radius-md);
+  color: var(--text-secondary);
   background: transparent;
   border: none;
-  color: var(--text-secondary);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition:
-    background 0.15s,
-    color 0.15s;
+  transition: background .15s, color .15s;
 
   &:hover {
-    background: var(--bg-card);
     color: var(--text-primary);
+    background: var(--bg-card);
   }
 
   &:active {
-    transform: scale(0.92);
+    transform: scale(.92);
   }
 
   .material-icons-round {
@@ -103,14 +99,14 @@
 }
 
 .sidebar-avatar-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 28px;
   height: 28px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: var(--text-inverse);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-size: 13px;
   font-weight: 700;
+  color: var(--text-inverse);
+  background: var(--accent);
+  border-radius: 50%;
 }

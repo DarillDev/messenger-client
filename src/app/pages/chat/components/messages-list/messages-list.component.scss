@@ -2,23 +2,24 @@
 
 :host {
   display: flex;
-  flex: 1;
   flex-direction: column;
+  flex: 1;
   min-height: 0;
   overflow: hidden;
 }
 
 .messages-viewport {
-  flex: 1;
   position: relative;
+  flex: 1;
+
   @include mixins.scrollbar-thin;
 }
 
 .scroll-item {
   height: 120px;
-  box-sizing: border-box;
-  overflow: hidden;
   padding: 0 24px 14px;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .scroll-item--message {
@@ -28,21 +29,21 @@
 
 .scroll-item--divider {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
 .typing-indicator {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 0 24px 8px;
   height: 28px;
+  padding: 0 24px 8px;
+  gap: 8px;
 
   span {
     font-size: 12px;
-    color: var(--text-muted);
     font-style: italic;
+    color: var(--text-muted);
   }
 }
 
@@ -58,21 +59,22 @@
     animation: typingBounce 1.2s infinite;
 
     &:nth-child(2) {
-      animation-delay: 0.15s;
+      animation-delay: .15s;
     }
 
     &:nth-child(3) {
-      animation-delay: 0.3s;
+      animation-delay: .3s;
     }
   }
 }
 
 @keyframes typingBounce {
+
   0%,
   60%,
   100% {
     transform: translateY(0);
-    opacity: 0.4;
+    opacity: .4;
   }
 
   30% {

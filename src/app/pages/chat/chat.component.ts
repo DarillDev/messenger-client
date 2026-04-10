@@ -1,12 +1,12 @@
 import { Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ChatStore } from '@app/core/store/chat/chat.store';
+import { UserStore } from '@app/core/store/user/user.store';
 import { MessagesService } from '@app/pages/chat/services/messages/messages.service';
 import { MessageStore } from '@app/pages/chat/store/message/message.store';
 import { MessagesListComponent } from '@pages/chat/components/messages-list';
 import { IDateDividerItem, TMessageListItem } from '@pages/chat/types/message-list-item.type';
-import { ChatStore } from '@store/chat/chat.store';
-import { UserStore } from '@store/user/user.store';
 import { map } from 'rxjs';
 
 import { ERouterOutlet } from '../../internal-layout/enums/router-outlet.enum';
@@ -101,7 +101,7 @@ export class ChatComponent implements OnDestroy {
     effect(() => {
       const chat = this.activeChat();
 
-      if (chat && this.router.url.includes('right:profile')) {
+      if (chat && this.router.url.includes('(right:profile')) {
         void this.router.navigate([
           { outlets: { [ERouterOutlet.Right]: ['profile', chat.participant.userId] } },
         ]);
@@ -132,9 +132,7 @@ export class ChatComponent implements OnDestroy {
         this.isAppend.set(true);
       }
     });
-  }
 
-  public ngOnInit(): void {
     this.messagesService.connect(this.messageStore);
   }
 

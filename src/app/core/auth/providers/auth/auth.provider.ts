@@ -4,10 +4,10 @@ import {
   makeEnvironmentProviders,
   provideAppInitializer,
 } from '@angular/core';
+import { AppStore } from '@app/core/store/app/app.store';
+import { AuthStore } from '@app/core/store/auth/auth.store';
+import { UserStore } from '@app/core/store/user/user.store';
 import { JwtToken } from '@core/auth/models/jwt-token';
-import { AppStore } from '@store/app/app.store';
-import { AuthStore } from '@store/auth/auth.store';
-import { UserStore } from '@store/user/user.store';
 
 import { AuthService } from '../../services/auth/auth.service';
 import { TokenStorageService } from '../../services/token-storage/token-storage.service';

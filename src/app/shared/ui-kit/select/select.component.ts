@@ -9,7 +9,6 @@ import {
   OnDestroy,
   OnInit,
   signal,
-  ViewChild,
 } from '@angular/core';
 import { NgControl } from '@angular/forms';
 import {
@@ -47,9 +46,6 @@ export class SelectComponent<T = string> implements IFormFieldControl, OnInit, O
   public readonly ngControl = inject(NgControl, { optional: true, self: true });
   private readonly formField = inject(FORM_FIELD, { optional: true });
   private readonly elementRef = inject(ElementRef<HTMLElement>);
-
-  @ViewChild('triggerEl', { read: ElementRef })
-  protected readonly triggerEl?: ElementRef<HTMLElement>;
 
   public readonly options = input<ISelectOption<T>[]>([]);
   public readonly value = model<T | null>(null);

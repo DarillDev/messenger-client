@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpService } from '@core/api/http/http.service';
+import { HttpService } from '@api/http/http.service';
+import { IMessageDto } from '@shared/dtos/message-dto.interface';
 import { Observable } from 'rxjs';
 
 import { IChatDto } from '../../dtos/chat-dto.interface';
-import { IMessageDto } from '../../dtos/message-dto.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ChatApiService {

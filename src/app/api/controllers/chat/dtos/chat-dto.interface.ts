@@ -1,6 +1,5 @@
+import { IMessageDto } from '@shared/dtos/message-dto.interface';
 import { IUserDto } from '@shared/dtos/user-dto.interface';
-
-import { IMessageDto } from './message-dto.interface';
 
 export interface IChatDto {
   id: string;

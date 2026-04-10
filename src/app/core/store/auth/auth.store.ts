@@ -1,7 +1,7 @@
 import { computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
-import { UserMapper } from '@core/api/controllers/user/mappers/user/user.mapper';
+import { UserMapper } from '@api/controllers/user/mappers/user/user.mapper';
 import { ILoginRequest } from '@core/auth/interfaces/login-request.interface';
 import { ILoginResponse } from '@core/auth/interfaces/login-response.interface';
 import { IRefreshResponse } from '@core/auth/interfaces/refresh-response.interface';
@@ -27,8 +27,8 @@ export const AuthStore = signalStore(
   withState(initialState),
   withComputed(({ token }) => ({
     isAuthenticated: computed(() => {
-      const t = token();
-      return t !== null && !t.isExpired;
+      const currentToken = token();
+      return currentToken !== null && !currentToken.isExpired;
     }),
   })),
   withMethods(store => {

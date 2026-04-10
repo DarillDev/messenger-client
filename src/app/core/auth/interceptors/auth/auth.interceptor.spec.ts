@@ -7,7 +7,7 @@ import {
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { AuthStore } from '@store/auth/auth.store';
+import { AuthStore } from '@app/core/store/auth/auth.store';
 
 import { authInterceptor } from './auth.interceptor';
 
@@ -160,7 +160,6 @@ describe('authInterceptor', () => {
     store.restoreSession(oldAccess, 'old-refresh');
     localStorage.setItem('refresh_token', 'old-refresh');
 
-    // Первый 403 — рефреш и ретрай
     http.get('/api/chats').subscribe();
     httpTesting
       .expectOne('/api/chats')
@@ -170,7 +169,6 @@ describe('authInterceptor', () => {
       .flush({ accessToken: newAccess, refreshToken: 'new-refresh' });
     httpTesting.expectOne('/api/chats').flush([]);
 
-    // Второй 403 после завершения предыдущего рефреша — должен запустить новый
     http.get('/api/messages').subscribe();
     httpTesting
       .expectOne('/api/messages')
@@ -184,17 +182,12 @@ describe('authInterceptor', () => {
     httpTesting.expectOne('/api/messages').flush([]);
   });
 
-  // ---------------------------------------------------------------------------
-  // Параллельные 403: refresh lock
-  // ---------------------------------------------------------------------------
-
   it('should send only one refresh request when multiple requests get 403 simultaneously', () => {
     const oldAccess = makeMockJwt();
     const newAccess = makeMockJwt('u1', 'Stepan', 7200);
     store.restoreSession(oldAccess, 'old-refresh');
     localStorage.setItem('refresh_token', 'old-refresh');
 
-    // Два параллельных запроса оба получают 403
     http.get('/api/chats').subscribe();
     http.get('/api/messages').subscribe();
 
@@ -205,14 +198,12 @@ describe('authInterceptor', () => {
       .expectOne('/api/messages')
       .flush('Forbidden', { status: 403, statusText: 'Forbidden' });
 
-    // Должен уйти ровно один запрос на рефреш
     const refreshRequests = httpTesting.match('/api/auth/refresh');
 
     expect(refreshRequests.length).toBe(1);
 
     refreshRequests[0].flush({ accessToken: newAccess, refreshToken: 'new-refresh' });
 
-    // Оба ретрая завершаем, чтобы verify() не упал
     httpTesting.expectOne('/api/chats').flush([]);
     httpTesting.expectOne('/api/messages').flush([]);
   });
@@ -239,12 +230,10 @@ describe('authInterceptor', () => {
       .expectOne('/api/messages')
       .flush('Forbidden', { status: 403, statusText: 'Forbidden' });
 
-    // Единственный рефреш
     httpTesting
       .expectOne('/api/auth/refresh')
       .flush({ accessToken: newAccess, refreshToken: 'new-refresh' });
 
-    // Оба запроса ретраятся с новым токеном
     const chatsRetry = httpTesting.expectOne('/api/chats');
     const messagesRetry = httpTesting.expectOne('/api/messages');
 
@@ -288,10 +277,8 @@ describe('authInterceptor', () => {
       .expectOne('/api/auth/refresh')
       .flush('Unauthorized', { status: 401, statusText: 'Unauthorized' });
 
-    // logout вызывается ровно один раз, несмотря на двух ожидающих подписчиков
     expect(logoutSpy).toHaveBeenCalledTimes(1);
 
-    // Оба запроса получают исходную ошибку 403
     expect(chatsError!.status).toBe(403);
     expect(messagesError!.status).toBe(403);
   });

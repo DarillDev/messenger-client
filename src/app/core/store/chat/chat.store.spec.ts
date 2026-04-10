@@ -1,9 +1,9 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { IChatDto } from '@core/api/controllers/chat/dtos/chat-dto.interface';
-import { IMessageDto } from '@core/api/controllers/chat/dtos/message-dto.interface';
+import { IChatDto } from '@api/controllers/chat/dtos/chat-dto.interface';
 import { APPLICATION_ENVIRONMENT } from '@core/environment/application-environment.token';
+import { IMessageDto } from '@shared/dtos/message-dto.interface';
 import { IChat } from '@shared/interfaces/chat.interface';
 import { IMessage } from '@shared/interfaces/message.interface';
 
@@ -83,7 +83,9 @@ describe('ChatStore', () => {
     it('should set isLoading false on error', () => {
       store.loadChats();
 
-      httpTesting.expectOne('/api/chats').flush('error', { status: 500, statusText: 'Server Error' });
+      httpTesting
+        .expectOne('/api/chats')
+        .flush('error', { status: 500, statusText: 'Server Error' });
 
       expect(store.isLoading()).toBe(false);
       expect(store.chats()).toEqual([]);

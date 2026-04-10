@@ -1,14 +1,14 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
+import { AuthStore } from '@app/core/store/auth/auth.store';
+import { UserStore } from '@app/core/store/user/user.store';
+import { APPLICATION_ENVIRONMENT } from '@core/environment/application-environment.token';
 import { of } from 'rxjs';
 
-import { APPLICATION_ENVIRONMENT } from '@core/environment/application-environment.token';
-import { ERouterOutlet } from '../../internal-layout/enums/router-outlet.enum';
-import { AuthStore } from '@store/auth/auth.store';
-import { UserStore } from '@store/user/user.store';
 import { ProfileComponent } from './profile.component';
+import { ERouterOutlet } from '../../internal-layout/enums/router-outlet.enum';
 
 const mockEnv = { apiUrl: 'http://localhost:3000' };
 
@@ -60,48 +60,38 @@ describe('ProfileComponent', () => {
 
   describe('Model', () => {
     it('should show loading skeleton initially', () => {
-      // Act
       createComponent('u2');
       httpMock = TestBed.inject(HttpTestingController);
 
-      // Assert
       expect(compiled.querySelector('[data-testid="profile-skeleton"]')).not.toBeNull();
     });
 
     it('should display user details after loading', fakeAsync(() => {
-      // Arrange
       createComponent('u2');
       httpMock = TestBed.inject(HttpTestingController);
 
-      // Act
       httpMock.expectOne('http://localhost:3000/api/user/u2/details').flush(mockUserDetails);
       tick();
       fixture.detectChanges();
 
-      // Assert
       expect(compiled.querySelector('[data-testid="profile-name"]')?.textContent).toContain('Alex');
     }));
 
     it('should not show own-profile actions for another user', fakeAsync(() => {
-      // Arrange
       createComponent('u2', 'u1');
       httpMock = TestBed.inject(HttpTestingController);
 
-      // Act
       httpMock.expectOne('http://localhost:3000/api/user/u2/details').flush(mockUserDetails);
       tick();
       fixture.detectChanges();
 
-      // Assert
       expect(compiled.querySelector('[data-testid="logout-button"]')).toBeNull();
     }));
 
     it('should show own-profile actions when viewing own profile', fakeAsync(() => {
-      // Arrange
       createComponent('u1', 'u1');
       httpMock = TestBed.inject(HttpTestingController);
 
-      // Act
       httpMock.expectOne('http://localhost:3000/api/user/u1/details').flush({
         ...mockUserDetails,
         userId: 'u1',
@@ -110,14 +100,12 @@ describe('ProfileComponent', () => {
       tick();
       fixture.detectChanges();
 
-      // Assert
       expect(compiled.querySelector('[data-testid="logout-button"]')).not.toBeNull();
     }));
   });
 
   describe('Events', () => {
     it('should call authStore.logout when logout button is clicked', fakeAsync(() => {
-      // Arrange
       createComponent('u1', 'u1');
       httpMock = TestBed.inject(HttpTestingController);
       const authStore = TestBed.inject(AuthStore);
@@ -131,24 +119,19 @@ describe('ProfileComponent', () => {
       tick();
       fixture.detectChanges();
 
-      // Act
       (compiled.querySelector('[data-testid="logout-button"]') as HTMLElement).click();
 
-      // Assert
       expect(spy).toHaveBeenCalled();
     }));
 
     it('should clear right outlet when close button clicked', () => {
-      // Arrange
       createComponent('u2');
       httpMock = TestBed.inject(HttpTestingController);
       router = TestBed.inject(Router);
       const spy = jest.spyOn(router, 'navigate');
 
-      // Act
       (compiled.querySelector('[data-testid="close-button"]') as HTMLElement).click();
 
-      // Assert
       expect(spy).toHaveBeenCalledWith([{ outlets: { [ERouterOutlet.Right]: null } }]);
     });
   });

@@ -1,8 +1,7 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, throwError } from 'rxjs';
-import { TimeoutError } from 'rxjs';
+import { catchError, throwError, TimeoutError } from 'rxjs';
 
 export const httpErrorInterceptor: HttpInterceptorFn = (request, next) => {
   const router = inject(Router);
@@ -11,7 +10,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (request, next) => {
     catchError((error: unknown) => {
       if (error instanceof TimeoutError) {
         void router.navigate(['/error']);
-        
+
         return throwError(() => error);
       }
 

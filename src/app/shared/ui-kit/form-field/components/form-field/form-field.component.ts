@@ -19,7 +19,6 @@ import type { IFormField } from '../../tokens/form-field.token';
 
 @Component({
   selector: 'ui-kit-form-field',
-  standalone: true,
   imports: [ErrorTextPipe],
   templateUrl: './form-field.component.html',
   styleUrl: './form-field.component.scss',

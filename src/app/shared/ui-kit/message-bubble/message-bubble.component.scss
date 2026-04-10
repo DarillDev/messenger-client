@@ -1,6 +1,7 @@
 // Критично: display:contents делает host-элемент прозрачным для flex-layout.
 // .msg-group становится прямым flex-child контейнера .messages в ChatComponent,
 // и align-self: flex-end работает корректно.
+
 :host {
   display: contents;
 }
@@ -8,8 +9,8 @@
 .msg-group {
   display: flex;
   flex-direction: column;
-  gap: 3px;
   max-width: 65%;
+  gap: 3px;
 
   &.sent {
     align-self: flex-end;
@@ -28,11 +29,12 @@
 
   // Clamp text to 3 lines so item height stays within the fixed 120px itemSize.
   // 3 × (14px × 1.55) = 65px — fits within the 106px content area.
+
   span {
     display: -webkit-box;
+    overflow: hidden;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
-    overflow: hidden;
   }
 
   .sent & {
@@ -49,11 +51,11 @@
 }
 
 .msg-time {
-  font-size: 11px;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
   margin-top: 4px;
   padding: 0 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
 
   .sent & {
     text-align: right;

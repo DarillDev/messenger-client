@@ -1,8 +1,8 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { IMessageDto } from '@core/api/controllers/chat/dtos/message-dto.interface';
 import { APPLICATION_ENVIRONMENT } from '@core/environment/application-environment.token';
+import { IMessageDto } from '@shared/dtos/message-dto.interface';
 import { IMessage } from '@shared/interfaces/message.interface';
 
 import { MessageStore } from './message.store';

@@ -5,6 +5,7 @@ import { UI_KIT_ERROR_MESSAGES } from '../../form-field/tokens/error-messages.to
 
 @Pipe({
   name: 'errorText',
+  standalone: true,
 })
 export class ErrorTextPipe implements PipeTransform {
   private readonly messages = inject(UI_KIT_ERROR_MESSAGES);

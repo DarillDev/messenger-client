@@ -2,7 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
-import { AuthStore } from '@store/auth/auth.store';
+import { AuthStore } from '@app/core/store/auth/auth.store';
 
 import { LoginComponent } from './login.component';
 
@@ -77,10 +77,8 @@ describe('LoginComponent', () => {
   describe('Events', () => {
     it('should show errors when submitted with empty fields', () => {
       fixture.detectChanges();
-
       (component as unknown as { onSubmit(): void }).onSubmit();
       fixture.detectChanges();
-
       const inputs = fixture.nativeElement.querySelectorAll('input');
       inputs.forEach((input: HTMLInputElement) => {
         input.dispatchEvent(new Event('focus'));
@@ -95,10 +93,8 @@ describe('LoginComponent', () => {
 
     it('should show custom error text from DI', () => {
       fixture.detectChanges();
-
       (component as unknown as { onSubmit(): void }).onSubmit();
       fixture.detectChanges();
-
       const inputs = fixture.nativeElement.querySelectorAll('input');
       inputs.forEach((input: HTMLInputElement) => {
         input.dispatchEvent(new Event('focus'));

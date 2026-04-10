@@ -7,23 +7,23 @@
 
 .select-trigger {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  align-items: center;
   padding: 8px 12px;
+  font-size: 14px;
   background-color: var(--bg-input);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 14px;
-  transition: border-color 0.2s;
+  transition: border-color .2s;
+  gap: 8px;
 
   &:hover {
     border-color: var(--border-hover);
   }
 
   &:active {
-    transform: scale(0.98);
+    transform: scale(.98);
   }
 }
 
@@ -36,10 +36,10 @@
 }
 
 .select-chevron {
+  flex-shrink: 0;
   font-size: 18px;
   color: var(--text-muted);
-  transition: transform 0.2s;
-  flex-shrink: 0;
+  transition: transform .2s;
 }
 
 .select-trigger-label {
@@ -51,10 +51,10 @@
 }
 
 .select-dropdown {
+  overflow: hidden;
   background: var(--bg-panel);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  overflow: hidden;
   box-shadow: var(--shadow-md);
 }
 
@@ -62,14 +62,14 @@
   padding: 10px 12px;
   font-size: 14px;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background .15s;
 
   &:hover {
     background: var(--bg-panel-hover);
   }
 
   &:active {
-    transform: scale(0.98);
+    transform: scale(.98);
   }
 
   &--selected {

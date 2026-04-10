@@ -6,8 +6,5 @@ import { appConfig } from './app/app.config';
 import environment from './environments/environment.json';
 
 bootstrapApplication(App, {
-  providers: [
-    { provide: APPLICATION_ENVIRONMENT, useValue: environment },
-    ...appConfig.providers,
-  ],
+  providers: [{ provide: APPLICATION_ENVIRONMENT, useValue: environment }, ...appConfig.providers],
 }).catch(error => console.error(error));

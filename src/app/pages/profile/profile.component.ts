@@ -1,7 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '@core/api/controllers/user/services/user/user.service';
+import { UserService } from '@api/controllers/user/services/user/user.service';
 import { IUserDetails } from '@shared/interfaces/user-details.interface';
 import { createDestroyer } from '@shared/utils/create-destroyer';
 import { AuthStore } from '@store/auth/auth.store';
@@ -26,9 +26,7 @@ export class ProfileComponent {
   protected readonly isLoading = signal(true);
   protected readonly userDetails = signal<IUserDetails | null>(null);
 
-  protected readonly userId = toSignal(
-    this.route.paramMap.pipe(map(params => params.get('id')!)),
-  );
+  protected readonly userId = toSignal(this.route.paramMap.pipe(map(params => params.get('id')!)));
 
   protected readonly isOwnProfile = computed(
     () => this.userId() === this.userStore.currentUser()?.userId,

@@ -1,25 +1,25 @@
 :host {
   display: flex;
-  height: 100vh;
-  align-items: center;
   justify-content: center;
-  background: var(--bg-base);
+  align-items: center;
+  height: 100vh;
+  background: var(--bg-root);
 }
 
 .error-page {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  color: var(--text-muted);
-  text-align: center;
   padding: 32px;
+  text-align: center;
+  color: var(--text-muted);
+  gap: 16px;
 }
 
 .icon {
   font-size: 64px;
-  opacity: 0.5;
-  color: var(--error);
+  color: var(--accent-warm);
+  opacity: .5;
 }
 
 .title {
@@ -29,27 +29,27 @@
 }
 
 .subtitle {
-  font-size: 15px;
   max-width: 360px;
+  font-size: 15px;
 }
 
 .retry-btn {
   margin-top: 8px;
   padding: 10px 24px;
-  background: var(--accent);
-  color: var(--text-inverse);
-  border: none;
-  border-radius: var(--radius-md);
   font-size: 14px;
   font-weight: 600;
+  color: var(--text-inverse);
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: opacity .2s;
 
   &:hover {
-    opacity: 0.85;
+    opacity: .85;
   }
 
   &:active {
-    transform: scale(0.97);
+    transform: scale(.97);
   }
 }

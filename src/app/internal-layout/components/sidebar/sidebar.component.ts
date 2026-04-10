@@ -1,9 +1,9 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { ChatStore } from '@app/core/store/chat/chat.store';
+import { UserStore } from '@app/core/store/user/user.store';
 import { FormFieldComponent, UiKitPrefixDirective } from '@shared/ui-kit/form-field';
 import { UiKitInputDirective } from '@shared/ui-kit/input';
-import { ChatStore } from '@store/chat/chat.store';
-import { UserStore } from '@store/user/user.store';
 
 import { ERouterOutlet } from '../../enums/router-outlet.enum';
 import { ChatListComponent } from '../chat-list';

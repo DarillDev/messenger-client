@@ -1,5 +1,5 @@
 <div class="left-panel">
-  @if (!leftOutletActive()) {
+  @if (!isLeftOutletActive()) {
     <app-sidebar />
   }
 
@@ -14,7 +14,7 @@
   <router-outlet />
 </main>
 
-<div class="right-panel" [class.right-panel--open]="rightPanelActive()">
+<div class="right-panel" [class.right-panel--open]="isRightPanelActive()">
   <router-outlet
     [name]="routerOutletEnum.Right"
     (activate)="onRightActivate()"

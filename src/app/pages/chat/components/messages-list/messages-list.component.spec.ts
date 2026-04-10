@@ -101,15 +101,11 @@ describe('MessagesListComponent', () => {
       fixture.detectChanges();
       await fixture.whenStable();
 
-      const viewport = fixture.debugElement.query(
-        By.directive(CdkVirtualScrollViewport),
-      ).componentInstance as CdkVirtualScrollViewport;
+      const viewport = fixture.debugElement.query(By.directive(CdkVirtualScrollViewport))
+        .componentInstance as CdkVirtualScrollViewport;
       const scrollToIndexSpy = jest.spyOn(viewport, 'scrollToIndex');
 
-      const updated: TMessageListItem[] = [
-        ...initial,
-        makeMessage('m2', '2026-04-10T10:01:00Z'),
-      ];
+      const updated: TMessageListItem[] = [...initial, makeMessage('m2', '2026-04-10T10:01:00Z')];
       fixture.componentRef.setInput('isAppend', true);
       fixture.componentRef.setInput('items', updated);
       fixture.detectChanges();
@@ -128,9 +124,8 @@ describe('MessagesListComponent', () => {
       fixture.detectChanges();
       await fixture.whenStable();
 
-      const viewport = fixture.debugElement.query(
-        By.directive(CdkVirtualScrollViewport),
-      ).componentInstance as CdkVirtualScrollViewport;
+      const viewport = fixture.debugElement.query(By.directive(CdkVirtualScrollViewport))
+        .componentInstance as CdkVirtualScrollViewport;
       const scrollToIndexSpy = jest.spyOn(viewport, 'scrollToIndex');
 
       fixture.componentRef.setInput('items', []);

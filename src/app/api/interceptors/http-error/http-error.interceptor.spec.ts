@@ -1,9 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { fakeAsync, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
-import { provideRouter } from '@angular/router';
-import { of, throwError } from 'rxjs';
-import { TimeoutError } from 'rxjs';
+import { provideRouter, Router } from '@angular/router';
+import { of, throwError, TimeoutError } from 'rxjs';
 
 import { httpErrorInterceptor } from './http-error.interceptor';
 
@@ -24,7 +22,10 @@ describe('httpErrorInterceptor', () => {
     const mockRequest = {} as Parameters<typeof httpErrorInterceptor>[0];
 
     TestBed.runInInjectionContext(() => {
-      httpErrorInterceptor(mockRequest, mockHandler.handle as Parameters<typeof httpErrorInterceptor>[1]).subscribe({
+      httpErrorInterceptor(
+        mockRequest,
+        mockHandler.handle as Parameters<typeof httpErrorInterceptor>[1],
+      ).subscribe({
         error: () => {},
       });
     });
@@ -38,7 +39,10 @@ describe('httpErrorInterceptor', () => {
     const mockRequest = {} as Parameters<typeof httpErrorInterceptor>[0];
 
     TestBed.runInInjectionContext(() => {
-      httpErrorInterceptor(mockRequest, mockHandler.handle as Parameters<typeof httpErrorInterceptor>[1]).subscribe({
+      httpErrorInterceptor(
+        mockRequest,
+        mockHandler.handle as Parameters<typeof httpErrorInterceptor>[1],
+      ).subscribe({
         error: () => {},
       });
     });
@@ -52,7 +56,10 @@ describe('httpErrorInterceptor', () => {
     const mockRequest = {} as Parameters<typeof httpErrorInterceptor>[0];
 
     TestBed.runInInjectionContext(() => {
-      httpErrorInterceptor(mockRequest, mockHandler.handle as Parameters<typeof httpErrorInterceptor>[1]).subscribe({
+      httpErrorInterceptor(
+        mockRequest,
+        mockHandler.handle as Parameters<typeof httpErrorInterceptor>[1],
+      ).subscribe({
         error: () => {},
       });
     });
@@ -66,7 +73,10 @@ describe('httpErrorInterceptor', () => {
     let result: unknown;
 
     TestBed.runInInjectionContext(() => {
-      httpErrorInterceptor(mockRequest, mockHandler.handle as Parameters<typeof httpErrorInterceptor>[1]).subscribe({
+      httpErrorInterceptor(
+        mockRequest,
+        mockHandler.handle as Parameters<typeof httpErrorInterceptor>[1],
+      ).subscribe({
         next: value => {
           result = value;
         },

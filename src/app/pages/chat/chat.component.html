@@ -23,7 +23,11 @@
     </header>
   }
 
-  <app-messages-list [items]="messageItems()" [isAppend]="isAppend()" [typingUsers]="typingUsers()" />
+  <app-messages-list
+    [items]="messageItems()"
+    [isAppend]="isAppend()"
+    [typingUsers]="typingUsers()"
+  />
 
   <form class="msg-input-area" (submit)="onSubmit($event)">
     <div class="msg-input-wrapper">

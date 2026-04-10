@@ -5,7 +5,12 @@ import { AvatarComponent } from './avatar.component';
 describe('AvatarComponent', () => {
   let fixture: ComponentFixture<AvatarComponent>;
 
-  function createComponent(userName: string, userId: string, isOnline = false, unreadCount = 0): void {
+  function createComponent(
+    userName: string,
+    userId: string,
+    isOnline = false,
+    unreadCount = 0,
+  ): void {
     fixture = TestBed.createComponent(AvatarComponent);
     fixture.componentRef.setInput('userName', userName);
     fixture.componentRef.setInput('userId', userId);

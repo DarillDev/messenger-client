@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { AuthStore } from '@store/auth/auth.store';
+import { AuthStore } from '@app/core/store/auth/auth.store';
 import { Observable, shareReplay, switchMap, throwError } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 

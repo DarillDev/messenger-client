@@ -3,9 +3,9 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
-import { IChatDto } from '@core/api/controllers/chat/dtos/chat-dto.interface';
+import { IChatDto } from '@api/controllers/chat/dtos/chat-dto.interface';
+import { ChatStore } from '@app/core/store/chat/chat.store';
 import { APPLICATION_ENVIRONMENT } from '@core/environment/application-environment.token';
-import { ChatStore } from '@store/chat/chat.store';
 
 import { ChatListComponent } from '../chat-list';
 import { SidebarComponent } from './sidebar.component';
@@ -65,10 +65,9 @@ describe('SidebarComponent', () => {
   describe('Model', () => {
     it('should pass all chats to ChatListComponent when search is empty', () => {
       chatStore.loadChats();
-      httpTesting.expectOne('/api/chats').flush([
-        makeChat('c1', 'Alex', 'u2'),
-        makeChat('c2', 'Maria', 'u3'),
-      ]);
+      httpTesting
+        .expectOne('/api/chats')
+        .flush([makeChat('c1', 'Alex', 'u2'), makeChat('c2', 'Maria', 'u3')]);
       fixture.detectChanges();
 
       const chatList = fixture.debugElement.query(By.directive(ChatListComponent));
@@ -79,10 +78,9 @@ describe('SidebarComponent', () => {
 
     it('should pass filtered chats to ChatListComponent when search query is set', () => {
       chatStore.loadChats();
-      httpTesting.expectOne('/api/chats').flush([
-        makeChat('c1', 'Alex', 'u2'),
-        makeChat('c2', 'Maria', 'u3'),
-      ]);
+      httpTesting
+        .expectOne('/api/chats')
+        .flush([makeChat('c1', 'Alex', 'u2'), makeChat('c2', 'Maria', 'u3')]);
       fixture.detectChanges();
 
       const searchInput = fixture.nativeElement.querySelector(

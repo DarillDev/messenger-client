@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
-import { ChatService } from '@core/api/controllers/chat/services/chat/chat.service';
+import { ChatService } from '@api/controllers/chat/services/chat/chat.service';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { IChat } from '@shared/interfaces/chat.interface';
 import { IMessage } from '@shared/interfaces/message.interface';
