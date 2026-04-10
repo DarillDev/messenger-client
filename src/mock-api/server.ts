@@ -311,9 +311,12 @@ class ChatsController {
   @Get()
   public getChats(@Headers('authorization') authHeader: string): object[] {
     const token = authHeader?.replace('Bearer ', '');
-    const { userId } = this.jwtService.verify<{ userId: string }>(token, {
-      secret: JWT_SECRET,
-    });
+    let userId: string;
+    try {
+      ({ userId } = this.jwtService.verify<{ userId: string }>(token, { secret: JWT_SECRET }));
+    } catch {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
 
     return chats
       .filter(chat => chat.participantIds.includes(userId))
@@ -341,9 +344,12 @@ class ChatsController {
     @Param('id') chatId: string,
   ): IMessage[] {
     const token = authHeader?.replace('Bearer ', '');
-    const { userId } = this.jwtService.verify<{ userId: string }>(token, {
-      secret: JWT_SECRET,
-    });
+    let userId: string;
+    try {
+      ({ userId } = this.jwtService.verify<{ userId: string }>(token, { secret: JWT_SECRET }));
+    } catch {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
 
     const chat = chats.find(c => c.id === chatId);
     if (!chat?.participantIds.includes(userId)) {

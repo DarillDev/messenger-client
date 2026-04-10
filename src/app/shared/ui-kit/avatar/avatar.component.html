@@ -1,6 +1,14 @@
-<div class="avatar" [class]="colorClass">
-  {{ initial }}
-  @if (isOnline()) {
-    <span class="online-dot" data-testid="online-indicator"></span>
-  }
-</div>
+<div
+  class="avatar"
+  [class]="colorClass"
+  [class.has-online]="isOnline()"
+  [class.has-badge]="unreadCount() > 0"
+>{{ initial }}</div>
+
+@if (isOnline()) {
+  <span class="online-dot" data-testid="online-indicator"></span>
+}
+
+@if (unreadCount() > 0) {
+  <span class="badge" data-testid="unread-badge">{{ unreadCount() }}</span>
+}

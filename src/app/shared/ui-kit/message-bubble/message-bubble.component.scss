@@ -26,6 +26,15 @@
   line-height: 1.55;
   word-wrap: break-word;
 
+  // Clamp text to 3 lines so item height stays within the fixed 120px itemSize.
+  // 3 × (14px × 1.55) = 65px — fits within the 106px content area.
+  span {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
   .sent & {
     background: var(--msg-sent-bg);
     border: 1px solid var(--border-accent);

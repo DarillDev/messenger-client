@@ -1,16 +1,22 @@
-<cdk-virtual-scroll-viewport #viewport class="messages-viewport">
+<cdk-virtual-scroll-viewport class="messages-viewport">
   <ng-container *cdkVirtualFor="let item of items(); trackBy: trackItem">
     @if (item.type === 'divider') {
-      <ui-kit-date-divider [date]="item.date" />
+      <div class="scroll-item scroll-item--divider">
+        <ui-kit-date-divider [date]="item.date" />
+      </div>
     } @else {
-      <ui-kit-message-bubble [message]="item" />
+      <div class="scroll-item scroll-item--message">
+        <ui-kit-message-bubble [message]="item" />
+      </div>
     }
   </ng-container>
 </cdk-virtual-scroll-viewport>
 
 @if (typingUsers().length > 0) {
   <div class="typing-indicator" data-testid="typing-indicator">
-    <div class="typing-dots"><i></i><i></i><i></i></div>
+    <div class="typing-dots">
+      <i></i><i></i><i></i>
+    </div>
     <span>печатает...</span>
   </div>
 }
