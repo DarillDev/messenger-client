@@ -28,6 +28,7 @@ Angular 21 single-page application — текстовый мессенджер (
 - **Package manager**: npm
 - **No SSR** — client-only SPA
 - **Mock API**: dev-only — `src/mock-api/`, подключается через `MockApiInterceptor` в `main.ts`
+- **CDK**: `@angular/cdk/scrolling` (виртуальный скролл, FixedSizeVirtualScrollStrategy), `@angular/cdk/overlay`
 
 ## Code Style Rules
 
@@ -47,6 +48,7 @@ Angular 21 single-page application — текстовый мессенджер (
 
 - input(), output(), model(), computed(), signal(), linkedSignal(), toSignal()
 - RxJS только для таймеров, resize, сложных event streams, HTTP
+- `toObservable(signal)` в constructor — для реактивной загрузки по route params (см. ProfileComponent)
 
 ### Lifecycle
 
@@ -106,6 +108,7 @@ Angular 21 single-page application — текстовый мессенджер (
   `services/auth/auth.service.ts` + `services/auth/auth.service.spec.ts`
 - Файлы без спеков (interfaces, tokens, models) лежат напрямую в своей директории
 - Правило: сущности разных модулей не должны лежать вперемешку в одной папке
+- Страницы с дочерними маршрутами имеют `index.ts` barrel + `ROUTES_CONST` (пример: profile, settings)
 
 ### TypeScript / Angular
 
@@ -183,6 +186,7 @@ Angular 21 single-page application — текстовый мессенджер (
         ├── internal-layout/           # Layout для авторизованных страниц (НЕ внутри pages/)
         │   ├── internal-layout.component.ts/html/scss
         │   ├── internal-layout.routes.ts
+        │   ├── enums/                 # ERouterOutlet (Left='left', Right='right')
         │   └── components/sidebar/
         │
         ├── pages/                     # Routed-компоненты
@@ -193,13 +197,13 @@ Angular 21 single-page application — текстовый мессенджер (
         │   ├── chat/                  # /chat/:id
         │   │   ├── services/messages/ # MessagesService (WS events)
         │   │   └── store/message/     # MessageStore (локальный стор сообщений)
-        │   ├── profile/               # /profile
-        │   ├── settings/              # /settings
+        │   ├── profile/               # outlet:right, path:profile/:id — боковая панель профиля
+        │   ├── settings/              # outlet:left, path:settings — замена sidebar
         │   └── error-screen/          # /error
         │
         ├── shared/
         │   ├── dtos/                  # DTO-интерфейсы (IUserDto и др.)
-        │   ├── interfaces/            # IChat, IMessage, IUser (domain interfaces)
+        │   ├── interfaces/            # IChat, IMessage, IUser, IUserDetails (domain interfaces)
         │   ├── utils/                 # create-destroyer.ts и др.
         │   └── ui-kit/                # Переиспользуемые UI-компоненты
         │       ├── avatar/
@@ -265,10 +269,12 @@ Pages → Store → Services → HttpClient + authInterceptor → MockApiInterce
 | ----------- | -------------------- | ---------- |
 | `/`         | NoChatComponent      | authGuard  |
 | `/chat/:id` | ChatComponent        | authGuard  |
-| `/profile`  | ProfileComponent     | authGuard  |
-| `/settings` | SettingsComponent    | authGuard  |
+| `profile/:id` (outlet:right) | ProfileComponent  | authGuard  |
+| `settings` (outlet:left)     | SettingsComponent | authGuard  |
 | `/login`    | LoginComponent       | guestGuard |
 | `/error`    | ErrorScreenComponent | —          |
 | `**`        | redirect → `/`       | —          |
 
-Все авторизованные маршруты рендерятся внутри `InternalLayoutComponent` (sidebar + router-outlet).
+InternalLayoutComponent имеет 3 outlet: primary (main), left (settings, заменяет sidebar), right (profile, боковая панель).
+Навигация закрытия: `router.navigate([{ outlets: { [ERouterOutlet.Right]: null } }])`.
+Дети lazy InternalLayoutComponent загружаются eager — дополнительный dynamic import бесполезен (уже в отдельном chunk).

@@ -1,1 +1,73 @@
-<div class="stub">Profile — coming soon</div>
+<div class="profile-header">
+  <button class="close-btn" data-testid="close-button" (click)="close()">
+    <span class="material-icons-round">close</span>
+  </button>
+</div>
+
+@if (isLoading()) {
+  <div class="profile-skeleton" data-testid="profile-skeleton">
+    <div class="skeleton-avatar ui-kit-skeleton-loader"></div>
+    <div class="skeleton-name ui-kit-skeleton-loader"></div>
+    <div class="skeleton-handle ui-kit-skeleton-loader"></div>
+    <div class="skeleton-stats ui-kit-skeleton-loader"></div>
+    <div class="skeleton-field ui-kit-skeleton-loader"></div>
+    <div class="skeleton-field ui-kit-skeleton-loader"></div>
+    <div class="skeleton-field ui-kit-skeleton-loader"></div>
+  </div>
+} @else if (userDetails(); as details) {
+  <div class="profile-cover"></div>
+
+  <div class="profile-avatar-section">
+    <div class="profile-avatar">{{ initials() }}</div>
+    <h1 class="profile-name" data-testid="profile-name">{{ details.userName }}</h1>
+    <span class="profile-handle">@{{ details.userName.toLowerCase() }}</span>
+  </div>
+
+  <div class="profile-stats">
+    <div class="profile-stat">
+      <div class="profile-stat-value">{{ details.stats.contacts }}</div>
+      <div class="profile-stat-label">Контакты</div>
+    </div>
+    <div class="profile-stat">
+      <div class="profile-stat-value">{{ details.stats.chats }}</div>
+      <div class="profile-stat-label">Чаты</div>
+    </div>
+    <div class="profile-stat">
+      <div class="profile-stat-value">{{ details.stats.messages }}</div>
+      <div class="profile-stat-label">Сообщений</div>
+    </div>
+  </div>
+
+  <div class="profile-details">
+    <div class="profile-field">
+      <div class="profile-field-left">
+        <span class="material-icons-round">mail</span>
+        <span class="profile-field-label">Email</span>
+      </div>
+      <span class="profile-field-value">{{ details.email }}</span>
+    </div>
+    <div class="profile-field">
+      <div class="profile-field-left">
+        <span class="material-icons-round">phone</span>
+        <span class="profile-field-label">Телефон</span>
+      </div>
+      <span class="profile-field-value">{{ details.phone }}</span>
+    </div>
+    <div class="profile-field">
+      <div class="profile-field-left">
+        <span class="material-icons-round">location_on</span>
+        <span class="profile-field-label">Локация</span>
+      </div>
+      <span class="profile-field-value">{{ details.location }}</span>
+    </div>
+  </div>
+
+  @if (isOwnProfile()) {
+    <div class="profile-actions">
+      <button class="profile-btn secondary" data-testid="logout-button" (click)="logout()">
+        <span class="material-icons-round">logout</span>
+        <span>Выйти</span>
+      </button>
+    </div>
+  }
+}

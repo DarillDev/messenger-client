@@ -1,13 +1,14 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import {
   CdkVirtualScrollViewport,
   FixedSizeVirtualScrollStrategy,
   ScrollingModule,
   VIRTUAL_SCROLL_STRATEGY,
 } from '@angular/cdk/scrolling';
-import { IMessage } from '@shared/interfaces/message.interface';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { IDateDividerItem, TMessageListItem } from '@pages/chat/types/message-list-item.type';
+import { IMessage } from '@shared/interfaces/message.interface';
+
 import { MessagesListComponent } from './messages-list.component';
 
 const makeMessage = (id: string, date: string): IMessage & { type: 'message' } => ({
@@ -58,6 +59,7 @@ describe('MessagesListComponent', () => {
         makeMessage('m2', '2026-04-10T11:00:00Z'),
       ];
 
+      fixture.componentRef.setInput('isAppend', false);
       fixture.componentRef.setInput('items', items);
       fixture.detectChanges();
       await fixture.whenStable();
@@ -71,6 +73,7 @@ describe('MessagesListComponent', () => {
     });
 
     it('should show typing indicator when typingUsers is not empty', () => {
+      fixture.componentRef.setInput('isAppend', false);
       fixture.componentRef.setInput('items', []);
       fixture.componentRef.setInput('typingUsers', ['u2']);
       fixture.detectChanges();
@@ -81,6 +84,7 @@ describe('MessagesListComponent', () => {
     });
 
     it('should not show typing indicator when typingUsers is empty', () => {
+      fixture.componentRef.setInput('isAppend', false);
       fixture.componentRef.setInput('items', []);
       fixture.componentRef.setInput('typingUsers', []);
       fixture.detectChanges();
@@ -92,19 +96,17 @@ describe('MessagesListComponent', () => {
   describe('Events', () => {
     it('should call scrollToIndex with smooth when new message arrives', async () => {
       const initial: TMessageListItem[] = [makeMessage('m1', '2026-04-10T10:00:00Z')];
+      fixture.componentRef.setInput('isAppend', false);
       fixture.componentRef.setInput('items', initial);
       fixture.detectChanges();
       await fixture.whenStable();
 
-      const viewport = fixture.debugElement.query(
-        By.directive(CdkVirtualScrollViewport),
-      ).componentInstance as CdkVirtualScrollViewport;
+      const viewport = fixture.debugElement.query(By.directive(CdkVirtualScrollViewport))
+        .componentInstance as CdkVirtualScrollViewport;
       const scrollToIndexSpy = jest.spyOn(viewport, 'scrollToIndex');
 
-      const updated: TMessageListItem[] = [
-        ...initial,
-        makeMessage('m2', '2026-04-10T10:01:00Z'),
-      ];
+      const updated: TMessageListItem[] = [...initial, makeMessage('m2', '2026-04-10T10:01:00Z')];
+      fixture.componentRef.setInput('isAppend', true);
       fixture.componentRef.setInput('items', updated);
       fixture.detectChanges();
       await fixture.whenStable();
@@ -117,13 +119,13 @@ describe('MessagesListComponent', () => {
         makeMessage('m1', '2026-04-10T10:00:00Z'),
         makeMessage('m2', '2026-04-10T10:01:00Z'),
       ];
+      fixture.componentRef.setInput('isAppend', false);
       fixture.componentRef.setInput('items', initial);
       fixture.detectChanges();
       await fixture.whenStable();
 
-      const viewport = fixture.debugElement.query(
-        By.directive(CdkVirtualScrollViewport),
-      ).componentInstance as CdkVirtualScrollViewport;
+      const viewport = fixture.debugElement.query(By.directive(CdkVirtualScrollViewport))
+        .componentInstance as CdkVirtualScrollViewport;
       const scrollToIndexSpy = jest.spyOn(viewport, 'scrollToIndex');
 
       fixture.componentRef.setInput('items', []);

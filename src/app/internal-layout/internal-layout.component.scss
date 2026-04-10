@@ -1,7 +1,50 @@
 :host {
-  display: flex;
+  display: grid;
+  min-width: 1024px;
   height: 100vh;
   padding: 16px;
-  gap: 12px;
   box-sizing: border-box;
+  transition: grid-template-columns .3s var(--ease-out);
+  container-type: inline-size;
+  container-name: layout;
+  grid-template-columns: minmax(200px, 340px) 1fr;
+  gap: 12px;
+
+  &.right-panel-open {
+    grid-template-columns: minmax(200px, 340px) 1fr minmax(200px, 340px);
+  }
+
+  @media (max-width: 1100px) {
+    grid-template-columns: 92px 1fr;
+
+    &.right-panel-open {
+      grid-template-columns: 92px 1fr minmax(200px, 340px);
+    }
+  }
+}
+
+.left-panel {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  overflow: hidden;
+  container-type: inline-size;
+  container-name: sidebar-col;
+}
+
+main {
+  display: flex;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.right-panel {
+  display: none;
+  align-items: stretch;
+  min-width: 0;
+  overflow: hidden;
+
+  :host(.right-panel-open) & {
+    display: flex;
+  }
 }

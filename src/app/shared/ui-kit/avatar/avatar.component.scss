@@ -5,69 +5,86 @@
 }
 
 .avatar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 46px;
   height: 46px;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
   font-size: 16px;
-  color: #fff;
+  font-weight: 600;
+  color: #ffffff;
+  border-radius: var(--radius-md);
 
-  &.av-1 { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
-  &.av-2 { background: linear-gradient(135deg, #f59e0b, #ef4444); }
-  &.av-3 { background: linear-gradient(135deg, #10b981, #06b6d4); }
-  &.av-4 { background: linear-gradient(135deg, #ec4899, #f43f5e); }
-  &.av-5 { background: linear-gradient(135deg, #3b82f6, #6366f1); }
+  &.av-1 {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  }
+
+  &.av-2 {
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+  }
+
+  &.av-3 {
+    background: linear-gradient(135deg, #10b981, #06b6d4);
+  }
+
+  &.av-4 {
+    background: linear-gradient(135deg, #ec4899, #f43f5e);
+  }
+
+  &.av-5 {
+    background: linear-gradient(135deg, #3b82f6, #6366f1);
+  }
 
   /* mask-image вырезает прозрачную дырку под badge и/или online-dot */
+
   &.has-online {
-    mask-image: radial-gradient(circle at 41px 41px, transparent 8px, black 8px);
-    -webkit-mask-image: radial-gradient(circle at 41px 41px, transparent 8px, black 8px);
+    -webkit-mask-image: radial-gradient(circle at 41px 41px, transparent 8px, #000000 8px);
+    mask-image: radial-gradient(circle at 41px 41px, transparent 8px, #000000 8px);
   }
 
   &.has-badge {
-    mask-image: radial-gradient(circle at 6px 6px, transparent 12px, black 12px);
-    -webkit-mask-image: radial-gradient(circle at 6px 6px, transparent 12px, black 12px);
+    -webkit-mask-image: radial-gradient(circle at 6px 6px, transparent 12px, #000000 12px);
+    mask-image: radial-gradient(circle at 6px 6px, transparent 12px, #000000 12px);
   }
 
   &.has-badge.has-online {
-    mask-image:
-      radial-gradient(circle at 6px 6px, transparent 12px, black 12px),
-      radial-gradient(circle at 41px 41px, transparent 8px, black 8px);
+    // stylelint-disable-next-line @stylistic/value-list-comma-newline-before
+
+    mask-image: radial-gradient(circle at 6px 6px, transparent 12px, #000000 12px), radial-gradient(circle at 41px 41px, transparent 8px, #000000 8px);
     mask-composite: intersect;
-    -webkit-mask-image:
-      radial-gradient(circle at 6px 6px, transparent 12px, black 12px),
-      radial-gradient(circle at 41px 41px, transparent 8px, black 8px);
+    // stylelint-disable-next-line @stylistic/value-list-comma-newline-before
+
+    -webkit-mask-image: radial-gradient(circle at 6px 6px, transparent 12px, #000000 12px), radial-gradient(circle at 41px 41px, transparent 8px, #000000 8px);
     -webkit-mask-composite: destination-in;
   }
 }
 
 /* badge — сосед аватара внутри :host, не потомок */
+
 .badge {
   position: absolute;
   top: -4px;
   left: -4px;
-  z-index: 2;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
   min-width: 20px;
   height: 20px;
   padding: 0 6px;
-  background: var(--accent);
-  border-radius: 10px;
   font-size: 11px;
   font-weight: 700;
   color: var(--text-inverse);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  background: var(--accent);
+  border-radius: 10px;
+  z-index: 2;
 }
 
 /* online-dot — сосед аватара, border убран — вырез делает mask-image */
+
 .online-dot {
   position: absolute;
-  bottom: -1px;
   right: -1px;
+  bottom: -1px;
   width: 12px;
   height: 12px;
   background: #22c55e;

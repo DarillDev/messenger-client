@@ -1,9 +1,11 @@
 <div
   class="avatar"
-  [class]="colorClass"
+  [class]="colorClass()"
   [class.has-online]="isOnline()"
   [class.has-badge]="unreadCount() > 0"
->{{ initial }}</div>
+>
+  {{ initial() }}
+</div>
 
 @if (isOnline()) {
   <span class="online-dot" data-testid="online-indicator"></span>

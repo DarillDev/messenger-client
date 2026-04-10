@@ -1,7 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
-import { AuthStore } from '@store/auth/auth.store';
+import { provideRouter, Router, UrlTree } from '@angular/router';
+import { AuthStore } from '@app/core/store/auth/auth.store';
 
 import { authGuard } from './auth.guard';
 
@@ -41,11 +41,9 @@ describe('authGuard', () => {
   });
 
   it('should redirect to /login when not authenticated', () => {
-    const navigateSpy = jest.spyOn(router, 'navigate');
-
     const result = TestBed.runInInjectionContext(() => authGuard({} as never, {} as never));
 
-    expect(result).toBe(false);
-    expect(navigateSpy).toHaveBeenCalledWith(['/login']);
+    expect(result).toBeInstanceOf(UrlTree);
+    expect(router.serializeUrl(result as UrlTree)).toBe('/login');
   });
 });

@@ -44,8 +44,16 @@ body:after {
 }
 
 // CDK virtual scroll overrides (::ng-deep not reliable with emulated encapsulation)
+
 app-messages-list .cdk-virtual-scroll-content-wrapper {
   padding-top: 16px;
+}
+
+app-chat-list .cdk-virtual-scroll-content-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 // UI-Kit Input directive styles
@@ -80,10 +88,8 @@ app-messages-list .cdk-virtual-scroll-content-wrapper {
   &:-webkit-autofill,
   &:-webkit-autofill:hover,
   &:-webkit-autofill:focus {
+    transition: background-color 5000s ease-in-out 0s, color .2s var(--ease-out);
     -webkit-text-fill-color: var(--text-primary);
-    transition:
-      background-color 5000s ease-in-out 0s,
-      color .2s var(--ease-out);
   }
 
   &.ui-kit-input-error {
@@ -92,6 +98,7 @@ app-messages-list .cdk-virtual-scroll-content-wrapper {
   }
 
   // Inside ui-kit-form-field: visual container is the wrapper, input is transparent
+
   &.ui-kit-input--in-field {
     padding-left: 0;
     padding-right: 0;
@@ -104,5 +111,23 @@ app-messages-list .cdk-virtual-scroll-content-wrapper {
       border: none;
       box-shadow: none;
     }
+  }
+}
+
+.ui-kit-skeleton-loader {
+  background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-panel-hover) 50%, var(--bg-card) 75%);
+  background-size: 200% 100%;
+  border-radius: var(--radius-sm);
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
   }
 }

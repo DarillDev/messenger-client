@@ -1,11 +1,238 @@
+@use 'styles/mixins' as mix;
+
 :host {
   display: flex;
-  flex: 1;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  width: 340px;
+  min-width: 340px;
+  height: 100%;
+  overflow: hidden;
+  overflow-y: auto;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  -webkit-backdrop-filter: blur(30px);
+  backdrop-filter: blur(30px);
+  transition: background-color .4s, border-color .4s;
 }
 
-.stub {
+.profile-header {
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  padding: 12px 12px 0;
+}
+
+.close-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background .15s, color .15s;
+
+  &:hover {
+    color: var(--text-primary);
+    background: var(--bg-card);
+  }
+
+  &:active {
+    transform: scale(.92);
+  }
+
+  .material-icons-round {
+    font-size: 20px;
+  }
+}
+
+.profile-skeleton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  gap: 12px;
+}
+
+.skeleton-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+.skeleton-name {
+  width: 140px;
+  height: 22px;
+}
+
+.skeleton-handle {
+  width: 90px;
+  height: 16px;
+}
+
+.skeleton-stats {
+  width: 100%;
+  height: 64px;
+  margin: 8px 0;
+  border-radius: var(--radius-md);
+}
+
+.skeleton-field {
+  width: 100%;
+  height: 44px;
+  border-radius: var(--radius-md);
+}
+
+.profile-cover {
+  flex-shrink: 0;
+  height: 80px;
+  background: var(--cover-bg);
+}
+
+.profile-avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -24px;
+  padding: 0 24px 16px;
+}
+
+.profile-avatar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 10px;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-inverse);
+  background: var(--accent);
+  border: 3px solid var(--bg-panel);
+  border-radius: 50%;
+}
+
+.profile-name {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+
+.profile-handle {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent);
+}
+
+.profile-stats {
+  @include mix.liquid-glass;
+  display: flex;
+  justify-content: space-around;
+  margin: 12px 16px;
+  padding: 14px;
+  border-radius: var(--radius-md);
+}
+
+.profile-stat {
+  text-align: center;
+}
+
+.profile-stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+
+.profile-stat-label {
+  margin-top: 2px;
+  font-size: 11px;
   color: var(--text-muted);
+}
+
+.profile-details {
+  margin: 0 16px;
+  overflow: hidden;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.profile-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  transition: border-color .2s;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    border-color: var(--border-hover);
+  }
+}
+
+.profile-field-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .material-icons-round {
+    font-size: 18px;
+    color: var(--text-muted);
+  }
+}
+
+.profile-field-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.profile-field-value {
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.profile-actions {
+  display: flex;
+  padding: 16px;
+  gap: 10px;
+}
+
+.profile-btn {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
   font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background .2s, transform .15s;
+  gap: 8px;
+
+  &:active {
+    transform: scale(.97);
+  }
+
+  .material-icons-round {
+    font-size: 18px;
+  }
+
+  &.secondary {
+    color: var(--text-primary);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+
+    &:hover {
+      border-color: var(--border-hover);
+    }
+  }
 }

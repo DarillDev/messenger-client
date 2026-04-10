@@ -19,9 +19,10 @@
       "@app/*": ["src/app/*"],
       "@core/*": ["src/app/core/*"],
       "@shared/*": ["src/app/shared/*"],
-      "@store/*": ["src/app/store/*"],
+      "@store/*": ["src/app/core/store/*"],
       "@pages/*": ["src/app/pages/*"],
-      "@mock-api/*": ["src/mock-api/*"]
+      "@mock-api/*": ["src/mock-api/*"],
+      "@api/*": ["src/app/api/*"]
     }
   },
   "angularCompilerOptions": {

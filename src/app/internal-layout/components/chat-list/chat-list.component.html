@@ -1,5 +1,5 @@
 @if (chats().length > 0) {
-  <cdk-virtual-scroll-viewport [itemSize]="72" class="chat-viewport">
+  <cdk-virtual-scroll-viewport class="chat-viewport">
     <ng-container *cdkVirtualFor="let chat of chats()">
       <ui-kit-chat-item [chat]="chat" />
     </ng-container>

@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthStore } from '@app/core/store/auth/auth.store';
 import { ButtonComponent } from '@shared/ui-kit/button';
 import {
   FormFieldComponent,
@@ -10,7 +11,6 @@ import {
 import { GlassCardComponent } from '@shared/ui-kit/glass-card';
 import { UiKitInputDirective } from '@shared/ui-kit/input';
 import { createDestroyer } from '@shared/utils/create-destroyer';
-import { AuthStore } from '@store/auth/auth.store';
 
 import { LOGIN_FORM_ERRORS_TEXT } from './constants/login-form-errors-text.const';
 import { ELoginFormErrorKey } from './enums/login-form-error-key.enum';

@@ -4,7 +4,16 @@ import {
   ScrollingModule,
   VIRTUAL_SCROLL_STRATEGY,
 } from '@angular/cdk/scrolling';
-import { Component, effect, input, viewChild } from '@angular/core';
+import {
+  afterNextRender,
+  Component,
+  effect,
+  inject,
+  Injector,
+  input,
+  untracked,
+  viewChild,
+} from '@angular/core';
 import { TMessageListItem } from '@pages/chat/types/message-list-item.type';
 import { DateDividerComponent } from '@shared/ui-kit/date-divider';
 import { MessageBubbleComponent } from '@shared/ui-kit/message-bubble';
@@ -26,24 +35,26 @@ const ITEM_SIZE = 120;
 })
 export class MessagesListComponent {
   public readonly items = input.required<TMessageListItem[]>();
+  public readonly isAppend = input.required<boolean>();
   public readonly typingUsers = input<string[]>([]);
 
   private readonly viewport = viewChild.required(CdkVirtualScrollViewport);
+  private readonly injector = inject(Injector);
 
   constructor() {
-    let prevLength = 0;
-
     effect(() => {
       const items = this.items();
-      const isNewMessage = items.length > prevLength;
-
-      prevLength = items.length;
 
       if (items.length === 0) {
         return;
       }
 
-      this.viewport().scrollToIndex(items.length - 1, isNewMessage ? 'smooth' : 'instant');
+      const isAppend = untracked(() => this.isAppend());
+      const behavior = isAppend ? 'smooth' : 'instant';
+
+      afterNextRender(() => this.viewport().scrollToIndex(this.items().length - 1, behavior), {
+        injector: this.injector,
+      });
     });
   }
 

@@ -1,3 +1,23 @@
-<app-sidebar data-testid="sidebar" />
+<div class="left-panel">
+  @if (!isLeftOutletActive()) {
+    <app-sidebar />
+  }
 
-<router-outlet />
+  <router-outlet
+    [name]="routerOutletEnum.Left"
+    (activate)="onLeftActivate()"
+    (deactivate)="onLeftDeactivate()"
+  />
+</div>
+
+<main>
+  <router-outlet />
+</main>
+
+<div class="right-panel" [class.right-panel--open]="isRightPanelActive()">
+  <router-outlet
+    [name]="routerOutletEnum.Right"
+    (activate)="onRightActivate()"
+    (deactivate)="onRightDeactivate()"
+  />
+</div>

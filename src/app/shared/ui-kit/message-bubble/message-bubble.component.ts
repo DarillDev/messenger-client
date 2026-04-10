@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
+import { UserStore } from '@app/core/store/user/user.store';
 import { IMessage } from '@shared/interfaces/message.interface';
-import { UserStore } from '@store/user/user.store';
 
 @Component({
   selector: 'ui-kit-message-bubble',

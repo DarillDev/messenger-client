@@ -6,17 +6,14 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./internal-layout/internal-layout.component').then(
-        m => m.InternalLayoutComponent,
-      ),
+      import('./internal-layout/internal-layout.component').then(m => m.InternalLayoutComponent),
     canActivate: [authGuard],
     loadChildren: () =>
-      import('./internal-layout/internal-layout.routes').then(m => m.internalRoutes),
+      import('./internal-layout/internal-layout.routes').then(m => m.INTERNAL_ROUTES),
   },
   {
     path: 'login',
-    loadComponent: () =>
-      import('@pages/login/login.component').then(m => m.LoginComponent),
+    loadChildren: () => import('@pages/login').then(m => m.LOGIN_ROUTES),
     canActivate: [guestGuard],
   },
   {

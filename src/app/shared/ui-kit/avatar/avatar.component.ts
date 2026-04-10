@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 
 @Component({
   selector: 'ui-kit-avatar',
@@ -11,12 +11,10 @@ export class AvatarComponent {
   public readonly isOnline = input<boolean>(false);
   public readonly unreadCount = input<number>(0);
 
-  protected get colorClass(): string {
+  protected readonly colorClass = computed(() => {
     const digit = this.userId().replace(/\D/g, '');
     return `av-${digit || '1'}`;
-  }
+  });
 
-  protected get initial(): string {
-    return this.userName().charAt(0).toUpperCase();
-  }
+  protected readonly initial = computed(() => this.userName().charAt(0).toUpperCase());
 }

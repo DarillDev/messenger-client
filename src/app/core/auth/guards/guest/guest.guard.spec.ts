@@ -1,7 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
-import { AuthStore } from '@store/auth/auth.store';
+import { provideRouter, Router, UrlTree } from '@angular/router';
+import { AuthStore } from '@app/core/store/auth/auth.store';
 
 import { guestGuard } from './guest.guard';
 
@@ -40,11 +40,10 @@ describe('guestGuard', () => {
   it('should redirect to / when authenticated', () => {
     const payload = { userId: 'u1', userName: 'User', exp: Math.floor(Date.now() / 1000) + 3600 };
     store.restoreSession(`h.${btoa(JSON.stringify(payload))}.s`, 'refresh-token');
-    const navigateSpy = jest.spyOn(router, 'navigate');
 
     const result = TestBed.runInInjectionContext(() => guestGuard({} as never, {} as never));
 
-    expect(result).toBe(false);
-    expect(navigateSpy).toHaveBeenCalledWith(['/']);
+    expect(result).toBeInstanceOf(UrlTree);
+    expect(router.serializeUrl(result as UrlTree)).toBe('/');
   });
 });

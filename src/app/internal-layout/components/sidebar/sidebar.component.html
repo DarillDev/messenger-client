@@ -1,6 +1,27 @@
 <header class="sidebar-header">
   <div class="sidebar-top">
     <span class="sidebar-title">Сообщения</span>
+    <div class="sidebar-actions">
+      <button
+        type="button"
+        class="sidebar-icon-btn"
+        data-testid="open-profile-button"
+        title="Профиль"
+        (click)="openOwnProfile()"
+      >
+        <span class="material-icons-round">account_circle</span>
+      </button>
+
+      <button
+        type="button"
+        class="sidebar-icon-btn"
+        data-testid="open-settings-button"
+        title="Настройки"
+        (click)="openSettings()"
+      >
+        <span class="material-icons-round">settings</span>
+      </button>
+    </div>
   </div>
 
   <ui-kit-form-field class="search-field">

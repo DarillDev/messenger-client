@@ -2,18 +2,11 @@
 
 :host {
   display: flex;
-  flex: 1;
   flex-direction: column;
+  flex: 1;
   min-height: 0;
-  overflow: hidden;
   padding: 8px 10px;
-
-  &::ng-deep .cdk-virtual-scroll-content-wrapper {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
+  overflow: hidden;
 }
 
 .chat-viewport {
@@ -24,14 +17,14 @@
 
 .scroll-item {
   height: 78px;
-  box-sizing: border-box;
-  overflow: hidden;
   padding-bottom: 8px;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .no-results {
-  text-align: center;
   padding: 24px 0;
   font-size: 13px;
+  text-align: center;
   color: var(--text-muted);
 }

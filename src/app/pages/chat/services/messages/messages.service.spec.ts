@@ -1,11 +1,11 @@
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { IMessageDto } from '@core/api/controllers/chat/dtos/message-dto.interface';
-import { MessageMapper } from '@core/api/controllers/chat/mappers/message/message.mapper';
+import { MessageMapper } from '@api/controllers/chat/mappers/message/message.mapper';
+import { ChatStore } from '@app/core/store/chat/chat.store';
 import { TokenStorageService } from '@core/auth/services/token-storage/token-storage.service';
 import { APPLICATION_ENVIRONMENT } from '@core/environment/application-environment.token';
-import { ChatStore } from '@store/chat/chat.store';
+import { IMessageDto } from '@shared/dtos/message-dto.interface';
 import * as socketIoClient from 'socket.io-client';
 
 import { MessagesService } from './messages.service';

@@ -71,7 +71,6 @@ describe('FormFieldComponent', () => {
     it('should not render subscript when there is no hint and no ngControl', () => {
       fixture.detectChanges();
 
-      // control has ngControl — subscript should be present
       const subscript = fixture.nativeElement.querySelector('.form-field-subscript');
 
       expect(subscript).toBeTruthy();

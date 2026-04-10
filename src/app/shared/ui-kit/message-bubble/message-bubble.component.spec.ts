@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { UserStore } from '@app/core/store/user/user.store';
 import { IMessage } from '@shared/interfaces/message.interface';
-import { UserStore } from '@store/user/user.store';
 
 import { MessageBubbleComponent } from './message-bubble.component';
 
@@ -24,11 +24,11 @@ describe('MessageBubbleComponent', () => {
   let fixture: ComponentFixture<MessageBubbleComponent>;
   let userStore: InstanceType<typeof UserStore>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [MessageBubbleComponent],
       providers: [UserStore],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(MessageBubbleComponent);
     userStore = TestBed.inject(UserStore);

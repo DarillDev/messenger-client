@@ -1,29 +1,44 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { MessagesService } from '@pages/chat/services/messages/messages.service';
-import { MessageStore } from '@pages/chat/store/message/message.store';
-import { ChatStore } from '@store/chat/chat.store';
+import { ChatStore } from '@app/core/store/chat/chat.store';
 
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { ERouterOutlet } from './enums/router-outlet.enum';
 
 @Component({
   selector: 'app-internal-layout',
   imports: [RouterOutlet, SidebarComponent],
   templateUrl: './internal-layout.component.html',
   styleUrl: './internal-layout.component.scss',
-  providers: [MessagesService, MessageStore],
+  host: {
+    '[class.right-panel-open]': 'isRightPanelActive()',
+  },
 })
-export class InternalLayoutComponent implements OnInit, OnDestroy {
+export class InternalLayoutComponent {
   private readonly chatStore = inject(ChatStore);
-  private readonly messagesService = inject(MessagesService);
-  private readonly messageStore = inject(MessageStore);
 
-  public ngOnInit(): void {
+  protected readonly isLeftOutletActive = signal(false);
+  protected readonly isRightPanelActive = signal(false);
+
+  protected readonly routerOutletEnum = ERouterOutlet;
+
+  constructor() {
     this.chatStore.loadChats();
-    this.messagesService.connect(this.messageStore);
   }
 
-  public ngOnDestroy(): void {
-    this.messagesService.disconnect();
+  protected onLeftActivate(): void {
+    this.isLeftOutletActive.set(true);
+  }
+
+  protected onLeftDeactivate(): void {
+    this.isLeftOutletActive.set(false);
+  }
+
+  protected onRightActivate(): void {
+    this.isRightPanelActive.set(true);
+  }
+
+  protected onRightDeactivate(): void {
+    this.isRightPanelActive.set(false);
   }
 }

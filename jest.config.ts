@@ -37,14 +37,21 @@ const config: Config = {
   ],
   coverageReporters: ['html', 'text-summary', 'json-summary'],
   moduleNameMapper: {
+    '^@angular/common/http/testing$':
+      '<rootDir>/node_modules/@angular/common/fesm2022/http-testing.mjs',
+    '^@angular/common/http$': '<rootDir>/node_modules/@angular/common/fesm2022/http.mjs',
+    '^@angular/core/testing$': '<rootDir>/node_modules/@angular/core/fesm2022/testing.mjs',
     '^@angular/core/rxjs-interop$':
       '<rootDir>/node_modules/@angular/core/fesm2022/rxjs-interop.mjs',
+    '^@angular/cdk/scrolling$': '<rootDir>/node_modules/@angular/cdk/fesm2022/scrolling.mjs',
+    '^@angular/cdk/overlay$': '<rootDir>/node_modules/@angular/cdk/fesm2022/overlay.mjs',
     '^@app/(.*)$': '<rootDir>/src/app/$1',
     '^@core/(.*)$': '<rootDir>/src/app/core/$1',
     '^@shared/(.*)$': '<rootDir>/src/app/shared/$1',
-    '^@store/(.*)$': '<rootDir>/src/app/store/$1',
+    '^@store/(.*)$': '<rootDir>/src/app/core/store/$1',
     '^@pages/(.*)$': '<rootDir>/src/app/pages/$1',
     '^@mock-api/(.*)$': '<rootDir>/src/mock-api/$1',
+    '^@api/(.*)$': '<rootDir>/src/app/api/$1',
   },
 };
 

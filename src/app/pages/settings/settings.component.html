@@ -1,1 +1,127 @@
-<div class="stub">Settings — coming soon</div>
+<div class="settings-header">
+  <button type="button" class="back-btn" data-testid="back-button" (click)="goBack()">
+    <span class="material-icons-round">arrow_back</span>
+  </button>
+  <span class="material-icons-round settings-icon">tune</span>
+  <h1 class="settings-title">Настройки</h1>
+</div>
+
+<div class="settings-body">
+  <!-- Оформление -->
+  <section class="settings-section">
+    <div class="settings-section-title">Оформление</div>
+    <div class="settings-group">
+      <div class="settings-row settings-row--column">
+        <div class="settings-row-left">
+          <div class="settings-row-icon">
+            <span class="material-icons-round">palette</span>
+          </div>
+          <div class="settings-row-text">
+            <div class="settings-row-label">Тема</div>
+            <div class="settings-row-desc">Выберите оформление интерфейса</div>
+          </div>
+        </div>
+        <div class="theme-options">
+          <button
+            type="button"
+            class="theme-option"
+            data-testid="theme-option-dark"
+            [class.theme-option--active]="appStore.theme() === 'dark'"
+            (click)="setTheme('dark')"
+          >
+            <div class="theme-option-preview dark-preview">
+              <div class="preview-sidebar"></div>
+              <div class="preview-main"></div>
+            </div>
+            <span class="theme-option-label">Тёмная</span>
+          </button>
+          <button
+            type="button"
+            class="theme-option"
+            data-testid="theme-option-light"
+            [class.theme-option--active]="appStore.theme() === 'light'"
+            (click)="setTheme('light')"
+          >
+            <div class="theme-option-preview light-preview">
+              <div class="preview-sidebar"></div>
+              <div class="preview-main"></div>
+            </div>
+            <span class="theme-option-label">Светлая</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Язык -->
+  <section class="settings-section">
+    <div class="settings-section-title">Язык</div>
+    <div class="settings-group">
+      <div class="settings-row">
+        <div class="settings-row-left">
+          <div class="settings-row-icon">
+            <span class="material-icons-round">translate</span>
+          </div>
+          <div class="settings-row-text">
+            <div class="settings-row-label">Язык интерфейса</div>
+            <div class="settings-row-desc">Выберите язык приложения</div>
+          </div>
+        </div>
+        <ui-kit-select
+          [options]="languageOptions"
+          [value]="appStore.language()"
+          (valueChange)="onLanguageChange($event)"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Уведомления -->
+  <section class="settings-section">
+    <div class="settings-section-title">Уведомления</div>
+    <div class="settings-group">
+      <div class="settings-row">
+        <div class="settings-row-left">
+          <div class="settings-row-icon">
+            <span class="material-icons-round">notifications</span>
+          </div>
+          <div class="settings-row-text">
+            <div class="settings-row-label">Push-уведомления</div>
+            <div class="settings-row-desc">Получать уведомления о новых сообщениях</div>
+          </div>
+        </div>
+        <label class="toggle">
+          <input
+            type="checkbox"
+            data-testid="push-toggle"
+            [checked]="pushNotifications()"
+            (change)="pushNotifications.set(!pushNotifications())"
+          />
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-left">
+          <div class="settings-row-icon">
+            <span class="material-icons-round">volume_up</span>
+          </div>
+          <div class="settings-row-text">
+            <div class="settings-row-label">Звуки</div>
+            <div class="settings-row-desc">Звуковые уведомления при получении сообщений</div>
+          </div>
+        </div>
+        <label class="toggle">
+          <input
+            type="checkbox"
+            data-testid="sound-toggle"
+            [checked]="soundNotifications()"
+            (change)="soundNotifications.set(!soundNotifications())"
+          />
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+      </div>
+    </div>
+  </section>
+</div>

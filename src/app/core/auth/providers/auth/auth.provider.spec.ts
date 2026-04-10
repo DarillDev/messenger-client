@@ -2,9 +2,9 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { AppStore } from '@store/app/app.store';
-import { AuthStore } from '@store/auth/auth.store';
-import { UserStore } from '@store/user/user.store';
+import { AppStore } from '@app/core/store/app/app.store';
+import { AuthStore } from '@app/core/store/auth/auth.store';
+import { UserStore } from '@app/core/store/user/user.store';
 
 import { provideAuth } from './auth.provider';
 
