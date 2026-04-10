@@ -21,6 +21,8 @@
   "packageManager": "npm@11.7.0",
   "dependencies": {
     "@angular-architects/ngrx-toolkit": "^21.0.1",
+    "@angular/cdk": "^21.2.6",
+    "@angular/cdk-experimental": "^21.2.6",
     "@angular/common": "^21.1.0",
     "@angular/compiler": "^21.1.0",
     "@angular/core": "^21.1.0",

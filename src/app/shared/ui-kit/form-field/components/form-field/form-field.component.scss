@@ -7,6 +7,21 @@
   position: relative;
   display: flex;
   align-items: center;
+  padding: 0 16px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: border-color .25s var(--ease-out), box-shadow .25s var(--ease-out);
+}
+
+.form-field.focused .form-field-wrapper {
+  border-color: var(--border-accent);
+  box-shadow: 0 0 0 3px var(--accent-glow), inset 0 0 0 1px var(--border-accent);
+}
+
+.form-field.error .form-field-wrapper {
+  border-color: var(--accent-warm);
+  box-shadow: 0 0 0 3px var(--accent-warm-glow);
 }
 
 .form-field-infix {
@@ -41,7 +56,7 @@
 .form-field.floating .form-field-label {
   position: absolute;
   top: 50%;
-  left: 16px;
+  left: 0;
   margin-bottom: 0;
   font-size: 15px;
   font-weight: 400;

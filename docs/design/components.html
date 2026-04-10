@@ -235,18 +235,58 @@
     .avatar-online-dot {
       position: absolute; bottom: -1px; right: -1px;
       width: 12px; height: 12px; background: #22c55e;
-      border: 2.5px solid var(--online-border-color); border-radius: 50%;
+      border-radius: 50%;
+      /* border убран — вырез делает mask-image на аватаре */
     }
 
     /* --- Badge --- */
     .badge {
       min-width: 20px; height: 20px; padding: 0 6px;
-      background: var(--accent); border-radius: 50%;
+      background: var(--accent); border-radius: 10px;
       font-size: 11px; font-weight: 700; color: var(--text-inverse);
       display: inline-flex; align-items: center; justify-content: center;
     }
 
     .badge.badge-wide { border-radius: 10px; }
+
+    /*
+      Обёртка — чтобы badge был соседом аватара, а не его потомком.
+      Если badge внутри аватара — mask применяется и к badge тоже → он пропадает.
+    */
+    .avatar-wrap {
+      position: relative; display: inline-flex; flex-shrink: 0;
+    }
+
+    /*
+      has-badge: вырезаем прозрачную дырку через mask-image.
+      Badge top:-7px left:-7px, размер 20px → center=(3px,3px) от аватара.
+      Дырка: transparent до 12px, black от 14px (2px мягкий край).
+    */
+    .avatar.has-online {
+      mask-image: radial-gradient(circle at 41px 41px, transparent 8px, black 8px);
+      -webkit-mask-image: radial-gradient(circle at 41px 41px, transparent 8px, black 8px);
+    }
+
+    .avatar.has-badge {
+      mask-image: radial-gradient(circle at 6px 6px, transparent 12px, black 12px);
+      -webkit-mask-image: radial-gradient(circle at 6px 6px, transparent 12px, black 12px);
+    }
+
+    .avatar.has-badge.has-online {
+      mask-image:
+        radial-gradient(circle at 6px 6px, transparent 12px, black 12px),
+        radial-gradient(circle at 41px 41px, transparent 8px, black 8px);
+      mask-composite: intersect;
+      -webkit-mask-image:
+        radial-gradient(circle at 6px 6px, transparent 12px, black 12px),
+        radial-gradient(circle at 41px 41px, transparent 8px, black 8px);
+      -webkit-mask-composite: destination-in;
+    }
+
+    /* badge и online-dot — соседи аватара внутри .avatar-wrap */
+    .avatar-wrap .badge {
+      position: absolute; top: -4px; left: -4px; z-index: 2;
+    }
 
     /* --- Button --- */
     .btn {
@@ -811,10 +851,31 @@
       <div class="component-card">
         <div class="state-label">Online Indicator</div>
         <div class="inline-row">
-          <div class="avatar size-md av-3">ДВ
+          <div class="avatar-wrap">
+            <div class="avatar size-md av-3 has-online">ДВ</div>
             <span class="avatar-online-dot"></span>
           </div>
-          <div class="avatar size-md av-1">АС</div>
+          <div class="avatar-wrap">
+            <div class="avatar size-md av-1">АС</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="component-card">
+        <div class="state-label">Notification Badge (CSS mask cutout)</div>
+        <div class="inline-row">
+          <div class="avatar-wrap">
+            <div class="avatar size-md av-2 has-badge">МК</div>
+            <div class="badge">2</div>
+          </div>
+          <div class="avatar-wrap">
+            <div class="avatar size-md av-5 has-badge">КП</div>
+            <div class="badge">99+</div>
+          </div>
+          <div class="avatar-wrap">
+            <div class="avatar size-lg av-1 has-badge">АС</div>
+            <div class="badge">7</div>
+          </div>
         </div>
       </div>
     </div>
@@ -825,6 +886,7 @@
       <tr><td>Border-radius</td><td><code>--radius-sm (8px)</code></td><td><code>--radius-md (14px)</code></td><td><code>--radius-lg (20px)</code></td></tr>
       <tr><td>Font-size</td><td><code>12px</code></td><td><code>16px / 600</code></td><td><code>36px / 700</code></td></tr>
       <tr><td>Online dot</td><td colspan="3"><code>12 x 12</code>, <code>#22c55e</code>, border <code>2.5px solid --online-border-color</code></td></tr>
+      <tr><td>Notification badge</td><td colspan="3">top-left <code>-7px / -7px</code>, <code>--accent</code> bg; avatar uses <code>mask-image: radial-gradient(circle at 3px 3px, transparent 12px, black 14px)</code> to cut transparent area</td></tr>
       <tr><td>Gradient variants</td><td colspan="3"><code>av-1</code> indigo, <code>av-2</code> amber-red, <code>av-3</code> emerald-cyan, <code>av-4</code> pink-rose, <code>av-5</code> blue-indigo</td></tr>
     </table>
   </div>
@@ -1136,7 +1198,10 @@
     <div class="component-card-wide" style="max-width: 380px;">
       <div class="state-label">Default</div>
       <div class="chat-item">
-        <div class="avatar size-md av-2">МК</div>
+        <div class="avatar-wrap">
+          <div class="avatar size-md av-2 has-badge">МК</div>
+          <div class="badge">2</div>
+        </div>
         <div class="chat-info">
           <div class="chat-name-row">
             <span class="chat-name">Мария Козлова</span>
@@ -1144,13 +1209,13 @@
           </div>
           <div class="chat-preview">Отправила макеты в Figma, посмотри</div>
         </div>
-        <div class="badge">2</div>
       </div>
 
       <div class="spacer"></div>
       <div class="state-label">Active (selected)</div>
       <div class="chat-item active">
-        <div class="avatar size-md av-1">АС
+        <div class="avatar-wrap">
+          <div class="avatar size-md av-1 has-online">АС</div>
           <span class="avatar-online-dot"></span>
         </div>
         <div class="chat-info">

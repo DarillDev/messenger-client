@@ -5,6 +5,7 @@
         <div class="chat-header-avatar">
           {{ chat.participant.userName.charAt(0).toUpperCase() }}
         </div>
+
         <div>
           <div class="chat-header-name">{{ chat.participant.userName }}</div>
           @if (chat.participant.isOnline) {
@@ -17,25 +18,7 @@
     </header>
   }
 
-  <div class="messages">
-    @for (message of messages(); track message.id; let index = $index) {
-      @if (getPrevMessage(index) === undefined || getDayLabel(getPrevMessage(index)!.createdAt) !== getDayLabel(message.createdAt)) {
-        <ui-kit-date-divider [date]="getDayLabel(message.createdAt)" />
-      }
-      <ui-kit-message-bubble [message]="message" />
-    }
-
-    @if (typingUsers().length > 0) {
-      <div class="typing-indicator">
-        <div class="typing-dots">
-          <i></i><i></i><i></i>
-        </div>
-        <span>печатает...</span>
-      </div>
-    }
-
-    <div #messagesEnd></div>
-  </div>
+  <app-messages-list [items]="messageItems()" [typingUsers]="typingUsers()" />
 
   <form class="msg-input-area" (submit)="onSubmit($event)">
     <div class="msg-input-wrapper">
@@ -49,6 +32,7 @@
         (keydown)="onKeydown($event)"
       ></textarea>
     </div>
+
     <button
       type="submit"
       class="msg-send-btn"

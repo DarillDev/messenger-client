@@ -3,21 +3,17 @@
     <span class="sidebar-title">Сообщения</span>
   </div>
 
-  <div class="search-box">
-    <span class="material-icons-round">search</span>
+  <ui-kit-form-field class="search-field">
+    <span uiKitPrefix class="material-icons-round">search</span>
+
     <input
+      uiKitInput
       type="text"
       placeholder="Поиск..."
       data-testid="search-input"
       (input)="onSearchInput($event)"
     />
-  </div>
+  </ui-kit-form-field>
 </header>
 
-<div class="chat-list">
-  @for (chat of filteredChats(); track chat.id) {
-    <ui-kit-chat-item [chat]="chat" />
-  } @empty {
-    <p class="no-results">Чаты не найдены</p>
-  }
-</div>
+<app-chat-list [chats]="filteredChats()" />

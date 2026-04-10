@@ -25,7 +25,8 @@
       "mcp__chrome-devtools__take_snapshot",
       "mcp__chrome-devtools__click",
       "mcp__chrome-devtools__fill",
-      "mcp__chrome-devtools__list_pages"
+      "mcp__chrome-devtools__list_pages",
+      "Bash(npx tsc:*)"
     ],
     "deny": [
       "Bash(git push:*)",

@@ -5,11 +5,12 @@ import { AvatarComponent } from './avatar.component';
 describe('AvatarComponent', () => {
   let fixture: ComponentFixture<AvatarComponent>;
 
-  function createComponent(userName: string, userId: string, isOnline = false): void {
+  function createComponent(userName: string, userId: string, isOnline = false, unreadCount = 0): void {
     fixture = TestBed.createComponent(AvatarComponent);
     fixture.componentRef.setInput('userName', userName);
     fixture.componentRef.setInput('userId', userId);
     fixture.componentRef.setInput('isOnline', isOnline);
+    fixture.componentRef.setInput('unreadCount', unreadCount);
     fixture.detectChanges();
   }
 
@@ -57,5 +58,38 @@ describe('AvatarComponent', () => {
     const dot = fixture.nativeElement.querySelector('[data-testid="online-indicator"]');
 
     expect(dot).toBeNull();
+  });
+
+  it('should show badge when unreadCount is greater than 0', () => {
+    createComponent('Alex', 'u1', false, 3);
+
+    const badge = fixture.nativeElement.querySelector('[data-testid="unread-badge"]');
+
+    expect(badge).toBeTruthy();
+    expect(badge.textContent.trim()).toBe('3');
+  });
+
+  it('should not show badge when unreadCount is 0', () => {
+    createComponent('Alex', 'u1', false, 0);
+
+    const badge = fixture.nativeElement.querySelector('[data-testid="unread-badge"]');
+
+    expect(badge).toBeNull();
+  });
+
+  it('should apply has-badge class to avatar when unreadCount is greater than 0', () => {
+    createComponent('Alex', 'u1', false, 5);
+
+    const avatar = fixture.nativeElement.querySelector('.avatar');
+
+    expect(avatar.classList.contains('has-badge')).toBe(true);
+  });
+
+  it('should apply has-online class to avatar when isOnline is true', () => {
+    createComponent('Alex', 'u1', true);
+
+    const avatar = fixture.nativeElement.querySelector('.avatar');
+
+    expect(avatar.classList.contains('has-online')).toBe(true);
   });
 });

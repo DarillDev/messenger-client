@@ -7,6 +7,10 @@
     [class.error]="control.isErrorState"
     [class.disabled]="control.isDisabled"
   >
+    @if (label() && !isFloatingLabel()) {
+      <label class="form-field-label" [attr.for]="controlId()">{{ label() }}</label>
+    }
+
     <div class="form-field-wrapper">
       @if (hasPrefix()) {
         <div class="form-field-prefix">
@@ -15,7 +19,9 @@
       }
 
       <div class="form-field-infix">
-        <label class="form-field-label" [attr.for]="controlId()">{{ label() }}</label>
+        @if (label() && isFloatingLabel()) {
+          <label class="form-field-label" [attr.for]="controlId()">{{ label() }}</label>
+        }
         <ng-content />
       </div>
 
@@ -26,18 +32,20 @@
       }
     </div>
 
-    <div class="form-field-subscript">
-      @if (
-        control.isErrorState && (control.ngControl?.errors | errorText: errorMessages());
-        as text
-      ) {
-        <div class="form-field-error">
-          <span class="material-icons-round">error_outline</span>
-          <span>{{ text }}</span>
-        </div>
-      } @else if (hint()) {
-        <div class="form-field-hint">{{ hint() }}</div>
-      }
-    </div>
+    @if (hint() || control.ngControl) {
+      <div class="form-field-subscript">
+        @if (
+          control.isErrorState && (control.ngControl?.errors | errorText: errorMessages());
+          as text
+        ) {
+          <div class="form-field-error">
+            <span class="material-icons-round">error_outline</span>
+            <span>{{ text }}</span>
+          </div>
+        } @else if (hint()) {
+          <div class="form-field-hint">{{ hint() }}</div>
+        }
+      </div>
+    }
   </div>
 }

@@ -16,6 +16,7 @@ let nextId = 0;
   host: {
     class: 'ui-kit-input',
     '[class.ui-kit-input-error]': 'isErrorState',
+    '[class.ui-kit-input--in-field]': 'isInField',
     '(focus)': 'onFocus()',
     '(blur)': 'onBlur()',
     '(input)': 'onInputChange()',
@@ -48,6 +49,10 @@ export class UiKitInputDirective implements IFormFieldControl, OnInit, OnDestroy
 
   public get isDisabled(): boolean {
     return this.elementRef.nativeElement.disabled;
+  }
+
+  public get isInField(): boolean {
+    return !!this.formField;
   }
 
   public get isErrorState(): boolean {

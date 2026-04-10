@@ -9,6 +9,7 @@ export class AvatarComponent {
   public readonly userName = input.required<string>();
   public readonly userId = input.required<string>();
   public readonly isOnline = input<boolean>(false);
+  public readonly unreadCount = input<number>(0);
 
   protected get colorClass(): string {
     const digit = this.userId().replace(/\D/g, '');

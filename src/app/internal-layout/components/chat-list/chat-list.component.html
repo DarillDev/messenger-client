@@ -1,0 +1,9 @@
+@if (chats().length > 0) {
+  <cdk-virtual-scroll-viewport [itemSize]="72" class="chat-viewport">
+    <ng-container *cdkVirtualFor="let chat of chats()">
+      <ui-kit-chat-item [chat]="chat" />
+    </ng-container>
+  </cdk-virtual-scroll-viewport>
+} @else {
+  <p class="no-results" data-testid="no-results">Чаты не найдены</p>
+}

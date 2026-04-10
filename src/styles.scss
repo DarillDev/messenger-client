@@ -43,6 +43,11 @@ body:after {
   line-height: 1;
 }
 
+// CDK virtual scroll overrides (::ng-deep not reliable with emulated encapsulation)
+app-messages-list .cdk-virtual-scroll-content-wrapper {
+  padding-top: 16px;
+}
+
 // UI-Kit Input directive styles
 
 .ui-kit-input {
@@ -72,8 +77,32 @@ body:after {
     transition: color .2s var(--ease-out);
   }
 
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--text-primary);
+    transition:
+      background-color 5000s ease-in-out 0s,
+      color .2s var(--ease-out);
+  }
+
   &.ui-kit-input-error {
     border-color: var(--accent-warm);
     box-shadow: 0 0 0 3px var(--accent-warm-glow);
+  }
+
+  // Inside ui-kit-form-field: visual container is the wrapper, input is transparent
+  &.ui-kit-input--in-field {
+    padding-left: 0;
+    padding-right: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+
+    &:focus,
+    &.ui-kit-input-error {
+      border: none;
+      box-shadow: none;
+    }
   }
 }

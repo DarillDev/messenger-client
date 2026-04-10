@@ -1,16 +1,28 @@
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { Component, input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { APPLICATION_ENVIRONMENT } from '@core/environment/application-environment.token';
+import { MessagesListComponent } from '@pages/chat/components/messages-list';
 import { MessagesService } from '@pages/chat/services/messages/messages.service';
 import { MessageStore } from '@pages/chat/store/message/message.store';
+import { TMessageListItem } from '@pages/chat/types/message-list-item.type';
 import { IMessage } from '@shared/interfaces/message.interface';
 import { ChatStore } from '@store/chat/chat.store';
 import { UserStore } from '@store/user/user.store';
 import { of } from 'rxjs';
 
 import { ChatComponent } from './chat.component';
+
+@Component({
+  selector: 'app-messages-list',
+  template: '',
+})
+class MessagesListStubComponent {
+  public readonly items = input.required<TMessageListItem[]>();
+  public readonly typingUsers = input<string[]>([]);
+}
 
 const mockMessages: IMessage[] = [
   { id: 'msg-1', chatId: 'c1', senderId: 'u2', text: 'Hi!', createdAt: new Date('2026-04-10T10:00:00.000Z') },
@@ -28,9 +40,6 @@ describe('ChatComponent', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
 
-    // jsdom does not implement scrollIntoView
-    window.HTMLElement.prototype.scrollIntoView = jest.fn();
-
     await TestBed.configureTestingModule({
       imports: [ChatComponent],
       providers: [
@@ -44,7 +53,12 @@ describe('ChatComponent', () => {
         { provide: MessagesService, useValue: mockMessagesService },
         { provide: ActivatedRoute, useValue: { params: of({ id: 'c1' }) } },
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(ChatComponent, {
+        remove: { imports: [MessagesListComponent] },
+        add: { imports: [MessagesListStubComponent] },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(ChatComponent);
     messageStore = TestBed.inject(MessageStore);
@@ -55,10 +69,10 @@ describe('ChatComponent', () => {
   });
 
   describe('View', () => {
-    it('should render message bubbles', () => {
+    it('should render messages list', () => {
       fixture.detectChanges();
-      const bubbles = fixture.nativeElement.querySelectorAll('ui-kit-message-bubble');
-      expect(bubbles).toHaveLength(2);
+      const messagesList = fixture.nativeElement.querySelector('app-messages-list');
+      expect(messagesList).toBeTruthy();
     });
 
     it('should render message input', () => {
@@ -203,7 +217,6 @@ describe('ChatComponent (no chatId)', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks();
-    window.HTMLElement.prototype.scrollIntoView = jest.fn();
 
     await TestBed.configureTestingModule({
       imports: [ChatComponent],
@@ -218,7 +231,12 @@ describe('ChatComponent (no chatId)', () => {
         { provide: MessagesService, useValue: mockMessagesServiceNoChat },
         { provide: ActivatedRoute, useValue: { params: of({}) } },
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(ChatComponent, {
+        remove: { imports: [MessagesListComponent] },
+        add: { imports: [MessagesListStubComponent] },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(ChatComponent);
   });
@@ -226,9 +244,9 @@ describe('ChatComponent (no chatId)', () => {
   it('should render without messages when chatId is absent', () => {
     fixture.detectChanges();
 
-    const bubbles = fixture.nativeElement.querySelectorAll('ui-kit-message-bubble');
+    const messagesList = fixture.nativeElement.querySelector('app-messages-list');
 
-    expect(bubbles).toHaveLength(0);
+    expect(messagesList).toBeTruthy();
   });
 
   it('should not emit message:send when chatId is absent', () => {

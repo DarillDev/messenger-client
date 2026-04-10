@@ -17,7 +17,7 @@ import { UiKitSuffixDirective } from '../../directives/suffix/suffix.directive';
     ReactiveFormsModule,
   ],
   template: `
-    <ui-kit-form-field label="Username" [hint]="hint" [errorMessages]="errorMessages">
+    <ui-kit-form-field [label]="label" [hint]="hint" [errorMessages]="errorMessages">
       @if (showPrefix) {
         <span uiKitPrefix class="material-icons-round">person</span>
       }
@@ -30,6 +30,7 @@ import { UiKitSuffixDirective } from '../../directives/suffix/suffix.directive';
 })
 class TestHostComponent {
   public control = new FormControl('', Validators.required);
+  public label = 'Username';
   public hint = '';
   public errorMessages: Record<string, string> = { required: 'This field is required' };
   public showPrefix = false;
@@ -50,12 +51,30 @@ describe('FormFieldComponent', () => {
   });
 
   describe('View', () => {
-    it('should render label', () => {
+    it('should render label when label is provided', () => {
       fixture.detectChanges();
 
       const label = fixture.nativeElement.querySelector('.form-field-label');
 
       expect(label.textContent).toBe('Username');
+    });
+
+    it('should not render label when label is not provided', () => {
+      host.label = '';
+      fixture.detectChanges();
+
+      const label = fixture.nativeElement.querySelector('.form-field-label');
+
+      expect(label).toBeNull();
+    });
+
+    it('should not render subscript when there is no hint and no ngControl', () => {
+      fixture.detectChanges();
+
+      // control has ngControl — subscript should be present
+      const subscript = fixture.nativeElement.querySelector('.form-field-subscript');
+
+      expect(subscript).toBeTruthy();
     });
 
     it('should float label when input is focused', () => {

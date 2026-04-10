@@ -1,30 +1,26 @@
-import { Component, computed, effect, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
+import { MessagesListComponent } from '@pages/chat/components/messages-list';
 import { MessagesService } from '@pages/chat/services/messages/messages.service';
 import { MessageStore } from '@pages/chat/store/message/message.store';
-import { IMessage } from '@shared/interfaces/message.interface';
-import { DateDividerComponent } from '@shared/ui-kit/date-divider';
-import { MessageBubbleComponent } from '@shared/ui-kit/message-bubble';
+import { IDateDividerItem, TMessageListItem } from '@pages/chat/types/message-list-item.type';
 import { ChatStore } from '@store/chat/chat.store';
 import { UserStore } from '@store/user/user.store';
 import { map } from 'rxjs';
 
-
 @Component({
   selector: 'app-chat',
-  imports: [MessageBubbleComponent, DateDividerComponent],
+  imports: [MessagesListComponent],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
 })
-export class ChatComponent {
+export class ChatComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly messageStore = inject(MessageStore);
   private readonly chatStore = inject(ChatStore);
   private readonly userStore = inject(UserStore);
   private readonly messagesService = inject(MessagesService);
-
-  private readonly messagesEndRef = viewChild<ElementRef<HTMLDivElement>>('messagesEnd');
 
   protected readonly chatId = toSignal(
     this.route.params.pipe(map((params): string => params['id'] as string)),
@@ -32,22 +28,54 @@ export class ChatComponent {
 
   protected readonly activeChat = computed(() => {
     const id = this.chatId();
+
     return id ? this.chatStore.chats().find(c => c.id === id) : undefined;
   });
 
-  protected readonly messages = computed(() => {
+  private readonly messages = computed(() => {
     const id = this.chatId();
+
     return id ? (this.messageStore.messagesByChatId()[id] ?? []) : [];
   });
 
   protected readonly typingUsers = computed(() => {
     const id = this.chatId();
-    if (!id) return [];
+
+    if (!id) {
+      return [];
+    }
+
     const typingIds = this.messageStore.typingByChatId()[id] ?? [];
+
     return typingIds.filter(userId => userId !== this.userStore.currentUser()?.userId);
   });
 
   protected readonly messageText = signal('');
+
+  protected readonly messageItems = computed((): TMessageListItem[] => {
+    const messages = this.messages();
+    const items: TMessageListItem[] = [];
+
+    let prevDayLabel = '';
+
+    for (const message of messages) {
+      const dayLabel = message.createdAt.toDateString();
+
+      if (dayLabel !== prevDayLabel) {
+        const divider: IDateDividerItem = {
+          type: 'divider',
+          id: `divider-${dayLabel}`,
+          date: dayLabel,
+        };
+
+        items.push(divider);
+        prevDayLabel = dayLabel;
+      }
+      items.push({ ...message, type: 'message' });
+    }
+
+    return items;
+  });
 
   private typingTimer: ReturnType<typeof setTimeout> | null = null;
   private isTyping = false;
@@ -55,21 +83,16 @@ export class ChatComponent {
   constructor() {
     effect(() => {
       const id = this.chatId();
+
       if (id) {
         this.messageStore.loadMessages(id);
       }
-    });
-
-    effect(() => {
-      this.messages();
-      queueMicrotask(() => {
-        this.messagesEndRef()?.nativeElement.scrollIntoView({ behavior: 'smooth' });
-      });
     });
   }
 
   protected onInput(event: Event): void {
     this.messageText.set((event.target as HTMLTextAreaElement).value);
+
     this.handleTyping();
   }
 
@@ -78,7 +101,9 @@ export class ChatComponent {
     const text = this.messageText().trim();
     const chatId = this.chatId();
 
-    if (!text || !chatId) return;
+    if (!text || !chatId) {
+      return;
+    }
 
     this.messagesService.emit('message:send', { chatId, text });
     this.messageText.set('');
@@ -92,28 +117,29 @@ export class ChatComponent {
     }
   }
 
-  protected getDayLabel(date: Date): string {
-    return date.toDateString();
-  }
-
-  protected getPrevMessage(index: number): IMessage | undefined {
-    return index > 0 ? this.messages()[index - 1] : undefined;
-  }
-
   private handleTyping(): void {
     const chatId = this.chatId();
-    if (!chatId) return;
+
+    if (!chatId) {
+      return;
+    }
 
     if (!this.isTyping) {
       this.isTyping = true;
       this.messagesService.emit('typing:start', { chatId });
     }
 
-    if (this.typingTimer) clearTimeout(this.typingTimer);
+    if (this.typingTimer) {
+      clearTimeout(this.typingTimer);
+    }
 
     this.typingTimer = setTimeout(() => {
       this.stopTyping();
     }, 1000);
+  }
+
+  public ngOnDestroy(): void {
+    this.stopTyping();
   }
 
   private stopTyping(): void {
@@ -122,6 +148,7 @@ export class ChatComponent {
       this.isTyping = false;
       this.messagesService.emit('typing:stop', { chatId });
     }
+
     if (this.typingTimer) {
       clearTimeout(this.typingTimer);
       this.typingTimer = null;
